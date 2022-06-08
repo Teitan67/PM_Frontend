@@ -1,0 +1,27 @@
+@media screen and (max-width:614px) {
+    .dissapearObject{
+        display: none;
+    }
+}
+
+@media screen and (min-width:614px) {
+    .appearMovileObject{
+        display: none;
+    }
+
+}
+
+.especialButtonClose{
+    background: none;
+    border-color: none;
+    border: none;
+    font-size: 35px;
+}
+
+.especialButtonClose {
+    margin-bottom: 10px;
+}
+
+.generalContainer{
+    height: 100vh;
+}

@@ -14,15 +14,14 @@ export default class Footer extends Component{
         return(
             <React.Fragment>
                     <div className='GenFooter'>
-                    <div className='row text-center bg-dark text-white pt-3'>
-                        <div className='col-1'></div>
-                        <div className='col-10'>
-                            <div className='logoFooter pb-3'>
+                    <div className='container-fluid justify-content-center text-center bg-dark text-white pt-4'>
+                       
+                            <div className='logoFooter pt-2 pb-2'>
                             <img src='/assets/logoM.png' alt='MayalandSolutions'/>
-                            </div>
+                            
                             <p>Copyright &#169; {this.ActualYear()} Mayaland Solutions.<br/> All Rights Reserved.</p>      
                         </div>
-                        <div className='col-1'></div>
+                        
                     </div>
                     </div>
                     

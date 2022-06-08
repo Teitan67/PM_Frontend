@@ -1,0 +1,36 @@
+.lateralMenu{
+    background:rgb(1, 35, 57);
+    font-size: 23px;
+}
+
+.lateralMenu h4{
+    margin-left: 5%;
+}
+.lateralMenu ul{
+    margin-left: 5%;
+}
+
+.dropDownMenu{
+    background:rgb(2, 46, 74);
+}
+.dropDownMenu li a:hover{
+    background:rgb(4, 69, 110);
+}
+
+
+.navbar-brand img{
+    width: 180px;
+    margin-left: 5%;
+}
+
+@media screen and (max-width:453px) {
+    .navbar-brand img{
+        width: 139.1px;
+        margin-left: 5%;
+    }
+}
+
+
+
+
+

@@ -2,15 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
-import Login from './pages/Login';
-//import Lobby from './pages/Lobby';
+import { BrowserRouter } from 'react-router-dom';
+import App from "./components/App"
+
+
 
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Login/>
-  </React.StrictMode>,
+  <BrowserRouter>
+  <App/>
+  </BrowserRouter>,
   document.getElementById('root')
 );
 

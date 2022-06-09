@@ -5,8 +5,22 @@ import { AiOutlineUser,AiOutlineKey,AiOutlineLogin } from 'react-icons/ai';
 import { selectWithDataService } from '../services/auth/authservices';
 export default class Login extends Component {
 
-  Login(){
-    selectWithDataService({data:"prueba"},"/login")
+  state={
+    loginStorage:{
+      userName:'',
+      password:''
+    }
+  }
+
+  async Login(){
+    //const temp=this.state.loginStorage
+
+    const datos={
+      userName:'teitan67',//temp.userName,
+      password:'123Animales',//temp.password
+    }
+    const datos2=await selectWithDataService(datos,"/login")
+    console.log(datos2.data)
   }
 
 

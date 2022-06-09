@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import "../css/menu-style.css"
 import "../css/general-style.css"
-
 import { AiOutlineSetting } from "react-icons/ai";
 import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome,AiOutlineUser,AiOutlineLogout,AiFillCloseCircle } from "react-icons/ai";
 export class Menu extends Component {
+
+
+
     render() {
         return (
             <React.Fragment>
@@ -18,7 +20,7 @@ export class Menu extends Component {
                             </div>
                             <div className='col'>
                                 <a className="navbar-brand" href='/#'>
-                                    <img src='/assets/logo_mayaland.png' alt='Company' />
+                                    <img src='/assets/logo_hyperline.png' alt='Company' />
                                 </a>
                             </div>
                         </div>

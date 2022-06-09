@@ -2,7 +2,15 @@ import React, { Component } from 'react'
 import "../css/login-style.css"
 import Footer from '../components/Footer'
 import { AiOutlineUser,AiOutlineKey,AiOutlineLogin } from 'react-icons/ai';
+import { selectWithDataService } from '../services/auth/authservices';
 export default class Login extends Component {
+
+  Login(){
+    selectWithDataService({data:"prueba"},"/login")
+  }
+
+
+
   render() {
     return (
       <div className='login'>
@@ -35,7 +43,7 @@ export default class Login extends Component {
 
               <div className='row d-flex justify-content-center pt-4 pb-3 text-center'>
                 <div className='col-7'>
-                  <button type="button" className="btn btn-primary btn-lg">Login <AiOutlineLogin/></button>
+                  <button type="button" className="btn btn-primary btn-lg" onClick={()=>this.Login()}>Login <AiOutlineLogin/></button>
                 </div>
               </div>
 

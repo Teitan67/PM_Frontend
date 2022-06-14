@@ -1,0 +1,23 @@
+.tbody {
+    display: block;
+    height: 50vh;
+    overflow: auto;
+}
+
+
+.thead,
+.tfoot,
+.tbody tr {
+    width: calc(100% - 1em);
+    display: table;
+}
+
+.thead,
+.tfoot {
+    width: calc(100% - 1em);
+    font-weight: bold
+}
+
+.row_hover:hover {
+    background-color: darkgray;
+}

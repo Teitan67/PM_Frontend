@@ -1,6 +1,6 @@
 .tbody {
     display: block;
-    height: 50vh;
+    height: 90vh;
     overflow: auto;
 }
 
@@ -10,6 +10,9 @@
 .tbody tr {
     width: calc(100% - 1em);
     display: table;
+}
+.tbody tr td{
+    width: calc(100% - 1em);
 }
 
 .thead,

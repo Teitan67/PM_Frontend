@@ -3,7 +3,20 @@ import "../css/login-style.css"
 import Footer from '../components/Footer'
 import { AiOutlineUser,AiOutlineKey,AiOutlineLogin } from 'react-icons/ai';
 import { selectWithDataService } from '../services/auth/authservices';
+import { setNewCookie } from '../services/cookieService';
+import {automaticCloseAlert} from'../functions/alerts'
+
+import md5 from 'md5'
+
+import {closeSession} from "../functions/closeSession"
+
+
+
+
+
 export default class Login extends Component {
+   
+  
 
   state={
     loginStorage:{
@@ -12,20 +25,53 @@ export default class Login extends Component {
     }
   }
 
+  onChangeById=e=>{
+    var idState=e.target.id.split('_')
+    const temp=this.state.loginStorage
+    if(idState.length===2){
+      temp[idState[1]]=e.target.value
+    }
+
+    this.setState({loginStorage:temp})
+  }
+
+  onKeyDown=async e=>{
+    if(e.key==='Enter'){
+      await this.Login()
+    }
+  }
+
+    
+
   async Login(){
-    //const temp=this.state.loginStorage
+    const temp=this.state.loginStorage
 
     const datos={
-      userName:'teitan67',//temp.userName,
-      password:'123Animales',//temp.password
+      userName: temp.userName,
+      password: md5(temp.password),
     }
     const datos2=await selectWithDataService(datos,"/login")
-    console.log(datos2.data)
+    if(datos2!=null){
+    if(datos2.status.code===1){
+      if(datos2.token!=='invalid'){
+        await automaticCloseAlert('correct','Welcome: '+datos2.data.name+" "+datos2.data.surname)
+        await setNewCookie('sessionAuthToken',datos2.token,50)
+        await setNewCookie('userName',datos2.data.userName,50)
+        await setNewCookie('name',datos2.data.name,50)
+        await setNewCookie('surname',datos2.data.surname,50)
+        window.location.href='/companyDashBoard'
+      }else{
+        closeSession()
+        automaticCloseAlert('incorrect','Your  Username or Password are incorrect. Please try again')
+      }
+    }
+  }
   }
 
 
 
   render() {
+   
     return (
       <div className='login'>
         <div className='container-fluid pb-1'>
@@ -42,7 +88,7 @@ export default class Login extends Component {
                 <div className='col-11'>
                   <div className="input-group input-group-lg">
                     <span className="input-group-text"><AiOutlineUser/></span>
-                    <input type="text" className="form-control" placeholder='Username'/>
+                    <input type="text" id='Login_userName' onChange={this.onChangeById} onKeyDown={this.onKeyDown} className="form-control" placeholder='Username'/>
                   </div>
                 </div>
               </div>
@@ -50,7 +96,7 @@ export default class Login extends Component {
                 <div className='col-11'>
                   <div className="input-group input-group-lg">
                     <span className="input-group-text"><AiOutlineKey/></span>
-                    <input type="password" className="form-control" placeholder='Password'/>
+                    <input type="password"  id='Login_password' onKeyDown={this.onKeyDown} onChange={this.onChangeById} className="form-control" placeholder='Password'/>
                   </div>
                 </div>
               </div>

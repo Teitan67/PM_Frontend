@@ -3,6 +3,7 @@ import server from "../Connection/backEndLink"
 import {confirmCloseAlert} from "../../functions/alerts"
 import { Navigate} from "react-router-dom";
 import React from "react"
+import { getValueCookie } from "../cookieService";
 const baseURLAuth=server.url+"/auth"
 
 
@@ -21,7 +22,7 @@ export const selectWithDataService=async (object,route)=>{
 }
 
 export const ProtectedRoute=({children})=>{
-    const temp=true
+    const temp=getValueCookie('sessionAuthToken')
     
     if(!temp){
         return <Navigate to="/login" />

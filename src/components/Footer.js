@@ -13,7 +13,7 @@ export default class Footer extends Component{
     render(){
         return(
             <React.Fragment>
-                    <div className='GenFooter'>
+                    <div className='GenFooter '>
                     <div className='container-fluid justify-content-center text-center bg-dark text-white pt-4'>
                        
                             <div className='logoFooter pt-2 pb-2'>

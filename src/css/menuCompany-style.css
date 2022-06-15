@@ -1,0 +1,43 @@
+.menuCompany .lateralMenu{
+    background:rgb(1, 35, 57);
+    font-size: 23px;
+}
+
+.menuCompany .lateralMenu h4{
+    margin-left: 5%;
+}
+.menuCompany .lateralMenu ul{
+    margin-left: 5%;
+}
+
+.menuCompany .dropDownMenu{
+    background:rgb(2, 46, 74);
+}
+.menuCompany .dropDownMenu li a:hover{
+    background:rgb(4, 69, 110);
+}
+
+
+.menuCompany .navbar-brand img{
+    width: 80px;
+    margin-left: 5%;
+}
+
+@media screen and (max-width:613px) {
+    .menuCompany .navbar-brand img{
+        width: 55px;
+        margin-left: 5%;
+    }
+}
+
+@media screen and (max-width:1060px)and (min-width:589px) {
+    .menuCompany .navbar-brand img{
+        width: 57px;
+        margin-left: 5%;
+    }
+}
+
+.menuCompany .filling{
+    height: 150px;
+    
+}

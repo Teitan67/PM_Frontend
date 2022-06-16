@@ -26,19 +26,21 @@ export default class CycleInvetory extends Component {
         { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
         { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
         ],
-        oldinventarioCycle:[{date:'05/02/2022',proccesitem:[
-            { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000,Description:"", QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2,QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2  },
-            { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000,Description:"",QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2,QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2  },
-            { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000,Description:"" ,QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2,QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2  },
-            { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000,Description:"",QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2,QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2  },
-            { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000,Description:"" ,QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2,QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2  },    
-        ]}],
+        oldinventarioCycle: [{
+            date: '05/02/2022', proccesitem: [
+                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: "", QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
+                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: "", QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
+                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: "", QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
+                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: "", QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
+                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: "", QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
+            ]
+        }],
 
-        actualworkInventory:[],
+        actualworkInventory: [],
 
         General: {
             showModal1: false,
-            showModal2:false,
+            showModal2: false,
             habilitar: false
         }
     }
@@ -66,26 +68,26 @@ export default class CycleInvetory extends Component {
         this.setState({ General: temporal })
     }
 
-    handleModalOpen = (modal) => {      
+    handleModalOpen = (modal) => {
         const temporal = this.state.General
         temporal[modal] = true
         this.setState({ General: temporal })
     }
 
-    async selectOldInventory(item){
-    const recorrer=item.proccesitem
-    await this.setState({actualworkInventory:[],porcetaje:0})
-    var temporal=[];
-    await recorrer.forEach(element => {
-        temporal.push(element);
-    });
-    var a=(temporal.length*100)/this.state.inventarioProvisional.length
-    
-    await this.setState({actualworkInventory:temporal})
-    for (let m = 0; m < a; m++) {
-        this.addValue()   
-    }  
-    await  this.handleModalClose2()
+    async selectOldInventory(item) {
+        const recorrer = item.proccesitem
+        await this.setState({ actualworkInventory: [], porcetaje: 0 })
+        var temporal = [];
+        await recorrer.forEach(element => {
+            temporal.push(element);
+        });
+        var a = (temporal.length * 100) / this.state.inventarioProvisional.length
+
+        await this.setState({ actualworkInventory: temporal })
+        for (let m = 0; m < a; m++) {
+            this.addValue()
+        }
+        await this.handleModalClose2()
 
     }
 
@@ -151,15 +153,15 @@ export default class CycleInvetory extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {this.state.actualworkInventory.map((item,i)=>(
-                                             <tr key={i} onClick={()=>this.selectOldInventory(item)}>
+                                    {this.state.actualworkInventory.map((item, i) => (
+                                        <tr key={i} onClick={() => this.selectOldInventory(item)}>
                                             <tr></tr>
-                                             <td className='text-start'>{item.ItemCode}</td>
-                                             <td className='text-start'>{item.Description}</td>
-                                             <td className='text-start'>{item.QuantitySystem}</td>
-                                             <td className='text-start'>{item.QuantityReal}</td>
-                                         </tr>
-                                ))}
+                                            <td className='text-start'>{item.ItemCode}</td>
+                                            <td className='text-start'>{item.Description}</td>
+                                            <td className='text-start'>{item.QuantitySystem}</td>
+                                            <td className='text-start'>{item.QuantityReal}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                                 <tfoot className='tfoot'>
                                     <tr className='bg-secondary text-light'>
@@ -210,8 +212,8 @@ export default class CycleInvetory extends Component {
                         </thead>
                         <tbody className='tbody'>
                             {this.state.oldinventarioCycle.map((item, i) => (
-                                <tr key={i} onClick={()=>this.selectOldInventory(item)}>
-                                    <td className='text-end'>{i+1}</td>
+                                <tr key={i} onClick={() => this.selectOldInventory(item)}>
+                                    <td className='text-end'>{i + 1}</td>
                                     <td className='text-end'>{item.date}</td>
                                     <td className='text-end'>{item.date}</td>
                                     <td className='text-end'>Incomplete</td>

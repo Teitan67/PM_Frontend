@@ -8,17 +8,13 @@
 
 
 .contLogin{
-    border-radius: 20px;
-    background:rgb(220, 220, 220); 
-    min-height: 74vh;
+    background:rgb(255, 255, 255); 
+    min-height: 50vh;
 }
 
 .userImg{
-    
     width: 200px;
-     height: 180px;
-     border-radius: 50%;
-     
+    height: auto;
 }
 
 .userImg img{

@@ -3,6 +3,7 @@ import ProgressBar from '../components/ProgressBar'
 import { AiOutlineSearch } from "react-icons/ai"
 import '../css/table-responsive.css'
 import ModalOrders from '../components/ModalComponent';
+import {displayClass} from '../functions/displayClass';
 
 export default class CycleInvetory extends Component {
 
@@ -13,35 +14,9 @@ export default class CycleInvetory extends Component {
 
     state = {
         porcetaje: 0,
-        inventarioProvisional: [{ ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Quantity: Math.floor(Math.random() * (185 - 2)) + 2 },
-        ],
-        oldinventarioCycle: [{
-            date: '05/02/2022', proccesitem: [
-                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: `Cable Manager 19" with Cover and Plastic Rings (2U)`, QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
-                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: `Cable Manager 19" Plastic Rings  (1U)`, QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
-                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: `Cable Manager 19" with Metallic Rings (2U)`, QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
-                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: `Cable Manager 19" with Cover and Metallic Rings (2U)`, QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
-                { ItemCode: Math.floor(Math.random() * (1000000 - 2000000)) + 2000000, Description: `	Cable Coax RG59/CU Siamese 95% CCA 18/2 CRM Black 500ft`, QuantitySystem: Math.floor(Math.random() * (185 - 2)) + 2, QuantityReal: Math.floor(Math.random() * (185 - 2)) + 2 },
-            ]
-        }],
-
-        actualworkInventory: [],
 
         General: {
-            showModal1: false,
-            showModal2: false,
-            habilitar: false
+            showModal: false,
         }
     }
 
@@ -56,55 +31,49 @@ export default class CycleInvetory extends Component {
         this.ProgrressBarRef.current.setValue(cantidad);
     }
 
-    handleModalClose1 = () => {
+    handleModalClose = () => {
         const temporal = this.state.General
-        temporal.showModal1 = false
+        temporal.showModal = false
         this.setState({ General: temporal })
     }
 
-    handleModalClose2 = () => {
-        const temporal = this.state.General
-        temporal.showModal2 = false
-        this.setState({ General: temporal })
-    }
-
-    handleModalOpen = (modal) => {
+    handleModalOpen = async(modal, cases) => {
+       await this.openModalPart(cases)
         const temporal = this.state.General
         temporal[modal] = true
         this.setState({ General: temporal })
     }
 
-    async selectOldInventory(item) {
-        const recorrer = item.proccesitem
-        await this.setState({ actualworkInventory: [], porcetaje: 0 })
-        var temporal = [];
-        await recorrer.forEach(element => {
-            temporal.push(element);
-        });
-        var a = (temporal.length * 100) / this.state.inventarioProvisional.length
-
-        await this.setState({ actualworkInventory: temporal })
-        for (let m = 0; m < a; m++) {
-            this.addValue()
+    openModalPart(cases) {
+        switch (cases) {
+            case "1":
+                displayClass("", 'CycleInventorySelect1')
+                displayClass("none", "CycleInventorySelect2")
+                break;
+            case "2":
+                displayClass("none", 'CycleInventorySelect1')
+                displayClass("", "CycleInventorySelect2")
+                break;
+            default:
+                break;
         }
-        await this.handleModalClose2()
-
     }
+
+
 
     render() {
         return (
             <div className='inventoryCycle'>
-                <p className='text-center display-1 pb-2' >Cylce Inventory</p>
+                <p className='text-center display-1 pb-2' >Cycle Inventory</p>
 
                 <div>
 
-                    <div className='row pb-2'>
+                    <div className='row pb-5'>
                         <div className='col-12'>
                             <div className='row'>
                                 <div className='col-1'></div>
-                                <div className='col-4'><button className='btn btn-primary w-100' onClick={() => this.handleModalOpen()} > Start New Cycle Inventory</button></div>
-                                <div className='col-2'></div>
-                                <div className='col-4'><button className='btn btn-success w-100' onClick={() => this.handleModalOpen("showModal2")} > Open Old Cycle Inventory</button></div>
+                                <div className='col-5'><button className='btn btn-success w-100 btn-lg'> Start New Cycle Inventory</button></div>
+                                <div className='col-5'><button className='btn btn-primary w-100 btn-lg' onClick={() => this.handleModalOpen("showModal", "1")} > Open Old Cycle Inventory</button></div>
                                 <div className='col-1'></div>
                             </div>
                         </div>
@@ -112,31 +81,23 @@ export default class CycleInvetory extends Component {
                     <div className='row pb-3'>
                         <div className='col-1'></div>
                         <div className='col-10'>
-                            <p className='display-5'>Inventory complete:</p>
+                            <p className='display-6'>Inventory complete:</p>
                             <ProgressBar ref={this.ProgrressBarRef} />
                         </div>
                         <div className='col-1'></div>
                     </div>
                     <div className='row pb-3'>
                         <div className='col-1'></div>
-                        <div className='col-4 text-center'>
-                            <label className='w-75'>
 
-                                <input className='form-control' placeholder='Search by ItemCode, BIN, Description, Category, UPC ...' />
-                            </label>
-                            <button className='btn btn-primary'><AiOutlineSearch /></button>
-                        </div>
-                        <div className='col-2'></div>
-                        <div className='col-4'>
-                            <button className='btn btn-warning w-100' onClick={() => this.handleModalOpen("showModal1")} > Open Actual Inventory</button>
+                        <div className='col-5'>
+                            <button className='btn btn-warning w-100 btn-lg' onClick={() => this.handleModalOpen("showModal", "2")} > Open Inventory</button>
                         </div>
                         <div className='col-1'></div>
                     </div>
-
                     <div className='row'>
                         <div className='col-1'></div>
                         <div className='col-10'>
-                            <p className='display-5'>Proccessed Items</p>
+                            <p className='display-5'>Items to count:</p>
                         </div>
                         <div className='col-1'></div>
                     </div>
@@ -148,28 +109,58 @@ export default class CycleInvetory extends Component {
                                     <tr className='bg-dark text-light text-center'>
                                         <th>Item Code</th>
                                         <th>Description</th>
-                                        
-                                        <th>Actual Quantity</th>
-                                        <th></th>
+                                        <th>Quantity</th>
+                                        <th>BIN</th>
+                                        <th>Date</th>
                                         <th>System Quantity</th>
+                                        <th>Difference</th>
+                                        <th>Resupply</th>
+                                        <th>Outbounds or transfers</th>
+                                        <th>Comentary</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                                <tfoot className='tfoot'>
+                                    <tr className='bg-secondary text-light'>
+
+                                    </tr>
+                                </tfoot>
+
+                            </table>
+                        </div>
+                        <div className='col-1'></div>
+                    </div>
+                    <div className='row'>
+                        <div className='col-1'></div>
+                        <div className='col-10'>
+                            <p className='display-5'>Items already counted</p>
+                        </div>
+                        <div className='col-1'></div>
+                    </div>
+                    <div className='row'>
+                        <div className='col-1'></div>
+                        <div className='col-10'>
+                            <table className='table'>
+                                <thead>
+                                    <tr className='bg-dark text-light text-center'>
+                                        <th>Item Code</th>
+                                        <th>Description</th>
+                                        <th>Quantity</th>
+                                        <th>BIN</th>
+                                        <th>Date</th>
+                                        <th>System Quantity</th>
+                                        <th>Difference</th>
+                                        <th>Comentary</th>
+                                        <th>Who makes the count</th>
                                         
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.actualworkInventory.map((item, i) => (
-                                        <tr key={i} onClick={() => this.selectOldInventory(item)}>
 
-                                            <td className='text-center'>{item.ItemCode}</td>
-                                            <td className='text-start'>{item.Description}</td>
-                                            <td className='text-end'>{item.QuantitySystem}</td>
-                                            <td className='text-center'>  <button className='btn btn-success w-100' > Check</button></td>
-                                            <td className='text-end'>{item.QuantityReal}</td>
-                                            <td className='text-center'>  <button className='btn btn-info w-100' > Detail</button></td>
-    
-                                  
-                                        </tr>
-                                    ))}
                                 </tbody>
                                 <tfoot className='tfoot'>
                                     <tr className='bg-secondary text-light'>
@@ -184,58 +175,16 @@ export default class CycleInvetory extends Component {
 
 
                 </div>
-                <ModalOrders title={'Inventory Items'} show={this.state.General.showModal1} close={this.handleModalClose1}>
-                    <table className='table'>
-                        <thead className='thead'>
-                            <tr className='bg-dark text-light'>
-                                <th className='text-center'>Item Code</th>
-                                <th className='text-end'>System Quantity</th>
-                            </tr>
-                        </thead>
-                        <tbody className='tbody'>
-                            {this.state.inventarioProvisional.map((item, i) => (
-                                <tr key={i}>
-                                    <td>{item.ItemCode}</td>
-                                    <td className='text-end'>{item.Quantity}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                        <tfoot className='tfoot'>
-                            <tr className='bg-secondary text-light'>
+                <ModalOrders title={''} show={this.state.General.showModal} close={this.handleModalClose}>
+                    <div id={'CycleInventorySelect1'} className='CycleInventorySelect1'>
+                        <h1>Soy el boton 1</h1>
+                    </div>
+                    <div className='CycleInventorySelect2'>
+                        <h1>Soy el boton 2</h1>
+                    </div>
 
-                            </tr>
-                        </tfoot>
-
-                    </table>
                 </ModalOrders>
-                <ModalOrders title={'Old Cycle Inventory'} show={this.state.General.showModal2} close={this.handleModalClose2}>
-                    <table className='table'>
-                        <thead className='thead'>
-                            <tr className='bg-dark text-light'>
-                                <th className='text-center'>Id</th>
-                                <th className='text-center'>Starting Date</th>
-                                <th className='text-center'>Last Update Date</th>
-                                <th className='text-center'>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className='tbody'>
-                            {this.state.oldinventarioCycle.map((item, i) => (
-                                <tr key={i} onClick={() => this.selectOldInventory(item)}>
-                                    <td className='text-end'>{i + 1}</td>
-                                    <td className='text-end'>{item.date}</td>
-                                    <td className='text-end'>{item.date}</td>
-                                    <td className='text-end'>Incomplete</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                        <tfoot className='tfoot'>
-                            <tr className='bg-secondary text-light'>
 
-                            </tr>
-                        </tfoot>
-
-                    </table>
-                </ModalOrders>
             </div>
         )
     }

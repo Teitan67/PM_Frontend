@@ -1,19 +1,20 @@
 import React, { Component } from "react";
-import Footer from "../components/Footer";
-import { Menu } from "../components/Menu";
+
 import "../css/general-style.css"
 
 
 export default class Lobby extends Component {
-    
+
+    componentDidMount() {
+      
+    }
 
 
     render() {
         return (
-            <div>
-                <Menu />
-                <div className="container-fluid generalContainer" id="actualPage"></div>
-                <Footer />
+            <div className="container-fluid generalContainer">
+                
+
             </div>
         )
     }

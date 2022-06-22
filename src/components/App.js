@@ -1,28 +1,38 @@
-import {Route, Routes } from "react-router-dom"
-import Login from "../pages/Login"
-import Lobby from "../pages/Lobby"
-import React,{ Component } from "react"
-import { ProtectedRoute } from "../services/auth/authservices"
-import CompanyDashBoard from "../pages/CompanyDashBoard"
 
-export default class App extends Component{
-    
-    render(){
-        return(
-            <div className="App">
-                
-                <Routes>
-               <Route exact  path="/login" element={<Login/>}/>
-               <Route exact  path="/home" element={<ProtectedRoute><Lobby/></ProtectedRoute>}/>
-               <Route path="/companyDashBoard" element={<CompanyDashBoard/>}></Route>
-               <Route exact  path="*" element={<Login/>}/>
-               </Routes>
-               
-               
+import Lobby from "../pages/Lobby"
+import React, { Component } from "react"
+import CompanyDashBoard from "../pages/CompanyDashBoard"
+import {Menu} from "../components/Menu"
+import Footer from "../components/Footer"
+import CycleInventory from "../pages/CycleInvetory"
+export default class App extends Component {
+
+    render() {
+        return (
+            <div>
+                <div className="CompanyDashBoard">
+                    <CompanyDashBoard />
+                </div>
+
+                <div className="GeneralPages">
+                    <Menu/>
+                    <div className="container-fluid generalContainer" id="actualPage">
+
+                        <div className="Lobby">
+                            <Lobby />
+                        </div>
+
+                        <div className="CycleInventory">
+                            <CycleInventory />
+                        </div>
+
+                    </div>
+                    <Footer />
+                </div>
             </div>
         )
     }
 }
-   
+
 
 

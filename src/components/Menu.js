@@ -3,22 +3,16 @@ import "../css/menu-style.css"
 import "../css/general-style.css"
 import { AiOutlineSetting } from "react-icons/ai";
 import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle } from "react-icons/ai";
-import { Link } from 'react-router-dom';
 import { getValueCookie } from '../services/cookieService';
-import CycleInvetory from '../pages/CycleInvetory';
-import ReactDOM from 'react-dom';
+import { OpenCycleInventory,OpenLobby } from '../functions/pagesFunction';
+
 
 export class Menu extends Component {
 
-    showCylceInventory(){
-        ReactDOM.render(
-            <CycleInvetory/>,
-            document.getElementById('actualPage')
-          )
-    }
+   
 
     componentDidMount(){
-        this.showCylceInventory();
+       // this.showCylceInventory();
     }
 
     render() {
@@ -33,27 +27,27 @@ export class Menu extends Component {
                                 </button>
                             </div>
                             <div className='col'>
-                                <Link className="navbar-brand" to='/home'>
+                                <a className="navbar-brand" href='/home'>
                                     <img src='/assets/logo_hyperline.png' alt='Company' />
-                                </Link>
+                                </a>
                             </div>
                         </div>
                         <div className='row text-light'>
                             <div className='col'>
                                 <div className="nav-item dropdown dissapearObject">
-                                    <Link className="nav-link text-light" to="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a className="nav-link text-light" href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <AiOutlineUser className='h3' /> Hi {getValueCookie('name')} {getValueCookie('surname')} <AiFillCaretDown />
-                                    </Link>
+                                    </a>
                                     <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
-                                        <li><Link className="dropdown-item text-light h5" to="/#"><AiOutlineSetting /> User Data</Link></li>
-                                        <li><Link className="dropdown-item text-light h5" to="/login"><AiOutlineLogout /> Logout</Link></li>
+                                        <li><a className="dropdown-item text-light h5" href="/#"><AiOutlineSetting /> User Data</a></li>
+                                        <li><a className="dropdown-item text-light h5" href="/#"><AiOutlineLogout /> Logout</a></li>
 
                                     </ul>
                                 </div>
                                 <div className=''>
-                                    <Link className="nav-link text-light appearMovileObject" to="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUser" aria-controls="offcanvasNavbar">
+                                    <a className="nav-link text-light appearMovileObject" href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUser" aria-controls="offcanvasNavbar">
                                         <AiOutlineUser className='h2' />
-                                    </Link>
+                                    </a>
                                 </div>
                             </div>
 
@@ -68,17 +62,17 @@ export class Menu extends Component {
                             <div className="offcanvas-body lateralMenu">
                                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                                     <li className="nav-item">
-                                        <Link className="nav-link active" aria-current="page" to="/#">Home <AiOutlineHome /></Link>
+                                        <a className="nav-link active" aria-current="page" href="/#" data-bs-dismiss="offcanvas" onClick={()=>OpenLobby()}>Home <AiOutlineHome /></a>
                                     </li>
                                     <li className="nav-item dropdown">
-                                        <Link className="nav-link " to="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <a className="nav-link " href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Inventory Options <AiOutlineReconciliation /> <AiFillCaretDown />
-                                        </Link>
+                                        </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
-                                            <li onClick={()=>this.showCylceInventory()}><Link className="dropdown-item text-light" to="/#"  data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></Link></li>
-                                            <li><Link className="dropdown-item text-light" to="/#">Another action</Link></li>
-                                            <li><Link className="dropdown-item text-light" to="/#">Another action</Link></li>
-                                            <li><Link className="dropdown-item text-light" to="/#">Another action</Link></li>
+                                            <li onClick={()=>OpenCycleInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>
+                                            <li><a className="dropdown-item text-light" href="/#">Another action</a></li>
+                                            <li><a className="dropdown-item text-light" href="/#">Another action</a></li>
+                                            <li><a className="dropdown-item text-light" href="/#">Another action</a></li>
                                         </ul>
                                     </li>
 
@@ -95,8 +89,8 @@ export class Menu extends Component {
                             <div className="offcanvas-body lateralMenu">
                                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                                     <li className="nav-item">
-                                        <Link className="nav-link active" aria-current="page" to="/#"><AiOutlineSetting /> User Data</Link>
-                                        <Link className="nav-link active" aria-current="page" to="/#"><AiOutlineLogout /> Logout</Link>
+                                        <a className="nav-link active" aria-current="page" href="/#"><AiOutlineSetting /> User Data</a>
+                                        <a className="nav-link active" aria-current="page" href="/#"><AiOutlineLogout /> Logout</a>
                                     </li>
                                 </ul>
 

@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import Footer from "../components/Footer";
 import { MenuCompany } from "../components/MenuCompanySelect";
 import "../css/companyDash-style.css"
+import { OpenLobby } from '../functions/pagesFunction';
 export default class CompanyDashBoard extends Component {
-    TemporalreDirect(){
-        window.location.href="/home"
-       }
+  
         
     render() {
         return (
@@ -20,13 +19,13 @@ export default class CompanyDashBoard extends Component {
                         <div className="row">
                             <div className="col">
     
-                                <div onClick={()=>this.TemporalreDirect()} className="contCompany">
+                                <div  className="contCompany" onClick={()=>OpenLobby()}>
                                     <div className="titecompany text-center">
                                         <img src="/assets/logo_hyperline.png" alt="logo" />
                                         <p>Hyperline Atlanta<br/> <br/><br/><br/></p>
                                     </div>
                                 </div>
-                                <div onClick={()=>this.TemporalreDirect()} className="contCompany">
+                                <div className="contCompany" onClick={()=>OpenLobby()}>
                                     <div className="titecompany text-center">
                                         <img src="/assets/logo_mayaland.png" alt="logo" />
                                         <p>Mayaland Atlanta<br/> <br/><br/><br/></p>

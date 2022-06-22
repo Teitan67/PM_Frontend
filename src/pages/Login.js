@@ -5,10 +5,10 @@ import { AiOutlineUser,AiOutlineKey,AiOutlineLogin } from 'react-icons/ai';
 import { selectWithDataService } from '../services/auth/authservices';
 import { setNewCookie } from '../services/cookieService';
 import {automaticCloseAlert} from'../functions/alerts'
-
 import md5 from 'md5'
-
 import {closeSession} from "../functions/closeSession"
+import App from '../components/App';
+import { OpenCompanyDashBoard, OpenLogin } from '../functions/pagesFunction';
 
 
 
@@ -41,7 +41,9 @@ export default class Login extends Component {
     }
   }
 
-    
+  componentDidMount(){
+    OpenLogin()
+  }
 
   async Login(){
     const temp=this.state.loginStorage
@@ -54,15 +56,17 @@ export default class Login extends Component {
     if(datos2!=null){
     if(datos2.status.code===1){
       if(datos2.token!=='invalid'){
-        await automaticCloseAlert('correct','Welcome: '+datos2.data.name+" "+datos2.data.surname)
-        await setNewCookie('sessionAuthToken',datos2.token,50)
-        await setNewCookie('userName',datos2.data.userName,50)
-        await setNewCookie('name',datos2.data.name,50)
-        await setNewCookie('surname',datos2.data.surname,50)
-        window.location.href='/companyDashBoard'
+       await  automaticCloseAlert('correct','Welcome: '+datos2.data.name+" "+datos2.data.surname)
+         setNewCookie('sessionAuthToken',datos2.token,50)
+         setNewCookie('userName',datos2.data.userName,50)
+         setNewCookie('name',datos2.data.name,50)
+         setNewCookie('surname',datos2.data.surname,50)
+        //window.location.href='/companyDashBoard'
+         await OpenCompanyDashBoard()
       }else{
         closeSession()
         automaticCloseAlert('incorrect','Your  Username or Password are incorrect. Please try again')
+        
       }
     }
   }
@@ -73,7 +77,8 @@ export default class Login extends Component {
   render() {
    
     return (
-      <div className='login'>
+      <React.Fragment>
+        <div className='login'>
         <div className='container-fluid pb-1'>
         <div className='container'>
           <div className='row pt-4 pb-3 d-flex justify-content-center'>
@@ -112,7 +117,12 @@ export default class Login extends Component {
         </div>
       </div>
       <Footer/>
-      </div>
+        </div>
+        <div className='App'>
+          <App/>
+        </div>
+      </React.Fragment>
+      
       
 
 

@@ -8,7 +8,7 @@
   }
   
   
-  .tableFixHead          { overflow: auto; height: 70vh; margin-bottom: 5%; }
+  .tableFixHead          { overflow: auto; min-height: 10vh; max-height: 70vh; margin-bottom: 5%; }
   .tableFixHead thead th { position: sticky; top: 0; z-index: 1; }
   
   /* Just common table stuff. Really. */

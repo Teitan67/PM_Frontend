@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ProgressBar from '../components/ProgressBar'
 import { AiOutlineSearch } from "react-icons/ai"
 import '../css/table-responsive.css'
+import '../css/general-style.css'
 import ModalOrders from '../components/ModalComponent';
 import { getInformationNoData, create_Delete_Update_Information, getInformationWithData } from '../services/CABE';
 import Swal from "sweetalert2";
@@ -24,9 +25,13 @@ export default class CycleInvetory extends Component {
             habilitar: false,
             chekvalue: '0',
             checkHistory: '0',
+            selectedCycleInventory:null,
             secureTransaction: false,
             generalHistory: [],
-            generalHistoryFilter: []
+            generalHistoryFilter: [],
+            oldCycleInventory: [],
+            detailOldCycleSelected:[],
+            detailOldCycleSelectedFilter:[]
         },
 
         cycleInventoryStorage: {
@@ -63,12 +68,31 @@ export default class CycleInvetory extends Component {
 
     valueRadioButton2 = async e => {
         let stat = e.target.value
-        document.getElementById('searchHistoryCycleInv1').value=""
+        document.getElementById('searchHistoryCycleInv1').value = ""
         const temporal = this.state.General
         temporal.checkHistory = stat
         this.setState({ General: temporal })
         this.getByCheckHistory(stat)
     }
+
+    searchOlderCycleInventoryDetail= e =>{
+        let search= e.target.value
+            
+
+            var DetailFilter = this.state.General.detailOldCycleSelected.filter((item) => {
+                if (item.ItemCode.toString().toLowerCase().includes(search.toLowerCase())||item.BIN.toString().toLowerCase().includes(search.toLowerCase())||item.status.toString().toLowerCase().includes(search.toLowerCase())) {
+                    return item
+                } else {
+                    return null
+                }
+            })
+
+            const temporal = this.state.General
+            temporal.detailOldCycleSelectedFilter = DetailFilter
+            this.setState({ General: temporal })
+    }
+
+
 
     getBySearchBar(search) {
         if (search !== "" && this.state.General.chekvalue !== '-1') {
@@ -127,19 +151,19 @@ export default class CycleInvetory extends Component {
         var busqueda = ""
         switch (stat) {
             case "0":
-                busqueda="purchase"
+                busqueda = "purchase"
                 break;
             case "1":
-                busqueda="transferencia"
+                busqueda = "transferencia"
                 break;
             case "2":
-                busqueda="ajuste"
+                busqueda = "ajuste"
                 break;
             case "3":
-                busqueda="outbound"
+                busqueda = "outbound"
                 break;
             default:
-                busqueda=""
+                busqueda = ""
                 break;
         }
 
@@ -155,9 +179,30 @@ export default class CycleInvetory extends Component {
             console.log(DetailFilter)
             const temporal = this.state.General
             temporal.generalHistoryFilter = DetailFilter
-           await this.setState({ General: temporal })
-        } 
+            await this.setState({ General: temporal })
+        }
 
+    }
+    getCategory(stat) {
+        var busqueda = ""
+        switch (stat) {
+            case "0":
+                busqueda = "purchase"
+                break;
+            case "1":
+                busqueda = "transferencia"
+                break;
+            case "2":
+                busqueda = "ajuste"
+                break;
+            case "3":
+                busqueda = "outbound"
+                break;
+            default:
+                busqueda = ""
+                break;
+        }
+        return busqueda;
     }
 
 
@@ -177,7 +222,7 @@ export default class CycleInvetory extends Component {
                 temporal.Header = datos.data[0]
 
                 if (temporal.Header.status === 0) {
-                    await this.getDetailCycleInventory(temporal.Header.id)
+                    await this.getDetailCycleInventory(temporal.Header.id,"actual")
                 } else {
                     temporal.Detail = []
                     temporal.DetailFilter = []
@@ -191,26 +236,59 @@ export default class CycleInvetory extends Component {
         }
     }
 
-    async getDetailCycleInventory(id) {
+
+    async getOldCycleInventory() {
+        const route = '/invertory/oldCycleInventorys/get';
+        const datos = await getInformationNoData(route)
+        if (datos.status.code === 1) {
+            if (datos.data.length > 0) {
+                const temporal = this.state.General
+                temporal.oldCycleInventory = datos.data
+                await this.setState({ General: temporal })
+
+            } else {
+                const temporal = this.state.General
+                temporal.oldCycleInventory = []
+                await this.setState({ General: temporal })
+            }
+        }
+    }
+
+
+    async getDetailCycleInventory(id,type) {
         const data = {
             id: id
         }
         const route = '/inventory/cycledetail/post';
         const datos = await getInformationWithData(route, data)
-        if (datos.status.code === 1) {
-            if (datos.data.length > 0) {
-                const temporal = this.state.cycleInventoryStorage
-                temporal.Detail = datos.data
-                temporal.DetailFilter = datos.data
-                await this.setState({ cycleInventoryStorage: temporal })
-                await this.completePercentage()
-
-            } else {
-                const temporal = this.state.cycleInventoryStorage
-                temporal.Detail = []
-                await this.setState({ cycleInventoryStorage: temporal })
+        if(type==="actual"){
+            if (datos.status.code === 1) {
+                if (datos.data.length > 0) {
+                    const temporal = this.state.cycleInventoryStorage
+                    temporal.Detail = datos.data
+                    temporal.DetailFilter = datos.data
+                    await this.setState({ cycleInventoryStorage: temporal })
+                    await this.completePercentage()
+    
+                } else {
+                    const temporal = this.state.cycleInventoryStorage
+                    temporal.Detail = []
+                    await this.setState({ cycleInventoryStorage: temporal })
+                }
             }
+        }else if(type==="old"){
+            const temporal=this.state.General
+            temporal.detailOldCycleSelected=datos.data
+            temporal.detailOldCycleSelectedFilter=datos.data
+            await this.setState({General:temporal})
         }
+        
+    }
+    getOldDetailCycleInventory(item){
+        const temporal=this.state.General
+        temporal.selectedCycleInventory=item
+        this.setState({General:temporal})
+        this.getDetailCycleInventory(item.id,"old")
     }
 
 
@@ -224,14 +302,14 @@ export default class CycleInvetory extends Component {
             if (datos.data.length > 0) {
                 const temporal = this.state.General
                 temporal.generalHistory = datos.data
-                temporal.checkHistory="0"
+                temporal.checkHistory = "0"
                 await this.setState({ General: temporal })
-            }else{
+            } else {
                 const temporal = this.state.General
                 temporal.generalHistory = []
-                temporal.generalHistoryFilter=[]
-                temporal.checkHistory="0"
-                await this.setState({ General:temporal}) 
+                temporal.generalHistoryFilter = []
+                temporal.checkHistory = "0"
+                await this.setState({ General: temporal })
             }
         }
         await this.getByCheckHistory(this.state.General.checkHistory)
@@ -404,6 +482,53 @@ export default class CycleInvetory extends Component {
         this.setState({ General: temporal })
     }
 
+
+    targetDetailSearch = e => {
+        let search = e.target.value
+        this.filterDetail(search)
+
+    }
+
+
+
+    filterDetail(search) {
+        if (search !== "") {
+            var DetailFilter = this.state.General.generalHistory.filter((item) => {
+                if ((String(item.OrderNumber).toString().toLowerCase().includes(search.toLowerCase()) || String(item.BIN).toString().toLowerCase().includes(search.toLowerCase()) || String(item.BIN2).toString().toLowerCase().includes(search.toLowerCase()) || String(item.username).toString().toLowerCase().includes(search.toLowerCase())) && String(item.Categoria).toString().toLowerCase().includes(this.getCategory(this.state.General.checkHistory))) {
+                    return item
+                } else {
+                    return null
+                }
+            })
+            const temporal = this.state.General
+            temporal.generalHistoryFilter = DetailFilter
+            this.setState({ General: temporal })
+
+        } else {
+            var DetailFilter2 = this.state.General.generalHistory.filter((item) => {
+                if (String(item.Categoria).toString().toLowerCase().includes(this.getCategory(this.state.General.checkHistory))) {
+                    return item
+                } else {
+                    return null
+                }
+            })
+            const temporal = this.state.General
+            temporal.generalHistoryFilter = DetailFilter2
+            this.setState({ General: temporal })
+        }
+    }
+
+    async openOlCycleInventory() {
+        const temporal=this.state.General
+        temporal.detailOldCycleSelected=[]
+        temporal.detailOldCycleSelectedFilter=[]
+        temporal.selectedCycleInventory=null
+        this.setState({General:temporal})
+        this.getOldCycleInventory()
+        await this.handleModalOpen("showModal2")
+    }
+
+
     render() {
         return (
             <div className='inventoryCycle'>
@@ -419,7 +544,7 @@ export default class CycleInvetory extends Component {
                                     <button className='btn btn-danger btn-lg w-100' disabled={this.state.General.secureTransaction} hidden={this.state.cycleInventoryStorage.Header.status === 1} onClick={() => this.endCycleInventory()}> End Cycle Inventory</button>
                                 </div>
 
-                                <div className='col-5'><button className='btn btn-success btn-lg w-100' onClick={() => this.handleModalOpen("showModal2")} > Open Old Cycle Inventory</button></div>
+                                <div className='col-5'><button className='btn btn-success btn-lg w-100' onClick={() => this.openOlCycleInventory()} > Open Old Cycle Inventory</button></div>
                                 <div className='col-1'></div>
                             </div>
                         </div>
@@ -512,13 +637,14 @@ export default class CycleInvetory extends Component {
                                             <td><textarea disabled={item.status === 1} className="form-control" key={item.comentary === 'null' ? '' : item.comentary} id={"comentaryCycleInv_" + item.id} defaultValue={item.comentary === 'null' ? '' : item.comentary}></textarea></td>
                                             <td className='text-center'>
                                                 <button type="button" className="btn btn-success" disabled={this.state.General.secureTransaction} onClick={() => this.setCycleInventoryDetailInfo(item, "comentaryCycleInv_" + item.id, "realQuantityCycleInv_" + item.id,)} hidden={item.status === 1}>Check</button>
-                                                <button type="button" className="btn btn-danger" onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
+                                                <button type="button" className="btn btn-danger" disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
                                             </td>
                                             <td className='text-center'><button onClick={() => this.getGeneralHistory(item.ItemCode)} type="button" className="btn btn-info">Detail</button></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot className='tfoot'>
+
                                     <tr className='bg-secondary text-light'>
 
                                     </tr>
@@ -533,32 +659,113 @@ export default class CycleInvetory extends Component {
                 </div>
 
                 <ModalOrders title={'Old Cycle Inventory'} show={this.state.General.showModal2} close={(modal = "showModal2") => this.handleModalClose(modal)}>
-                    <table className='table'>
-                        <thead className='thead'>
-                            <tr className='bg-dark text-light'>
-                                <th className='text-center'>Id</th>
-                                <th className='text-center'>Starting Date</th>
-                                <th className='text-center'>Last Update Date</th>
-                                <th className='text-center'>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className='tbody'>
+                    <div className='row pt-3'>
+                        <div className='col-12 display-5 pb-3'>
+                            <p >Select an old Cycle Inventory to see they detail:</p>
+                        </div>
+                        <div className='col-12 tableFixHead'>
+                            <table className='table'>
+                                <thead className='thead'>
+                                    <tr className='bg-dark text-light'>
+                                        <th className='text-center bg-dark'>Id</th>
+                                        <th className='text-center bg-dark'>Start Date</th>
+                                        <th className='text-center bg-dark'>Estimated Date to finish</th>
+                                        <th className='text-center bg-dark'>Real Finish Date</th>
+                                        <th className='text-center bg-dark'>Days</th>
+                                        <th className='text-center bg-dark'>Create By</th>
+                                        <th className='text-center bg-dark'>Close By</th>
+                                    </tr>
+                                </thead>
+                                <tbody className='tbody'>
+                                    {
+                                        this.state.General.oldCycleInventory.map((item, i) => (
+                                            <tr className={this.state.General.selectedCycleInventory===item?'bg-warning text-center':'text-center'} onClick={()=>this.getOldDetailCycleInventory(item)} key={i}>
+                                                <td>{item.id}</td>
+                                                <td>{item.startDate2}</td>
+                                                <td>{item.finishDate2}</td>
+                                                <td>{item.realFinishDate2}</td>
+                                                <td>{item.realQuantityDays}</td>
+                                                <td>{item.createBy}</td>
+                                                <td>{item.closeBy}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                                <tfoot className='tfoot'>
+                                    <tr className='bg-secondary text-light'>
 
-                        </tbody>
-                        <tfoot className='tfoot'>
-                            <tr className='bg-secondary text-light'>
+                                    </tr>
+                                </tfoot>
 
-                            </tr>
-                        </tfoot>
+                            </table>
+                        </div>
+                        <div className='col-12 display-5 '>
+                            <p >Detail:</p>
+                        </div>
+                        <div className='col-12 pt-3 pb-3'>
+                        <div className="input-group input-group-lg">
+                                <span className="input-group-text"><AiOutlineSearch /></span>
+                                <input type="text" className="form-control" placeholder='Search by BIN, Description, Date...' id='searchOldCycleInv' onChange={this.searchOlderCycleInventoryDetail}/>
+                            </div>
+                        </div>
+                        <div className='col-12 pt-3 pb-3 text-center'>
+                                    <div className='row h4'>
+                                    <div className='col correctCount2'>Exact difference</div>
+                                    <div className='col negativeCount2'>Negative difference</div>
+                                    <div className='col positiveCount2'>Positive difference</div>
+                                    <div className='col notcounted2'>Item not counted</div>
+                                    </div>              
+                        </div>
+                        <div className='col-12'>{/*Here we need specific information*/}</div>
+                        <div className='col-12 tableFixHead tb-5'>
+                            <table className='table'>
+                                <thead>
+                                    <tr className='bg-dark text-light text-center'>
+                                        <th className='bg-dark'>Item Code</th>
+                                        <th className='bg-dark'>Description</th>
+                                        <th className='bg-dark'>Quantity</th>
+                                        <th className='bg-dark'>BIN</th>
+                                        <th className='bg-dark'>System Quantity</th>
+                                        <th className='bg-dark'>Difference</th>
+                                        <th className='bg-dark'>Counted By</th>
+                                        <th className='bg-dark'>Status</th>
+                                        <th className='bg-dark'>Comentary</th>
+                                     
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.state.General.detailOldCycleSelectedFilter.map((item, i) => (
+                                        <tr className={item.status===0?'notcounted':item.difference<0?'negativeCount':item.difference===0?'correctCount':'positiveCount'} key={i}>
 
-                    </table>
+                                            <td>{item.ItemCode}</td>
+                                            <td>{item.Description}</td>
+                                            <td className='text-center'>{item.status === 0 ? "-" :item.realQuantity}</td>
+                                            <td className='text-center'>{item.BIN}</td>
+                                            <td className='text-center'>{item.status === 0 ? "-" : item.systemQuantity}</td>
+                                            <td className='text-center'>{item.status === 0 ? "-" : item.difference}</td>
+                                            <td className='text-center'>{item.countBy === null ? "-" : item.countBy}</td>
+                                            <td className='text-center'>{this.textStatus(item.status)}</td>
+                                            <td>{item.comentary === 'null' ? '-' : item.comentary}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot className='tfoot'>
+
+                                    <tr className='bg-secondary text-light'>
+
+                                    </tr>
+                                </tfoot>
+
+                            </table>
+                        </div>
+                    </div>
                 </ModalOrders>
                 <ModalOrders title={'Detail of Product'} show={this.state.General.showModal3} close={(modal = "showModal3") => this.handleModalClose(modal)}>
                     <div className='row'>
                         <div className='col'>
                             <div className="input-group input-group-lg">
                                 <span className="input-group-text"><AiOutlineSearch /></span>
-                                <input type="text" className="form-control" placeholder='Search by BIN, Description, Date...' id='searchHistoryCycleInv1' />
+                                <input type="text" className="form-control" placeholder='Search by BIN, Description, Date...' id='searchHistoryCycleInv1' onChange={this.targetDetailSearch} />
                             </div>
                         </div>
                         <div className='col'>
@@ -605,16 +812,16 @@ export default class CycleInvetory extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {this.state.General.generalHistoryFilter.map((item, i) => (
+                                    {this.state.General.generalHistoryFilter.map((item, i) => (
                                         <tr className='text-center' key={i}>
 
-                                            <td hidden={this.state.General.checkHistory==="2"||this.state.General.checkHistory==="1"}>{item.OrderNumber}</td>
+                                            <td hidden={this.state.General.checkHistory === "2" || this.state.General.checkHistory === "1"}>{item.OrderNumber}</td>
                                             <td>{item.BIN}</td>
-                                            <td hidden={this.state.General.checkHistory==="2"||this.state.General.checkHistory==="0"||this.state.General.checkHistory==="3"}>{item.BIN2}</td>
-                                            <td hidden={this.state.General.checkHistory==="1"||this.state.General.checkHistory==="3"}>{item.OldQuantity}</td>
+                                            <td hidden={this.state.General.checkHistory === "2" || this.state.General.checkHistory === "0" || this.state.General.checkHistory === "3"}>{item.BIN2}</td>
+                                            <td hidden={this.state.General.checkHistory === "1" || this.state.General.checkHistory === "3"}>{item.OldQuantity}</td>
                                             <td>{item.NewQuantity}</td>
                                             <td>{item.description}</td>
-                                            <td>{item.fecha}</td>
+                                            <td>{item.Date2}</td>
                                             <td>{item.username}</td>
                                         </tr>
                                     ))}

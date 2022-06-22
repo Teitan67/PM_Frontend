@@ -16,7 +16,6 @@ export default  class ProgressBar extends Component {
     }
 
     componentDidMount(){
-        console.log('renderizado')
         this.setValue(95);
     }
 

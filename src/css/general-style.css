@@ -27,3 +27,32 @@
     margin-bottom: 1px;
 }
 
+.notcounted{
+    background-color: rgba(45, 48, 48, 0.578);
+}
+.correctCount{
+    background-color: rgba(12, 82, 2, 0.578);
+}
+.negativeCount{
+    background-color: rgba(119, 30, 30, 0.578);
+}
+.positiveCount{
+    background-color: rgba(2, 87, 93, 0.578);
+}
+
+.notcounted2{
+    background-color: rgba(45, 48, 48, 0.493);
+    color: rgb(255, 255, 255);
+}
+.correctCount2{
+    background-color: rgba(11, 82, 2, 0.581);
+    color: rgb(255, 255, 255);
+}
+.negativeCount2{
+    background-color: rgba(119, 30, 30, 0.626);
+    color: rgb(255, 255, 255);
+}
+.positiveCount2{
+    background-color: rgba(2, 87, 93, 0.692);
+    color: rgb(255, 255, 255);
+}

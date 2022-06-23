@@ -5,6 +5,7 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle } from "react-icons/ai";
 import { getValueCookie } from '../services/cookieService';
 import { OpenCycleInventory,OpenLobby } from '../functions/pagesFunction';
+import {closeSession} from '../functions/closeSession';
 
 
 export class Menu extends Component {
@@ -27,7 +28,7 @@ export class Menu extends Component {
                                 </button>
                             </div>
                             <div className='col'>
-                                <a className="navbar-brand" href='/home'>
+                                <a className="navbar-brand" href='/#' onClick={()=>OpenLobby()}>
                                     <img src='/assets/logo_hyperline.png' alt='Company' />
                                 </a>
                             </div>
@@ -39,8 +40,8 @@ export class Menu extends Component {
                                         <AiOutlineUser className='h3' /> Hi {getValueCookie('name')} {getValueCookie('surname')} <AiFillCaretDown />
                                     </a>
                                     <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
-                                        <li><a className="dropdown-item text-light h5" href="/#"><AiOutlineSetting /> User Data</a></li>
-                                        <li><a className="dropdown-item text-light h5" href="/#"><AiOutlineLogout /> Logout</a></li>
+                                        <li><a className="dropdown-item text-light h5" onClick={()=>OpenLobby()} href="/#"><AiOutlineSetting /> User Data</a></li>
+                                        <li><a className="dropdown-item text-light h5" onClick={()=>closeSession()} href="/#"><AiOutlineLogout /> Logout</a></li>
 
                                     </ul>
                                 </div>
@@ -70,9 +71,9 @@ export class Menu extends Component {
                                         </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
                                             <li onClick={()=>OpenCycleInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>
-                                            <li><a className="dropdown-item text-light" href="/#">Another action</a></li>
-                                            <li><a className="dropdown-item text-light" href="/#">Another action</a></li>
-                                            <li><a className="dropdown-item text-light" href="/#">Another action</a></li>
+                                            <li onClick={()=>OpenLobby()}><a className="dropdown-item text-light" href="/#">Another action</a></li>
+                                            <li onClick={()=>OpenLobby()}><a className="dropdown-item text-light" href="/#">Another action</a></li>
+                                            <li onClick={()=>OpenLobby()}><a className="dropdown-item text-light" href="/#">Another action</a></li>
                                         </ul>
                                     </li>
 
@@ -89,8 +90,8 @@ export class Menu extends Component {
                             <div className="offcanvas-body lateralMenu">
                                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                                     <li className="nav-item">
-                                        <a className="nav-link active" aria-current="page" href="/#"><AiOutlineSetting /> User Data</a>
-                                        <a className="nav-link active" aria-current="page" href="/#"><AiOutlineLogout /> Logout</a>
+                                        <a className="nav-link active" aria-current="page" href="/#" onClick={()=>OpenLobby()}><AiOutlineSetting /> User Data</a>
+                                        <a className="nav-link active" aria-current="page" href="/#" onClick={()=>closeSession()}><AiOutlineLogout /> Logout</a>
                                     </li>
                                 </ul>
 

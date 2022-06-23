@@ -3,7 +3,7 @@ import "../css/login-style.css"
 import Footer from '../components/Footer'
 import { AiOutlineUser,AiOutlineKey,AiOutlineLogin } from 'react-icons/ai';
 import { selectWithDataService } from '../services/auth/authservices';
-import { setNewCookie } from '../services/cookieService';
+import { getValueCookie, setNewCookie } from '../services/cookieService';
 import {automaticCloseAlert} from'../functions/alerts'
 import md5 from 'md5'
 import {closeSession} from "../functions/closeSession"
@@ -42,7 +42,12 @@ export default class Login extends Component {
   }
 
   componentDidMount(){
-    OpenLogin()
+    if(getValueCookie('userName')){
+      OpenCompanyDashBoard()
+    }else{
+      OpenLogin()
+    }
+    
   }
 
   async Login(){

@@ -1,4 +1,5 @@
 .login{
+    background-color:darkgrey;
     background-image: url('/assets/loginback.jpeg');
     background-size:cover;
     width: 100%;

@@ -5,18 +5,12 @@ import { AiOutlineUser, AiOutlineKey, AiOutlineLogin } from 'react-icons/ai';
 import { selectWithDataService } from '../services/auth/authservices';
 import { setNewCookie } from '../services/cookieService';
 import { automaticCloseAlert } from '../functions/alerts'
-
 import md5 from 'md5'
-
 import { closeSession } from "../functions/closeSession"
-
-
-
-
+import App from '../components/App';
+import { OpenCompanyDashBoard, OpenLogin } from '../functions/pagesFunction';
 
 export default class Login extends Component {
-
-
 
   state = {
     loginStorage: {
@@ -41,82 +35,91 @@ export default class Login extends Component {
     }
   }
 
+  componentDidMount() {
+    OpenLogin()
+  }
 
 
   async Login() {
     const temp = this.state.loginStorage
-
+    const btn = document.getElementById('btn_signin');
+    const btn_logo=btn.innerHTML;
     const datos = {
       userName: temp.userName,
       password: md5(temp.password),
     }
+    btn.innerHTML='Loading...';
+    btn.disabled=true;
     const datos2 = await selectWithDataService(datos, "/login")
     if (datos2 != null) {
       if (datos2.status.code === 1) {
         if (datos2.token !== 'invalid') {
           await automaticCloseAlert('correct', 'Welcome: ' + datos2.data.name + " " + datos2.data.surname)
-          await setNewCookie('sessionAuthToken', datos2.token, 50)
-          await setNewCookie('userName', datos2.data.userName, 50)
-          await setNewCookie('name', datos2.data.name, 50)
-          await setNewCookie('surname', datos2.data.surname, 50)
-          window.location.href = '/companyDashBoard'
+          setNewCookie('sessionAuthToken', datos2.token, 50)
+          setNewCookie('userName', datos2.data.userName, 50)
+          setNewCookie('name', datos2.data.name, 50)
+          setNewCookie('surname', datos2.data.surname, 50)
+          //window.location.href='/companyDashBoard'
+          await OpenCompanyDashBoard()
         } else {
           closeSession()
           automaticCloseAlert('incorrect', 'Your  Username or Password are incorrect. Please try again')
+
         }
       }
     }
+    btn.innerHTML=btn_logo;
+    btn.disabled=false;
   }
-
 
 
   render() {
 
     return (
-      <div className='login  '>
-        <div className='container-fluid pb-5 '>
-          <div className='container '>
-            <div className='row pt-4 pb-3 d-flex justify-content-center'>
+      <React.Fragment>
+        <div className='login'>
+          <div className='container-fluid pb-1'>
+            <div className='container'>
+              <div className='row pt-4 pb-3 d-flex justify-content-center'>
+                <div className='col-9 contLogin'>
+                  <div class="border border-5 border-primary"></div>
+                  <div className='row d-flex justify-content-center pt-5   '>
+                    <p className='display-2 '>Login</p>
 
-              <div className='col-9 contLogin'>
-                <div class="border border-5 border-primary"></div>
-                <div className='row d-flex justify-content-center pt-5   '>
-                  <p className='display-2 '>Login</p>
-
-                </div>
-
-                <div className='row d-flex justify-content-center pt-5 pb-3'>
-                  <div className='col-11'>
-                    <div className="input-group input-group-lg">
-                      <span className="input-group-text"><AiOutlineUser /></span>
-                      <input type="text" id='Login_userName' onChange={this.onChangeById} onKeyDown={this.onKeyDown} className="form-control" placeholder='Username' />
+                    <div className='row d-flex justify-content-center pt-5 pb-3'>
+                      <div className='col-11'>
+                        <div className="input-group input-group-lg">
+                          <span className="input-group-text"><AiOutlineUser /></span>
+                          <input type="text" id='Login_userName' onChange={this.onChangeById} onKeyDown={this.onKeyDown} className="form-control" placeholder='Username' />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className='row d-flex justify-content-center pt-4 pb-3'>
-                  <div className='col-11'>
-                    <div className="input-group input-group-lg">
-                      <span className="input-group-text"><AiOutlineKey /></span>
-                      <input type="password" id='Login_password' onKeyDown={this.onKeyDown} onChange={this.onChangeById} className="form-control" placeholder='Password' />
+                    <div className='row d-flex justify-content-center pt-4 pb-3'>
+                      <div className='col-11'>
+                        <div className="input-group input-group-lg">
+                          <span className="input-group-text"><AiOutlineKey /></span>
+                          <input type="password" id='Login_password' onKeyDown={this.onKeyDown} onChange={this.onChangeById} className="form-control" placeholder='Password' />
+                        </div>
+                      </div>
                     </div>
+
+                    <div className='row d-flex justify-content-center pt-4 pb-3 text-center'>
+                      <div className='col-7'>
+                        <button  id='btn_signin' type="button" className="btn btn-primary btn-lg" onClick={() => this.Login()}>sign in<AiOutlineLogin /></button>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
-
-                <div className='row d-flex justify-content-center pt-4 pb-3 text-center'>
-                  <div className='col-7'>
-                    <button type="button" className="btn btn-primary btn-lg" onClick={() => this.Login()}>sign in<AiOutlineLogin /></button>
-                  </div>
-                </div>
-
               </div>
             </div>
           </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-
-
-
+        <div className='App'>
+          <App />
+        </div>
+      </React.Fragment>
     )
   }
 }

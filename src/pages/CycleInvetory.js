@@ -215,7 +215,8 @@ export default class CycleInvetory extends Component {
 
     async getLastCycleInventory() {
         const route = '/inventory/lastCycle/get';
-        const datos = await getInformationNoData(route)
+        const datos = await getInformationNoData(route);
+        
         if (datos.status.code === 1) {
             if (datos.data.length > 0) {
                 const temporal = this.state.cycleInventoryStorage
@@ -234,6 +235,7 @@ export default class CycleInvetory extends Component {
                 await this.setState({ cycleInventoryStorage: temporal })
             }
         }
+        
     }
 
 

@@ -8,6 +8,7 @@ export  function CloseAllPages(){
     displayPage("none","GeneralPages")
     displayPage("none","Lobby")
     displayPage("none","CycleInventory")
+    displayPage("none","CycleInventoryGraph")
 }
 
 export  function OpenCompanyDashBoard(){
@@ -29,10 +30,16 @@ export  function OpenCycleInventory(){
     displayPage("","GeneralPages")
     displayPage("","CycleInventory")
 }
+export  function OpenCycleInventoryGraph(){
+    CloseAllPages()
+    displayPage("","App")
+    displayPage("","GeneralPages")
+    displayPage("","CycleInventoryGraph")
+}
 
 export  function OpenLogin(){
     CloseAllPages()
     displayPage("","login")
 }
 
-export default{OpenLogin,CloseAllPages,OpenCycleInventory,OpenLobby,OpenCompanyDashBoard}
+export default{OpenLogin,CloseAllPages,OpenCycleInventory,OpenLobby,OpenCompanyDashBoard,OpenCycleInventoryGraph}

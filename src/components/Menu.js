@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import "../css/menu-style.css"
 import "../css/general-style.css"
 import { AiOutlineSetting } from "react-icons/ai";
-import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle } from "react-icons/ai";
+import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle,AiOutlineAreaChart } from "react-icons/ai";
 import { getValueCookie } from '../services/cookieService';
-import { OpenCycleInventory,OpenLobby } from '../functions/pagesFunction';
+import { OpenCycleInventory,OpenCycleInventoryGraph,OpenLobby } from '../functions/pagesFunction';
 import {closeSession} from '../functions/closeSession';
 
 
@@ -75,6 +75,14 @@ export class Menu extends Component {
                                             <li onClick={()=>OpenLobby()}><a className="dropdown-item text-light" href="/#">Another action</a></li>
                                             <li onClick={()=>OpenLobby()}><a className="dropdown-item text-light" href="/#">Another action</a></li>
                                         </ul>
+                                    </li>
+                                    <li className="nav-item dropdown">
+                                        <a className="nav-link " href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Reports <AiOutlineAreaChart /> <AiFillCaretDown />
+                                        </a>
+                                        <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
+                                            <li onClick={()=>OpenCycleInventoryGraph()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>
+                                       </ul>
                                     </li>
 
                                 </ul>

@@ -5,6 +5,7 @@ import CompanyDashBoard from "../pages/CompanyDashBoard"
 import {Menu} from "../components/Menu"
 import Footer from "../components/Footer"
 import CycleInventory from "../pages/CycleInvetory"
+import CycleInvetoryGraph from "../pages/CycleInventoryGraph"
 export default class App extends Component {
 
     render() {
@@ -24,6 +25,9 @@ export default class App extends Component {
 
                         <div className="CycleInventory">
                             <CycleInventory />
+                        </div>
+                        <div className="CycleInventoryGraph">
+                            <CycleInvetoryGraph/>
                         </div>
 
                     </div>

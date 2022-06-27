@@ -8,7 +8,7 @@ import { getInformationNoData, create_Delete_Update_Information, getInformationW
 import Swal from "sweetalert2";
 import { getValueCookie } from '../services/cookieService';
 import { automaticCloseAlert } from '../functions/alerts'
-import { formatInputDate } from '../functions/dateFormat'
+import { formatInputDate, FormatQueryReturnDate, OrderArrayByDate } from '../functions/dateFormat'
 
 export default class CycleInvetory extends Component {
 
@@ -26,7 +26,7 @@ export default class CycleInvetory extends Component {
             habilitar: false,
             chekvalue: '0',
             checkHistory: '0',
-            selectedItem:'',
+            selectedItem: '',
             selectedCycleInventory: null,
             secureTransaction: false,
             generalHistory: [],
@@ -68,14 +68,7 @@ export default class CycleInvetory extends Component {
         this.getByStat(stat)
     }
 
-    valueRadioButton2 = async e => {
-        let stat = e.target.value
-        document.getElementById('searchHistoryCycleInv1').value = ""
-        const temporal = this.state.General
-        temporal.checkHistory = stat
-        this.setState({ General: temporal })
-        this.getByCheckHistory(stat)
-    }
+
 
     searchOlderCycleInventoryDetail = e => {
         let search = e.target.value
@@ -149,42 +142,7 @@ export default class CycleInvetory extends Component {
 
     }
 
-    async getByCheckHistory(stat) {
-        var busqueda = ""
-        switch (stat) {
-            case "0":
-                busqueda = "purchase"
-                break;
-            case "1":
-                busqueda = "transferencia"
-                break;
-            case "2":
-                busqueda = "ajuste"
-                break;
-            case "3":
-                busqueda = "outbound"
-                break;
-            default:
-                busqueda = ""
-                break;
-        }
 
-
-        if (stat !== "") {
-            var DetailFilter = this.state.General.generalHistory.filter((item) => {
-                if (item.Categoria.toString().toLowerCase().includes(busqueda.toLowerCase())) {
-                    return item
-                } else {
-                    return null
-                }
-            })
-            console.log(DetailFilter)
-            const temporal = this.state.General
-            temporal.generalHistoryFilter = DetailFilter
-            await this.setState({ General: temporal })
-        }
-
-    }
     getCategory(stat) {
         var busqueda = ""
         switch (stat) {
@@ -461,41 +419,6 @@ export default class CycleInvetory extends Component {
     }
 
 
-    targetDetailSearch = e => {
-        let search = e.target.value
-        this.filterDetail(search)
-
-    }
-
-
-
-    filterDetail(search) {
-        if (search !== "") {
-            var DetailFilter = this.state.General.generalHistory.filter((item) => {
-                if ((String(item.OrderNumber).toString().toLowerCase().includes(search.toLowerCase()) || String(item.BIN).toString().toLowerCase().includes(search.toLowerCase()) || String(item.BIN2).toString().toLowerCase().includes(search.toLowerCase()) || String(item.username).toString().toLowerCase().includes(search.toLowerCase())) && String(item.Categoria).toString().toLowerCase().includes(this.getCategory(this.state.General.checkHistory))) {
-                    return item
-                } else {
-                    return null
-                }
-            })
-            const temporal = this.state.General
-            temporal.generalHistoryFilter = DetailFilter
-            this.setState({ General: temporal })
-
-        } else {
-            var DetailFilter2 = this.state.General.generalHistory.filter((item) => {
-                if (String(item.Categoria).toString().toLowerCase().includes(this.getCategory(this.state.General.checkHistory))) {
-                    return item
-                } else {
-                    return null
-                }
-            })
-            const temporal = this.state.General
-            temporal.generalHistoryFilter = DetailFilter2
-            this.setState({ General: temporal })
-        }
-    }
-
     async openOlCycleInventory() {
         const temporal = this.state.General
         temporal.detailOldCycleSelected = []
@@ -506,57 +429,161 @@ export default class CycleInvetory extends Component {
         await this.handleModalOpen("showModal2")
     }
 
-    async getInfoProduct(){
-        var date1=formatInputDate(document.getElementById('searchHistoryCycleInvDate1').value)
-        var date2=formatInputDate(document.getElementById('searchHistoryCycleInvDate2').value)
-        const data={
-            ItemCode:this.state.General.selectedItem,
-            startDate:date1,
-            finishDate:date2
+    async getInfoProduct() {
+        var date1 = formatInputDate(document.getElementById('searchHistoryCycleInvDate1').value)
+        var date2 = formatInputDate(document.getElementById('searchHistoryCycleInvDate2').value)
+        const data = {
+            ItemCode: this.state.General.selectedItem,
+            Start: date1,
+            End: date2
         }
 
         //AQUI COLOCAR LAS LLAMADAS A LOS DATOS
         //const route = '/invertory/getGeneralHistory/post';
         const generalHistoryData = await getInformationWithData('/invertory/getGeneralHistory/post', data)
-        this.consolidateTable(generalHistoryData.data)
+        const pickList = await getInformationWithData('/pickList/history/getByItemCode', data)
+        const transfer = await getInformationWithData('/transfer/history/getByItemCode', data)
+        const purchase = await getInformationWithData('/purchase/history/getByItemCode', data)
+        const adjust = await getInformationWithData('/adjustment/history/getByItemCode', data)
+        await this.consolidateTable(pickList, purchase, transfer, adjust, generalHistoryData.data)
     }
 
-    consolidateTable(/*outbounds,purchase,transfers,adjusts,*/generalHistory){
-        const structure={
-            Type:'',
-            NoOrder:'',
-            BIN:'',
-            BIN2:'',
-            QuantityOrder:'',
-            QuantityShipped:'',
-            User:'',
-            Date:''
-        }
-        var InfoArray=[]
+    async consolidateTable(outbounds, purchase, transfers, adjusts, generalHistory) {
+
+
+        var InfoArray = []
 
         for (const row of generalHistory) {
-                if(row.Categoria!=="General"){
-                    structure.Type=row.Categoria
-                    structure.NoOrder=row.OrderNumber
-                    structure.BIN=row.BIN
-                    structure.BIN2=row.BIN2
-                    structure.QuantityOrder=row.OldQuantity
-                    structure.QuantityShipped=row.NewQuantity
-                    structure.User=row.username
-                    structure.Date=row.Date2
+            if (row.Categoria !== "General") {
+                const structure = {
+                    Type: '',
+                    NoOrder: '',
+                    BIN: '',
+                    BIN2: '',
+                    QuantityOrder: '',
+                    QuantityShipped: '',
+                    User: '',
+                    Date: ''
                 }
+                structure.Type = row.Categoria
+                structure.NoOrder = row.OrderNumber
+                structure.BIN = row.BIN
+                structure.BIN2 = row.BIN2
+                structure.QuantityOrder = row.OldQuantity
+                structure.QuantityShipped = row.NewQuantity
+                structure.User = row.username
+                structure.Date = row.Date2
                 InfoArray.push(structure)
+            }
+
         }
-        
-        InfoArray=InfoArray.sort((elemnt1,element2)=>new Date(elemnt1.Date).getTime()<new Date(element2.Date).getTime())
-        console.log(InfoArray)
+
+        for (const row of outbounds) {
+            const structure = {
+                Type: '',
+                NoOrder: '',
+                BIN: '',
+                BIN2: '',
+                QuantityOrder: '',
+                QuantityShipped: '',
+                User: '',
+                Date: ''
+            }
+            structure.Type = row.Type
+            structure.NoOrder = row.OrdenNo
+            structure.BIN = row.BIN
+            structure.BIN2 = null
+            structure.QuantityOrder = row.QuantityOrder
+            structure.QuantityShipped = row.QuantityShipped
+            structure.User = row.username
+            structure.Date = FormatQueryReturnDate(row.Date)
+            InfoArray.push(structure)
+
+        }
+
+        for (const row of transfers) {
+            const structure = {
+                Type: '',
+                NoOrder: '',
+                BIN: '',
+                BIN2: '',
+                QuantityOrder: '',
+                QuantityShipped: '',
+                User: '',
+                Date: ''
+            }
+            structure.Type = row.Type
+            structure.NoOrder = null
+            structure.BIN = row.BINSalida
+            structure.BIN2 = row.BINEntrada
+            structure.QuantityOrder = row.Quantity
+            structure.QuantityShipped = null
+            structure.User = row.username
+            structure.Date = FormatQueryReturnDate(row.Date)
+            InfoArray.push(structure)
+
+        }
+
+        for (const row of purchase) {
+            const structure = {
+                Type: '',
+                NoOrder: '',
+                BIN: '',
+                BIN2: '',
+                QuantityOrder: '',
+                QuantityShipped: '',
+                User: '',
+                Date: ''
+            }
+            structure.Type = row.Type
+            structure.NoOrder = row.OrdenNo
+            structure.BIN = row.BIN
+            structure.BIN2 = null
+            structure.QuantityOrder = row.Quantity
+            structure.QuantityShipped = null
+            structure.User = row.username
+            structure.Date = FormatQueryReturnDate(row.Date)
+            InfoArray.push(structure)
+
+        }
+
+        for (const row of adjusts) {
+            const structure = {
+                Type: '',
+                NoOrder: '',
+                BIN: '',
+                BIN2: '',
+                QuantityOrder: '',
+                QuantityShipped: '',
+                User: '',
+                Date: ''
+            }
+            structure.Type = row.Type
+            structure.NoOrder = null
+            structure.BIN = row.BIN
+            structure.BIN2 = null
+            structure.QuantityOrder = row.OldQuantity
+            structure.QuantityShipped = row.NewQuantity
+            structure.User = row.username
+            structure.Date = FormatQueryReturnDate(row.Date)
+            InfoArray.push(structure)
+
+        }
+
+
+
+        var n = await OrderArrayByDate(InfoArray)
+        const temporal = this.state.General
+        temporal.generalHistory = n
+        temporal.generalHistoryFilter = n
+        this.setState({ General: temporal })
     }
 
 
     async getGeneralHistory(itemCode) {
-        const temporal=this.state.General
-        temporal.selectedItem=itemCode
-        this.setState({General:temporal})
+        const temporal = this.state.General
+        temporal.selectedItem = itemCode
+        this.setState({ General: temporal })
         await this.handleModalOpen("showModal3")
     }
 
@@ -628,6 +655,23 @@ export default class CycleInvetory extends Component {
 
                     </div>
 
+                    <div className='row pb-3'>
+                        <div className='col-1'></div>
+                        <div className='col-5 text-center'>
+                            <select className="form-select form-select-lg mb-3" aria-label="select option">
+                                <option selected>Select Option</option>
+                                <option value="1">Warehouse</option>
+                                <option value="2">Comercial House</option>
+                                <option value="3">Products with the highest rotation</option>
+                            </select>
+                        </div>
+                        <div className='col-5 text-start'>
+
+                        </div>
+                        <div className='col-1'></div>
+
+                    </div>
+
                     <div className='row'>
                         <div className='col-1'></div>
                         <div className='col-10'>
@@ -640,7 +684,7 @@ export default class CycleInvetory extends Component {
                         <div className='col-12 tableFixHead tb-5'>
                             <table className='table'>
                                 <thead>
-                                    <tr className='bg-dark text-light text-center'>
+                                    <tr className='text-light text-center'>
                                         <th className='bg-dark'>Item Code</th>
                                         <th className='bg-dark'>Description</th>
                                         <th className='bg-dark'>Quantity</th>
@@ -813,7 +857,7 @@ export default class CycleInvetory extends Component {
                     <div className='row text-center pt-3'>
                         <div className='col-5'></div>
                         <div className='col-2'>
-                            <button className='btn btn-danger btn-lg' onClick={()=>this.getInfoProduct()}>Search</button>
+                            <button className='btn btn-danger btn-lg' onClick={() => this.getInfoProduct()}>Search</button>
                         </div>
                         <div className='col-5'></div>
                     </div>
@@ -826,7 +870,7 @@ export default class CycleInvetory extends Component {
                                         <th className='bg-dark'>No Order</th>
                                         <th className='bg-dark'>BIN</th>
                                         <th className='bg-dark'>New BIN</th>
-                                        <th className='bg-dark'>Quantity Order<br/>Old Quantity<br/> New Quantity</th>
+                                        <th className='bg-dark'>Quantity Order<br />Old Quantity<br /> New Quantity</th>
                                         <th className='bg-dark'>Quantity Shipped</th>
                                         <th className='bg-dark'>Username</th>
                                         <th className='bg-dark'>Date</th>
@@ -836,10 +880,18 @@ export default class CycleInvetory extends Component {
                                 <tbody>
                                     {this.state.General.generalHistoryFilter.map((item, i) => (
                                         <tr className='text-center' key={i}>
-
-                        
+                                            <td className='text-start'>{item.Type}</td>
+                                            <td className='text-start'>{item.NoOrder}</td>
+                                            <td>{item.BIN}</td>
+                                            <td>{item.BIN2}</td>
+                                            <td>{item.QuantityOrder}</td>
+                                            <td>{item.QuantityShipped}</td>
+                                            <td>{item.User}</td>
+                                            <td>{item.Date}</td>
                                         </tr>
-                                    ))}
+                                    ))
+
+                                    }
 
                                 </tbody>
                                 <tfoot className='tfoot'>

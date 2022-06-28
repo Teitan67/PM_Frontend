@@ -160,7 +160,7 @@ export default class CycleInvetoryGraph extends Component {
                     <div className='col-1'></div>
                     <div className='col-10'>
                         <select className="form-select form-select-lg mb-3" aria-label="select option">
-                            <option selected>Select an old Cycle Inventory to see they graphs</option>
+                            <option>Select an old Cycle Inventory to see they graphs</option>
                             <option value="1">Cycle Invetory No. 1 06/20/2022-06/27/2022</option>
                             <option value="1">Cycle Invetory No. 2 06/29/2022-07/27/2022</option>
                             <option value="1">Cycle Invetory No. 3 08/15/2022-08/30/2022</option>

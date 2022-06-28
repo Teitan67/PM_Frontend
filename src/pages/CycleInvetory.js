@@ -23,6 +23,7 @@ export default class CycleInvetory extends Component {
             showModal1: false,
             showModal2: false,
             showModal3: false,
+            showModal4:false,
             habilitar: false,
             chekvalue: '0',
             checkHistory: '0',
@@ -587,6 +588,24 @@ export default class CycleInvetory extends Component {
         await this.handleModalOpen("showModal3")
     }
 
+    async updateSystemQuantity(){
+        Swal.fire({
+            title: 'For this Action you need a Admin Password. Please enter it to continue:',
+            input: 'password',
+            inputAttributes: {
+              autocapitalize: 'off'
+            },
+            backdrop:true,
+            showCancelButton: true,
+            confirmButtonText: 'Continue',
+            showLoaderOnConfirm: true,
+            preConfirm: async(login) => {
+            
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+          })
+    }
+
 
     render() {
         return (
@@ -659,7 +678,7 @@ export default class CycleInvetory extends Component {
                         <div className='col-1'></div>
                         <div className='col-5 text-center'>
                             <select className="form-select form-select-lg mb-3" aria-label="select option">
-                                <option selected>Select Option</option>
+                                <option>Select Option</option>
                                 <option value="1">Warehouse</option>
                                 <option value="2">Comercial House</option>
                                 <option value="3">Products with the highest rotation</option>
@@ -696,6 +715,7 @@ export default class CycleInvetory extends Component {
                                         <th className='bg-dark'>Comentary</th>
                                         <th className='bg-dark'></th>
                                         <th className='bg-dark'></th>
+                                        <th className='bg-dark'></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -716,6 +736,7 @@ export default class CycleInvetory extends Component {
                                                 <button type="button" className="btn btn-danger" disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
                                             </td>
                                             <td className='text-center'><button onClick={() => this.getGeneralHistory(item.ItemCode)} type="button" className="btn btn-info">Detail</button></td>
+                                            <td className='text-center'><button onClick={() => this.updateSystemQuantity()} type="button" className="btn btn-info">Update Inventory</button></td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -904,6 +925,7 @@ export default class CycleInvetory extends Component {
                         </div>
                     </div>
                 </ModalOrders>
+              
             </div>
         )
     }

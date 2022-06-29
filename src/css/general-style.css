@@ -60,3 +60,7 @@
 .lobbyContainer{
     min-height: 52vh;
 }
+
+.textAreaGeneral textarea{
+    resize: none;
+}

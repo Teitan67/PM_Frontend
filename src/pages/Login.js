@@ -43,13 +43,13 @@ export default class Login extends Component {
   async Login() {
     const temp = this.state.loginStorage
     const btn = document.getElementById('btn_signin');
-    const btn_logo=btn.innerHTML;
+    const btn_logo = btn.innerHTML;
     const datos = {
       userName: temp.userName,
       password: md5(temp.password),
     }
-    btn.innerHTML='Loading...';
-    btn.disabled=true;
+    btn.innerHTML = 'Loading...';
+    btn.disabled = true;
     const datos2 = await selectWithDataService(datos, "/login")
     if (datos2 != null) {
       if (datos2.status.code === 1) {
@@ -68,8 +68,8 @@ export default class Login extends Component {
         }
       }
     }
-    btn.innerHTML=btn_logo;
-    btn.disabled=false;
+    btn.innerHTML = btn_logo;
+    btn.disabled = false;
   }
 
 
@@ -77,12 +77,12 @@ export default class Login extends Component {
 
     return (
       <React.Fragment>
-        <div className='login'>
+        <div id='login' className='page'>
           <div className='container-fluid pb-1'>
             <div className='container'>
               <div className='row pt-4 pb-3 d-flex justify-content-center'>
                 <div className='col-9 contLogin'>
-                  <div class="border border-5 border-primary"></div>
+                  <div className="border border-5 border-primary"></div>
                   <div className='row d-flex justify-content-center pt-5   '>
                     <p className='display-2 '>Login</p>
 
@@ -105,7 +105,7 @@ export default class Login extends Component {
 
                     <div className='row d-flex justify-content-center pt-4 pb-3 text-center'>
                       <div className='col-7'>
-                        <button  id='btn_signin' type="button" className="btn btn-primary btn-lg" onClick={() => this.Login()}>sign in<AiOutlineLogin /></button>
+                        <button id='btn_signin' type="button" className="btn btn-primary btn-lg" onClick={() => this.Login()}>sign in<AiOutlineLogin /></button>
                       </div>
                     </div>
 
@@ -116,7 +116,7 @@ export default class Login extends Component {
           </div>
           <Footer />
         </div>
-        <div className='App'>
+        <div id='App' className='page'>
           <App />
         </div>
       </React.Fragment>

@@ -66,7 +66,7 @@ export class Menu extends Component {
                                     </li>
                                     <li className="nav-item dropdown">
                                         <a className="nav-link " href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Inventory Options <AiOutlineReconciliation /> <AiFillCaretDown />
+                                            Inventory management <AiOutlineReconciliation /> <AiFillCaretDown />
                                         </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
                                             <li onClick={()=>OpenCycleInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>

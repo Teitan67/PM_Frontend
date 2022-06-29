@@ -1,4 +1,4 @@
-.login{
+#login{
     background-color:darkgrey;
     background-image: url('/assets/loginback.jpeg');
     background-size:cover;
@@ -11,6 +11,8 @@
 .contLogin{
     background:rgb(255, 255, 255); 
     min-height: 50vh;
+    
+    border: 0.5px solid rgb(182, 182, 182);
 }
 
 .userImg{

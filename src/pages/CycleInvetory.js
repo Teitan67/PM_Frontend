@@ -235,7 +235,7 @@ export default class CycleInvetory extends Component {
                 await this.setState({ cycleInventoryStorage: temporal })
             }
         }
-        
+
     }
 
 
@@ -533,7 +533,7 @@ export default class CycleInvetory extends Component {
 
     render() {
         return (
-            <div className='inventoryCycle'>
+            <div className='inventoryCycle' >
                 <p className='text-center display-1 pb-2' >Cycle Inventory</p>
                 <div>
 

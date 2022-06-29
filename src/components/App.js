@@ -6,26 +6,26 @@ import {Menu} from "../components/Menu"
 import Footer from "../components/Footer"
 import CycleInventory from "../pages/CycleInvetory"
 export default class App extends Component {
-
+ 
     render() {
         return (
             <div>
-                <div className="CompanyDashBoard">
+                <div className="page" id="CompanyDashBoard">
                     <CompanyDashBoard />
                 </div>
 
-                <div className="GeneralPages">
+                <div id="GeneralPages" className="page">
                     <Menu/>
                     <div className="container-fluid generalContainer" id="actualPage">
 
-                        <div className="Lobby">
-                            <Lobby />
-                        </div>
+                        
 
-                        <div className="CycleInventory">
+                        <div id="CycleInventory" className="page">
                             <CycleInventory />
                         </div>
-
+                        <div id="Lobby" className="page ">
+                            <Lobby />
+                        </div>
                     </div>
                     <Footer />
                 </div>

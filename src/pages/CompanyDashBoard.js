@@ -8,7 +8,7 @@ export default class CompanyDashBoard extends Component {
         
     render() {
         return (
-            <div className="companydash">
+            <div id="companydash" >
                 <MenuCompany />
                 <div className="container-fluid generalContainer" id="actualPage">
                     <div className="title">

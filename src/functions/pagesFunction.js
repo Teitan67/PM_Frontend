@@ -1,38 +1,33 @@
-import { displayPage } from "./changeVisibility";
+import { closeAllPages,openPage } from "./changeVisibility";
 
-export  function CloseAllPages(){
-    //In this part you need add all new pages!!!
-    displayPage("none","CompanyDashBoard")
-    displayPage("none","App")
-    displayPage("none","login")
-    displayPage("none","GeneralPages")
-    displayPage("none","Lobby")
-    displayPage("none","CycleInventory")
+
+export function CloseAllPages() {
+    closeAllPages();
 }
 
-export  function OpenCompanyDashBoard(){
-    CloseAllPages()
-    displayPage("","App")
-    displayPage("","CompanyDashBoard")
+export function OpenCompanyDashBoard() {
+    CloseAllPages();
+    openPage( "App");
+    openPage( "CompanyDashBoard");
 }
 
-export  function OpenLobby(){
-   CloseAllPages()
-    displayPage("","App")
-    displayPage("","GeneralPages")
-    displayPage("","Lobby")
+export function OpenLobby() {
+    CloseAllPages();
+    openPage( "App")
+    openPage( "GeneralPages")
+    openPage( "Lobby")
 }
 
-export  function OpenCycleInventory(){
-    CloseAllPages()
-    displayPage("","App")
-    displayPage("","GeneralPages")
-    displayPage("","CycleInventory")
+export function OpenCycleInventory() {
+    CloseAllPages();
+    openPage( "App")
+    openPage( "GeneralPages")
+    openPage( "CycleInventory")
 }
 
-export  function OpenLogin(){
-    CloseAllPages()
-    displayPage("","login")
+export function OpenLogin() {
+    CloseAllPages();
+    openPage( "login")
 }
 
-export default{OpenLogin,CloseAllPages,OpenCycleInventory,OpenLobby,OpenCompanyDashBoard}
+export default { OpenLogin, CloseAllPages, OpenCycleInventory, OpenLobby, OpenCompanyDashBoard }

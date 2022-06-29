@@ -26,6 +26,9 @@
     margin-top: 40px;
     margin-bottom: 1px;
 }
+#Lobby{
+    height: 500px;
+}
 
 .notcounted{
     background-color: rgba(45, 48, 48, 0.578);

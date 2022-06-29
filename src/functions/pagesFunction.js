@@ -10,6 +10,7 @@ export  function CloseAllPages(){
     displayPage("none","CycleInventory")
     displayPage("none","CycleInventoryGraph")
     displayPage("none","KPIGraph")
+    displayPage("none","Inventory")
 }
 
 export  function OpenCompanyDashBoard(){
@@ -44,6 +45,15 @@ export  function OpenKPIGraph(){
     displayPage("","GeneralPages")
     displayPage("","KPIGraph")
 }
+
+
+export  function OpenInventory(){
+    CloseAllPages()
+    displayPage("","App")
+    displayPage("","GeneralPages")
+    displayPage("","Inventory")
+}
+
 
 export  function OpenLogin(){
     CloseAllPages()

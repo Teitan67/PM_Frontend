@@ -7,6 +7,7 @@ import Footer from "../components/Footer"
 import CycleInventory from "../pages/CycleInvetory"
 import CycleInvetoryGraph from "../pages/CycleInventoryGraph"
 import KPI from "../pages/KPI"
+import Inventory from "../pages/Inventory"
 export default class App extends Component {
 
     render() {
@@ -33,6 +34,10 @@ export default class App extends Component {
 
                         <div className="KPIGraph">
                             <KPI/>
+                        </div>
+
+                        <div className="Inventory">
+                            <Inventory/>
                         </div>
 
                     </div>

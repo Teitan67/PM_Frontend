@@ -29,11 +29,12 @@ export default class KPI extends Component {
     async getKPIInfo(){
         const temporal=this.state.General
         const data=await getInformationNoData('/reports/getKPI')
+        if(data.status.code===1){
         temporal.KPIInfo=data
         temporal.KPIInfoFilter=data
         await this.setState({General:temporal})
         await this.generateGraphDays(data)
-        
+        }
     }
 
     async generateGraphDays(data){

@@ -3,8 +3,9 @@ import "../css/menu-style.css"
 import "../css/general-style.css"
 import { AiOutlineSetting } from "react-icons/ai";
 import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle,AiOutlineAreaChart,AiTwotoneSnippets } from "react-icons/ai";
+import { BiCartAlt } from "react-icons/bi";
 import { getValueCookie } from '../services/cookieService';
-import { OpenCycleInventory,OpenCycleInventoryGraph,OpenKPIGraph,OpenLobby } from '../functions/pagesFunction';
+import { OpenCycleInventory,OpenCycleInventoryGraph,OpenInventory,OpenKPIGraph,OpenLobby } from '../functions/pagesFunction';
 import {closeSession} from '../functions/closeSession';
 
 
@@ -70,8 +71,8 @@ export class Menu extends Component {
                                             Inventory Options <AiOutlineReconciliation /> <AiFillCaretDown />
                                         </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
+                                            <li onClick={()=>OpenInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Products Information <BiCartAlt/></a></li>
                                             <li onClick={()=>OpenCycleInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>
-                          
                                         </ul>
                                     </li>
                                     <li className="nav-item dropdown">

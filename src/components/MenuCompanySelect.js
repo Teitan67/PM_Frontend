@@ -5,7 +5,7 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { AiFillCaretDown, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle } from "react-icons/ai";
 import { getValueCookie } from '../services/cookieService';
 import { closeSession } from '../functions/closeSession';
-
+import {OpenCompanyDashBoard} from "../functions/pagesFunction"
 
 export class MenuCompany extends Component {
 
@@ -22,7 +22,7 @@ export class MenuCompany extends Component {
                                
                             </div>
                             <div className='col'>
-                                <a className="navbar-brand" href='/CompanyDashBoard'>
+                                <a className="navbar-brand" href='/#' onClick={()=>OpenCompanyDashBoard()}>
                                     <img src='/assets/logoM.png' alt='Company' />
                                 </a>
                             </div>
@@ -30,12 +30,12 @@ export class MenuCompany extends Component {
                         <div className='row text-light'>
                             <div className='col'>
                                 <div className="nav-item dropdown dissapearObject">
-                                    <a className="nav-link text-light" href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a className="nav-link text-light" href="/" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <AiOutlineUser className='h3' />Hi {getValueCookie('name')} {getValueCookie('surname')}<AiFillCaretDown />
                                     </a>
                                     <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
-                                        <li><a className="dropdown-item text-light h5" href="/#"><AiOutlineSetting /> User Data</a></li>
-                                        <li><a className="dropdown-item text-light h5" onClick={()=>closeSession()} href="/login"><AiOutlineLogout /> Logout</a></li>
+                                        <li><a className="dropdown-item text-light h5" onClick={()=>OpenCompanyDashBoard()} href="/#"><AiOutlineSetting /> User Data</a></li>
+                                        <li><a className="dropdown-item text-light h5" onClick={()=>closeSession()} href="/#"><AiOutlineLogout /> Logout</a></li>
 
                                     </ul>
                                 </div>
@@ -59,8 +59,8 @@ export class MenuCompany extends Component {
                             <div className="offcanvas-body lateralMenu">
                                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                                     <li className="nav-item">
-                                        <a className="nav-link active" aria-current="page" href="/#"><AiOutlineSetting /> User Data</a>
-                                        <a className="nav-link active" aria-current="page" onClick={()=>closeSession()} href="/Login"><AiOutlineLogout /> Logout</a>
+                                        <a className="nav-link active" aria-current="page" onClick={()=>OpenCompanyDashBoard()} href="/#"><AiOutlineSetting /> User Data</a>
+                                        <a className="nav-link active" aria-current="page" onClick={()=>closeSession()} href="/#"><AiOutlineLogout /> Logout</a>
                                     </li>
                                 </ul>
 

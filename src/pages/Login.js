@@ -3,12 +3,12 @@ import "../css/login-style.css"
 import Footer from '../components/Footer'
 import { AiOutlineUser, AiOutlineKey, AiOutlineLogin } from 'react-icons/ai';
 import { selectWithDataService } from '../services/auth/authservices';
-import { setNewCookie } from '../services/cookieService';
-import { automaticCloseAlert } from '../functions/alerts'
+import { getValueCookie, setNewCookie } from '../services/cookieService';
+import {automaticCloseAlert} from'../functions/alerts'
 import md5 from 'md5'
 import { closeSession } from "../functions/closeSession"
 import App from '../components/App';
-import { OpenCompanyDashBoard, OpenLogin } from '../functions/pagesFunction';
+import { OpenCompanyDashBoard, OpenKPIGraph, OpenLogin } from '../functions/pagesFunction';
 
 export default class Login extends Component {
 
@@ -35,8 +35,13 @@ export default class Login extends Component {
     }
   }
 
-  componentDidMount() {
-    OpenLogin()
+  componentDidMount(){
+    if(getValueCookie('userName')){
+      OpenKPIGraph()
+    }else{
+      OpenLogin()
+    }
+    
   }
 
 

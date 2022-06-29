@@ -23,7 +23,7 @@ export default class CycleInvetory extends Component {
             showModal1: false,
             showModal2: false,
             showModal3: false,
-            showModal4:false,
+            showModal4: false,
             habilitar: false,
             chekvalue: '0',
             checkHistory: '0',
@@ -590,22 +590,22 @@ export default class CycleInvetory extends Component {
         await this.handleModalOpen("showModal3")
     }
 
-    async updateSystemQuantity(){
+    async updateSystemQuantity() {
+        //this.setState({secureTransaction:true})
         Swal.fire({
             title: 'For this Action you need a Admin Password. Please enter it to continue:',
-            input: 'password',
-            inputAttributes: {
-              autocapitalize: 'off'
-            },
-            backdrop:true,
+            html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
+  <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+            backdrop: true,
             showCancelButton: true,
             confirmButtonText: 'Continue',
             showLoaderOnConfirm: true,
-            preConfirm: async(login) => {
-            
+            preConfirm: async (login) => {
+
             },
             allowOutsideClick: () => !Swal.isLoading()
-          })
+        })
+        //this.setState({secureTransaction:false})
     }
 
 
@@ -642,7 +642,7 @@ export default class CycleInvetory extends Component {
                         <div className='col-5 text-center'>
                             <div className="input-group input-group-lg">
                                 <span className="input-group-text"><AiOutlineSearch /></span>
-                                <input type="text" className="form-control" placeholder='Search by ItemCode, BIN, Description, Category, UPC ...' id='searchCycleInv1' onChange={this.valueSearchBar} />
+                                <input type="text" autoComplete='off' className="form-control" placeholder='Search by ItemCode, BIN, Description, Category, UPC ...' id='searchCycleInv1' onChange={this.valueSearchBar} />
                             </div>
                         </div>
                         <div className='col-5 text-start'>
@@ -738,7 +738,7 @@ export default class CycleInvetory extends Component {
                                                 <button type="button" className="btn btn-danger" disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
                                             </td>
                                             <td className='text-center'><button onClick={() => this.getGeneralHistory(item.ItemCode)} type="button" className="btn btn-info">Detail</button></td>
-                                            <td className='text-center'><button onClick={() => this.updateSystemQuantity()} type="button" className="btn btn-info">Update Inventory</button></td>
+                                            <td className='text-center'><button disabled={this.state.General.secureTransaction} onClick={() => this.updateSystemQuantity()} type="button" className="btn btn-info" hidden={item.status === 0}>Update Inventory</button></td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -927,7 +927,7 @@ export default class CycleInvetory extends Component {
                         </div>
                     </div>
                 </ModalOrders>
-              
+
             </div>
         )
     }

@@ -1,5 +1,5 @@
 
-import Lobby from "../pages/Lobby"
+
 import React, { Component } from "react"
 import CompanyDashBoard from "../pages/CompanyDashBoard"
 import {Menu} from "../components/Menu"
@@ -25,11 +25,11 @@ export default class App extends Component {
                         <div id="CycleInventory" className="page">
                             <CycleInventory />
                         </div>
-                        <div className="CycleInventoryGraph">
+                        <div id="CycleInventoryGraph" className="page">
                             <CycleInvetoryGraph/>
                         </div>
 
-                        <div className="KPIGraph">
+                        <div id="KPIGraph" className="page">
                             <KPI/>
                         </div>
 

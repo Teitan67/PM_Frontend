@@ -26,16 +26,16 @@ export function OpenCycleInventory() {
 }
 export  function OpenCycleInventoryGraph(){
     CloseAllPages()
-    displayPage("","App")
-    displayPage("","GeneralPages")
-    displayPage("","CycleInventoryGraph")
+    openPage("App")
+    openPage("GeneralPages")
+    openPage("CycleInventoryGraph")
 }
 
 export  function OpenKPIGraph(){
     CloseAllPages()
-    displayPage("","App")
-    displayPage("","GeneralPages")
-    displayPage("","KPIGraph")
+    openPage("App")
+    openPage("GeneralPages")
+    openPage("KPIGraph")
 }
 
 export function OpenLogin() {

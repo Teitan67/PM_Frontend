@@ -32,6 +32,7 @@ export default class CycleInvetory extends Component {
             secureTransaction: false,
             generalHistory: [],
             outBounds:[],
+            purchaseOrders:[],
             generalHistoryFilter: [],
             oldCycleInventory: [],
             detailOldCycleSelected: [],
@@ -606,10 +607,16 @@ export default class CycleInvetory extends Component {
             Date:FormatQueryReturnDate(this.state.cycleInventoryStorage.Header.startDate)
         }
         
-        const val= await getInformationWithData('/pickList/history/getOutBound',data) 
+        const val= await getInformationWithData('/pickList/history/getOutBound',data)
+        const val2=await getInformationWithData('/purchase/history/getFutureByItemCode',data) 
         if(val.status.code===1){
             temporal.outBounds=val.data
-            console.log(val.data)
+            
+        }
+
+        if(val2.status.code===1){
+            temporal.purchaseOrders=val2.data
+            
         }
     
         this.setState({ General: temporal })
@@ -929,6 +936,7 @@ export default class CycleInvetory extends Component {
                             <table className='table'>
                                 <thead>
                                     <tr className='bg-dark text-light text-center'>
+                                        <th className='bg-dark'>Type</th>
                                         <th className='bg-dark'>No Order</th>
                                         <th className='bg-dark'>BIN</th>
                                         <th className='bg-dark'>Quantity Order</th>
@@ -938,10 +946,22 @@ export default class CycleInvetory extends Component {
                                 <tbody>
                                     {this.state.General.outBounds.map((item, i) => (
                                         <tr className='text-center' key={i}>
+                                            <td className='text-center'>{item.Type}</td>
                                             <td className='text-start'>{item.OrderNo}</td>
                                             <td>{item.BIN}</td>
                                             <td>{item.QuantityOrdered}</td>
                                             <td>{item.QuantityShipped}</td>
+                                        </tr>
+                                    ))
+
+                                    }
+                                     {this.state.General.purchaseOrders.map((item, i) => (
+                                        <tr className='text-center' key={i}>
+                                            <td className='text-center'>{item.Type}</td>
+                                            <td className='text-start'>{item.OrdenNo}</td>
+                                            <td>{item.BIN}</td>
+                                            <td>{item.Quantity}</td>
+                                            <td></td>
                                         </tr>
                                     ))
 

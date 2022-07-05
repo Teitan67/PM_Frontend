@@ -127,9 +127,9 @@ export default class Login extends Component {
               </div>
             </div>
           </div>
-         
+          <Footer />
         </div>
-        <Footer />
+        
         <div id='App' className='page'>
           <App />
         </div>

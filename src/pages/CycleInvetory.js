@@ -176,8 +176,8 @@ export default class CycleInvetory extends Component {
 
     async getLastCycleInventory() {
         const route = '/inventory/lastCycle/get';
-        const datos = await getInformationNoData(route);
-        
+        const datos = await getInformationNoData(route)
+        console.log(datos)
         if (datos.status.code === 1) {
             if (datos.data.length > 0) {
                 const temporal = this.state.cycleInventoryStorage
@@ -448,7 +448,11 @@ export default class CycleInvetory extends Component {
         const transfer = await getInformationWithData('/transfer/history/getByItemCode', data)
         const purchase = await getInformationWithData('/purchase/history/getByItemCode', data)
         const adjust = await getInformationWithData('/adjustment/history/getByItemCode', data)
-        await this.consolidateTable(pickList, purchase, transfer, adjust, generalHistoryData.data)
+        
+        if (generalHistoryData.status.code === 1 && pickList.status.code === 1 && transfer.status.code === 1 && purchase.status.code === 1 && adjust.status.code === 1) {
+            
+            await this.consolidateTable(pickList.data, purchase.data, transfer.data, adjust.data, generalHistoryData.data)
+        }
     }
 
     async consolidateTable(outbounds, purchase, transfers, adjusts, generalHistory) {
@@ -586,6 +590,8 @@ export default class CycleInvetory extends Component {
     async getGeneralHistory(itemCode) {
         const temporal = this.state.General
         temporal.selectedItem = itemCode
+        temporal.generalHistory = []
+        temporal.generalHistoryFilter = []
         this.setState({ General: temporal })
         await this.handleModalOpen("showModal3")
     }
@@ -593,7 +599,7 @@ export default class CycleInvetory extends Component {
     async updateSystemQuantity() {
         //this.setState({secureTransaction:true})
         Swal.fire({
-            title: 'For this Action you need a Admin Password. Please enter it to continue:',
+            title: 'For this Action you need a User and  Password Admin. Please enter it to continue:',
             html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
   <input type="password" id="password" class="swal2-input" placeholder="Password">`,
             backdrop: true,

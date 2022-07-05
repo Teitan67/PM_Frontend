@@ -43,4 +43,13 @@ export function OpenLogin() {
     openPage( "login")
 }
 
+export  function OpenInventory(){
+    CloseAllPages()
+    openPage("App")
+    openPage("GeneralPages")
+    openPage("Inventory")//arreglar
+}
+
+
+
 export default{OpenLogin,CloseAllPages,OpenCycleInventory,OpenLobby,OpenCompanyDashBoard,OpenCycleInventoryGraph}

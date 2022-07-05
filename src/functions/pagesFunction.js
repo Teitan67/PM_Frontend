@@ -1,4 +1,5 @@
 import { closeAllPages,openPage } from "./changeVisibility";
+import { removeCookie } from "../services/cookieService";
 
 
 export function CloseAllPages() {
@@ -50,6 +51,10 @@ export  function OpenInventory(){
     openPage("Inventory")//arreglar
 }
 
+export function CloseCompanySession(){
+    removeCookie('Company')
+    OpenCompanyDashBoard()
 
+}
 
-export default{OpenLogin,CloseAllPages,OpenCycleInventory,OpenLobby,OpenCompanyDashBoard,OpenCycleInventoryGraph}
+export default{OpenLogin,CloseAllPages,OpenCycleInventory,OpenLobby,OpenCompanyDashBoard,OpenCycleInventoryGraph,CloseCompanySession}

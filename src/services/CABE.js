@@ -31,6 +31,7 @@ export const getInformationWithData=async (route,data)=>{
         data:[],
         status:status.Fail
     }
+    
     await axios.post(URL,{data:data}).then(
         response=>{
             responseBack=response.data
@@ -49,6 +50,7 @@ export const create_Delete_Update_Information=async (route,data)=>{
         data:[],
         status:status.Fail
     }
+    
     await axios.post(URL,{data:data}).then(
         response=>{
             responseBack=response.data
@@ -56,6 +58,7 @@ export const create_Delete_Update_Information=async (route,data)=>{
     ).catch(error=>{
         confirmCloseAlert('incorrect','Error in the Server Response: '+error)
     })
+
 
     return responseBack
 }

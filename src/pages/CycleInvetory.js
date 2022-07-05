@@ -4,7 +4,7 @@ import { AiOutlineSearch, AiFillCalendar } from "react-icons/ai"
 import '../css/table-responsive.css'
 import '../css/general-style.css'
 import ModalOrders from '../components/ModalComponent';
-import { getInformationNoData, create_Delete_Update_Information, getInformationWithData } from '../services/CABE';
+import {create_Delete_Update_Information, getInformationWithData } from '../services/CABE';
 import Swal from "sweetalert2";
 import { getValueCookie } from '../services/cookieService';
 import { automaticCloseAlert } from '../functions/alerts'
@@ -31,6 +31,7 @@ export default class CycleInvetory extends Component {
             selectedCycleInventory: null,
             secureTransaction: false,
             generalHistory: [],
+            outBounds:[],
             generalHistoryFilter: [],
             oldCycleInventory: [],
             detailOldCycleSelected: [],
@@ -170,14 +171,17 @@ export default class CycleInvetory extends Component {
 
     async componentDidMount() {
         this.ProgrressBarRef.current.setValue(0);
-        await this.getLastCycleInventory()
+        //await this.getLastCycleInventory()
         this.getByStat('0')
     }
 
     async getLastCycleInventory() {
-        const route = '/inventory/lastCycle/get';
-        const datos = await getInformationNoData(route)
-        console.log(datos)
+        const data={
+            company:getValueCookie('Company')
+        }
+        const route = '/inventory/lastCycle/post';
+        const datos = await getInformationWithData(route,data)
+
         if (datos.status.code === 1) {
             if (datos.data.length > 0) {
                 const temporal = this.state.cycleInventoryStorage
@@ -201,8 +205,11 @@ export default class CycleInvetory extends Component {
 
 
     async getOldCycleInventory() {
-        const route = '/invertory/oldCycleInventorys/get';
-        const datos = await getInformationNoData(route)
+        const data={
+            company:getValueCookie('Company')
+        }
+        const route = '/invertory/oldCycleInventorys/post';
+        const datos = await getInformationWithData(route,data)
         if (datos.status.code === 1) {
             if (datos.data.length > 0) {
                 const temporal = this.state.General
@@ -272,6 +279,7 @@ export default class CycleInvetory extends Component {
         this.disableTransaction()
         const data = {
             days: 0,
+            company:getValueCookie('Company'),
             userName: getValueCookie('userName')
         }
         await Swal.fire({
@@ -448,9 +456,9 @@ export default class CycleInvetory extends Component {
         const transfer = await getInformationWithData('/transfer/history/getByItemCode', data)
         const purchase = await getInformationWithData('/purchase/history/getByItemCode', data)
         const adjust = await getInformationWithData('/adjustment/history/getByItemCode', data)
-        
+
         if (generalHistoryData.status.code === 1 && pickList.status.code === 1 && transfer.status.code === 1 && purchase.status.code === 1 && adjust.status.code === 1) {
-            
+
             await this.consolidateTable(pickList.data, purchase.data, transfer.data, adjust.data, generalHistoryData.data)
         }
     }
@@ -592,32 +600,54 @@ export default class CycleInvetory extends Component {
         temporal.selectedItem = itemCode
         temporal.generalHistory = []
         temporal.generalHistoryFilter = []
+        const data={
+            ItemCode:itemCode,
+            Date:FormatQueryReturnDate(this.state.cycleInventoryStorage.Header.startDate)
+        }
+        
+        const val= await getInformationWithData('/pickList/history/getOutBound',data) 
+        if(val.status.code===1){
+            temporal.outBounds=val.data
+            console.log(val.data)
+        }
+    
         this.setState({ General: temporal })
         await this.handleModalOpen("showModal3")
     }
 
-    async updateSystemQuantity() {
-        //this.setState({secureTransaction:true})
+    async updateSystemQuantity(item) {
+        
+        this.setState({ secureTransaction: true })
         Swal.fire({
             title: 'For this Action you need a User and  Password Admin. Please enter it to continue:',
-            html: `<input type="text" id="login" class="swal2-input" placeholder="Username">
-  <input type="password" id="password" class="swal2-input" placeholder="Password">`,
+            html: `<input type="text" id="loginChangeQuantity" class="swal2-input" placeholder="Username">
+  <input type="password" id="passwordChangeQuantity" class="swal2-input" placeholder="Password">`,
             backdrop: true,
             showCancelButton: true,
             confirmButtonText: 'Continue',
             showLoaderOnConfirm: true,
-            preConfirm: async (login) => {
+            preConfirm: async () => {
+                const login = Swal.getPopup().querySelector('#loginChangeQuantity').value
+                const password = Swal.getPopup().querySelector('#passwordChangeQuantity').value
+                if (!login || !password) {
+                    Swal.showValidationMessage(`Please enter login and password`)
+                }else if(login==="diego.perez"&&password==="Diego1560"){
+                    automaticCloseAlert('correct','The Quantity has been updated!')
+                }else{
+                    automaticCloseAlert('incorrect','Username or password are invalid!')
+                }
 
             },
             allowOutsideClick: () => !Swal.isLoading()
         })
-        //this.setState({secureTransaction:false})
+        this.setState({ secureTransaction: false })
     }
 
 
     render() {
         return (
-            <div className='inventoryCycle' >
+            <div className='inventoryCycle'>
+                <button hidden id='actionatorCycleInventory' onClick={()=>this.getLastCycleInventory()}></button>
                 <p className='text-center display-1 pb-2' >Cycle Inventory</p>
                 <div>
 
@@ -682,7 +712,7 @@ export default class CycleInvetory extends Component {
 
                     </div>
 
-                    <div className='row pb-3'>
+                    <div hidden className='row pb-3'>
                         <div className='col-1'></div>
                         <div className='col-5 text-center'>
                             <select className="form-select form-select-lg mb-3" aria-label="select option">
@@ -744,7 +774,7 @@ export default class CycleInvetory extends Component {
                                                 <button type="button" className="btn btn-danger" disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
                                             </td>
                                             <td className='text-center'><button onClick={() => this.getGeneralHistory(item.ItemCode)} type="button" className="btn btn-info">Detail</button></td>
-                                            <td className='text-center'><button disabled={this.state.General.secureTransaction} onClick={() => this.updateSystemQuantity()} type="button" className="btn btn-info" hidden={item.status === 0}>Update Inventory</button></td>
+                                            <td className='text-center'><button disabled={this.state.General.secureTransaction} onClick={() => this.updateSystemQuantity(item)} type="button" className="btn btn-warning" hidden={item.status === 0}>Update Inventory</button></td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -890,7 +920,43 @@ export default class CycleInvetory extends Component {
                         </div>
                         <div className='col-5'></div>
                     </div>
-                    <div className='row'>
+                    <div className='row text-start pt-3'>
+                        <p>Orders who maybe affect the current physical inventory</p>
+                    </div>
+                    <div className='row text-start pt-2'>
+                    <div className='col-12 tableFixHead pt-5'>
+                            <table className='table'>
+                                <thead>
+                                    <tr className='bg-dark text-light text-center'>
+                                        <th className='bg-dark'>No Order</th>
+                                        <th className='bg-dark'>BIN</th>
+                                        <th className='bg-dark'>Quantity Order</th>
+                                        <th className='bg-dark'>Quantity Shipped</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.state.General.outBounds.map((item, i) => (
+                                        <tr className='text-center' key={i}>
+                                            <td className='text-start'>{item.OrderNo}</td>
+                                            <td>{item.BIN}</td>
+                                            <td>{item.QuantityOrdered}</td>
+                                            <td>{item.QuantityShipped}</td>
+                                        </tr>
+                                    ))
+
+                                    }
+
+                                </tbody>
+                                <tfoot className='tfoot'>
+                                    <tr className='bg-secondary text-light'>
+
+                                    </tr>
+                                </tfoot>
+
+                            </table>
+                        </div>
+                    </div>
+                    <div className='row pt-3'>
                         <div className='col-12 tableFixHead pt-5'>
                             <table className='table'>
                                 <thead>
@@ -901,6 +967,8 @@ export default class CycleInvetory extends Component {
                                         <th className='bg-dark'>New BIN</th>
                                         <th className='bg-dark'>Quantity Order<br />Old Quantity<br /> New Quantity</th>
                                         <th className='bg-dark'>Quantity Shipped</th>
+                                        <th className='bg-dark'>Start Total Quantity</th>
+                                        <th className='bg-dark'>End Total Quantity</th>
                                         <th className='bg-dark'>Username</th>
                                         <th className='bg-dark'>Date</th>
 
@@ -915,6 +983,8 @@ export default class CycleInvetory extends Component {
                                             <td>{item.BIN2}</td>
                                             <td>{item.QuantityOrder}</td>
                                             <td>{item.QuantityShipped}</td>
+                                            <td></td>
+                                            <td></td>
                                             <td>{item.User}</td>
                                             <td>{item.Date}</td>
                                         </tr>

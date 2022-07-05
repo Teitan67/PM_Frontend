@@ -1,7 +1,6 @@
 const server={
-    url:"http://localhost:4203"
-    //url:"http://192.168.0.2:4200"
-    //url: "https://portalmanager.herokuapp.com"
+    //url:"http://localhost:4203"
+  url: "http://134.209.119.149:4203"
 }
 
 export default server

@@ -7,6 +7,8 @@ export const closeSession=async ()=>{
     await  removeCookie('name')
     await removeCookie('surname')
     await removeCookie('sessionAuthToken')
+    await removeCookie('Company')
+    window.location.reload()
     await OpenLogin()
 }
 

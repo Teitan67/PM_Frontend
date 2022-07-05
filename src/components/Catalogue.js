@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import CartaProducto from './CartaProducto'
 import {getInformationNoData} from '../services/CABE.js'
-import server from '../services/Connection/backEndLink'
+
 
 export default class Catalogue extends Component {
 

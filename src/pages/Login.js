@@ -8,7 +8,11 @@ import {automaticCloseAlert} from'../functions/alerts'
 import md5 from 'md5'
 import { closeSession } from "../functions/closeSession"
 import App from '../components/App';
-import { OpenCompanyDashBoard,OpenInventory,  OpenLogin } from '../functions/pagesFunction';
+import { OpenCompanyDashBoard, OpenLobby, OpenLogin } from '../functions/pagesFunction';
+
+
+
+
 
 export default class Login extends Component {
 
@@ -37,7 +41,11 @@ export default class Login extends Component {
 
   componentDidMount(){
     if(getValueCookie('userName')){
-      OpenInventory()
+      if(getValueCookie('Company')){
+        OpenLobby()
+      }else{
+        OpenCompanyDashBoard()
+      }
     }else{
       OpenLogin()
     }
@@ -64,8 +72,8 @@ export default class Login extends Component {
           setNewCookie('userName', datos2.data.userName, 50)
           setNewCookie('name', datos2.data.name, 50)
           setNewCookie('surname', datos2.data.surname, 50)
-          //window.location.href='/companyDashBoard'
-          await OpenCompanyDashBoard()
+          window.location.reload()
+          //await OpenCompanyDashBoard()
         } else {
           closeSession()
           automaticCloseAlert('incorrect', 'Your  Username or Password are incorrect. Please try again')

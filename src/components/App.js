@@ -8,6 +8,7 @@ import CycleInventory from "../pages/CycleInvetory"
 import CycleInvetoryGraph from "../pages/CycleInventoryGraph"
 import KPI from "../pages/KPI"
 import Inventory from "../pages/Inventory"
+import Lobby from "../pages/Lobby"
 
 
 export default class App extends Component {
@@ -23,7 +24,9 @@ export default class App extends Component {
                     <Menu/>
                     <div className="container-fluid generalContainer" id="actualPage">
 
-                        
+                        <div id="Lobby" className="page">
+                            <Lobby/>
+                        </div>
 
                         <div id="CycleInventory" className="page">
                             <CycleInventory />
@@ -36,7 +39,7 @@ export default class App extends Component {
                             <KPI/>
                         </div>
 
-                        <div className="Inventory">
+                        <div id="Inventory" className='page'>
                             <Inventory/>
                         </div>
 

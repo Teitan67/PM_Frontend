@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import '../css/table-responsive.css'
-import { getInformationNoData } from '../services/CABE'
+import {getInformationWithData } from '../services/CABE'
 import BarGraph from '../components/BarGraph'
+import { getValueCookie } from '../services/cookieService'
 export default class KPI extends Component {
     constructor(props) {
         super(props)
@@ -20,15 +21,18 @@ export default class KPI extends Component {
         }
     }
 
-    componentDidMount() {
-        this.getKPIInfo()
-
+     componentDidMount() {
+         
+         
     }
 
 
     async getKPIInfo(){
+        const data1={
+            company:getValueCookie('Company')
+        }
         const temporal=this.state.General
-        const data=await getInformationNoData('/reports/getKPI')
+        const data=await getInformationWithData('/reports/getKPI',data1)
         if(data.status.code===1){
         temporal.KPIInfo=data.data
         temporal.KPIInfoFilter=data.data
@@ -63,7 +67,8 @@ export default class KPI extends Component {
     render() {
         return (
             <div className='KPI'>
-                <p className='text-center display-1 pb-3' >Inventories of Hyperline</p>
+                <button hidden id='actionatorKPI' onClick={()=>this.getKPIInfo()}></button>
+                <p className='text-center display-1 pb-3' >Inventories of {getValueCookie('Company')}</p>
                 <div className='row'>
                     <div className='col-1'></div>
                     <div className='col-10 tableFixHead tb-5'>

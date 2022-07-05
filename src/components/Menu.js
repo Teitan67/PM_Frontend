@@ -5,9 +5,9 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle,AiOutlineAreaChart,AiTwotoneSnippets } from "react-icons/ai";
 import { BiCartAlt } from "react-icons/bi";
 import { getValueCookie } from '../services/cookieService';
-import { OpenCycleInventory,OpenCycleInventoryGraph,OpenInventory,OpenKPIGraph,OpenLobby } from '../functions/pagesFunction';
+import { CloseCompanySession, OpenCycleInventory,OpenCycleInventoryGraph,OpenInventory,OpenKPIGraph,OpenLobby } from '../functions/pagesFunction';
 import {closeSession} from '../functions/closeSession';
-
+import { BiExit } from "react-icons/bi";
 
 export class Menu extends Component {
 
@@ -30,7 +30,7 @@ export class Menu extends Component {
                             </div>
                             <div className='col'>
                                 <a className="navbar-brand" href='/#' onClick={()=>OpenLobby()}>
-                                    <img src='/assets/logo_hyperline.png' alt='Company' />
+                                    <img src={getValueCookie('Company')==='Hyperline'?'/assets/logo_hyperline.png':'/assets/logo_mayaland.png'} alt='Company' />
                                 </a>
                             </div>
                         </div>
@@ -71,11 +71,11 @@ export class Menu extends Component {
                                             Inventory management <AiOutlineReconciliation /> <AiFillCaretDown />
                                         </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
-                                            <li onClick={()=>OpenInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Products Information <BiCartAlt/></a></li>
+                                            <li hidden onClick={()=>OpenInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Products Information <BiCartAlt/></a></li>
                                             <li onClick={()=>OpenCycleInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>
                                         </ul>
                                     </li>
-                                    <li className="nav-item dropdown">
+                                    <li hidden className="nav-item dropdown">
                                         <a className="nav-link " href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Reports <AiOutlineAreaChart /> <AiFillCaretDown />
                                         </a>
@@ -84,7 +84,9 @@ export class Menu extends Component {
                                             <li onClick={()=>OpenKPIGraph()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">KPI (Key Performance Indicators) <AiTwotoneSnippets /></a></li>
                                        </ul>
                                     </li>
-
+                                    <li className="nav-item">
+                                        <a className="nav-link active" aria-current="page" href="/#" data-bs-dismiss="offcanvas" onClick={()=>CloseCompanySession()}>Close Company Session <BiExit /></a>
+                                    </li>
                                 </ul>
 
                             </div>

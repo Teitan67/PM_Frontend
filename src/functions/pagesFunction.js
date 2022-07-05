@@ -19,21 +19,25 @@ export function OpenLobby() {
     openPage( "Lobby")
 }
 
-export function OpenCycleInventory() {
+export async function OpenCycleInventory() {
     CloseAllPages();
+    var boton=document.getElementById('actionatorCycleInventory')
+    await boton.click()
     openPage( "App")
     openPage( "GeneralPages")
     openPage( "CycleInventory")
 }
-export  function OpenCycleInventoryGraph(){
+export function OpenCycleInventoryGraph(){
     CloseAllPages()
     openPage("App")
     openPage("GeneralPages")
     openPage("CycleInventoryGraph")
 }
 
-export  function OpenKPIGraph(){
+export async function OpenKPIGraph(){
     CloseAllPages()
+    var boton=document.getElementById('actionatorKPI')
+    await boton.click()
     openPage("App")
     openPage("GeneralPages")
     openPage("KPIGraph")

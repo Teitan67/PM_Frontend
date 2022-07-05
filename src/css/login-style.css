@@ -11,7 +11,7 @@
 .contLogin{
     background:rgb(255, 255, 255); 
     min-height: 50vh;
-    
+    margin-top: 6%;
     border: 0.5px solid rgb(182, 182, 182);
 }
 

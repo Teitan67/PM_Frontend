@@ -171,8 +171,7 @@ export default class CycleInvetory extends Component {
 
     async componentDidMount() {
         this.ProgrressBarRef.current.setValue(0);
-        //await this.getLastCycleInventory()
-        this.getByStat('0')
+
     }
 
     async getLastCycleInventory() {
@@ -181,12 +180,12 @@ export default class CycleInvetory extends Component {
         }
         const route = '/inventory/lastCycle/post';
         const datos = await getInformationWithData(route,data)
-
+        
         if (datos.status.code === 1) {
             if (datos.data.length > 0) {
                 const temporal = this.state.cycleInventoryStorage
                 temporal.Header = datos.data[0]
-
+                
                 if (temporal.Header.status === 0) {
                     await this.getDetailCycleInventory(temporal.Header.id, "actual")
                 } else {
@@ -232,6 +231,7 @@ export default class CycleInvetory extends Component {
         const route = '/inventory/cycledetail/post';
         const datos = await getInformationWithData(route, data)
         if (type === "actual") {
+            
             if (datos.status.code === 1) {
                 if (datos.data.length > 0) {
                     const temporal = this.state.cycleInventoryStorage
@@ -239,6 +239,7 @@ export default class CycleInvetory extends Component {
                     temporal.DetailFilter = datos.data
                     await this.setState({ cycleInventoryStorage: temporal })
                     await this.completePercentage()
+                    await this.getByStat('0')
 
                 } else {
                     const temporal = this.state.cycleInventoryStorage

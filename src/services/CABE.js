@@ -18,7 +18,7 @@ export const getInformationNoData=async (route)=>{
     ).catch(error=>{
        
         responseBack={status:status.ServerFail,response:[]};
-        confirmCloseAlert('incorrect','Error in the Server Response: '+status.ServerFail.Description)
+       // confirmCloseAlert('incorrect','Error in the Server Response: '+status.ServerFail.Description)
     })
 
     return responseBack

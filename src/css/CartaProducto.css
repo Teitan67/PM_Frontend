@@ -1,0 +1,8 @@
+.imgC{
+    text-align: center;
+    height: 200px;
+    max-width: 100%
+}
+.cartaHover:hover{
+    background-color:azure;
+}

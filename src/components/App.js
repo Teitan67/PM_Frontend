@@ -8,6 +8,8 @@ import CycleInventory from "../pages/CycleInvetory"
 import CycleInvetoryGraph from "../pages/CycleInventoryGraph"
 import KPI from "../pages/KPI"
 import Inventory from "../pages/Inventory"
+
+
 export default class App extends Component {
  
     render() {

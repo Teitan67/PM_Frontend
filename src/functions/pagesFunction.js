@@ -6,8 +6,10 @@ export function CloseAllPages() {
     closeAllPages();
 }
 
-export function OpenCompanyDashBoard() {
+export async function OpenCompanyDashBoard() {
     CloseAllPages();
+    var boton=document.getElementById('catalogueOfCompanyActioner')
+    await boton.click()
     openPage( "App");
     openPage( "CompanyDashBoard");
 }

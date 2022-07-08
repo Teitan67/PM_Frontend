@@ -138,7 +138,7 @@ export class Menu extends Component {
                                         </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
                                             <li hidden={this.state.Modules.ProductInfo} onClick={() => OpenInventory()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Products Information <BiCartAlt /></a></li>
-                                            <li hidden={this.state.Modules.CycleInventory} onClick={() => OpenCycleInventory()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>
+                                            <li hidden={this.state.Modules.CycleInventory} onClick={() => OpenCycleInventory()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Cyclical Inventory <AiOutlineClockCircle /></a></li>
                                         </ul>
                                     </li>
                                     <li hidden={(this.state.Modules.ReportGraphs&&this.state.Modules.KPI)?true:false} className="nav-item dropdown">
@@ -146,7 +146,7 @@ export class Menu extends Component {
                                             Reports <AiOutlineAreaChart /> <AiFillCaretDown />
                                         </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
-                                            <li hidden={this.state.Modules.ReportGraphs}  onClick={() => OpenCycleInventoryGraph()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>
+                                            <li hidden={this.state.Modules.ReportGraphs}  onClick={() => OpenCycleInventoryGraph()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Cyclical Inventory <AiOutlineClockCircle /></a></li>
                                             <li hidden={this.state.Modules.KPI} onClick={() => OpenKPIGraph()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">KPI (Key Performance Indicators) <AiTwotoneSnippets /></a></li>
                                         </ul>
                                     </li>

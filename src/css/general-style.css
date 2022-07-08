@@ -68,6 +68,11 @@
     resize: none;
 }
 
+.textAreaComment{
+    width: 100%;
+}
+
+
 .detailIMG{
     width: 170px;
 }

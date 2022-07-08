@@ -53,5 +53,14 @@ export function getDateFromReports(){
     return (datenow.getMonth()+1)+"-"+datenow.getDate()+"-"+datenow.getFullYear()
 }
 
+export function ActualDate(){
+    const datenow=new Date()
+    return (datenow.getMonth()+1)+"/"+datenow.getDate()+"/"+datenow.getFullYear()
+}
+export function getActualDateUTC(){
+    const datenow=new Date()
+    return datenow.toISOString()
+}
 
-export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate}
+
+export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate,ActualDate,getActualDateUTC}

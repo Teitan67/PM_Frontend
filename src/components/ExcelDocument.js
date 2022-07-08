@@ -8,7 +8,7 @@ const ExcelDocument=(props)=>{
     return(
         <>
         
-        <ExcelFile  element={<button type="button" className="btn btn-success btn-lg w-100 h-100">Download Report In XLSX <AiFillFileExcel/></button>} filename={props.archname}>
+        <ExcelFile  element={<button type="button" hidden={props.hidden} className="btn btn-success btn-lg w-100 h-100">Download Report In XLSX <AiFillFileExcel/></button>} filename={props.archname}>
             <ExcelSheet dataSet={props.data} name={props.sheetname}/>
         </ExcelFile>
         

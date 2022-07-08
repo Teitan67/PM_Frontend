@@ -9,7 +9,7 @@ export default  class ProgressBar extends Component {
     }
 
     state = {
-        min:0,
+        min:0, 
         max:100,
         value:0,
         size:50

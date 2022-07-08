@@ -23,6 +23,9 @@ export default class CartaProducto extends Component {
                             <p className="card-text fs-6">{this.props.Description}</p>
                         </div>
                         <div className="row text-start" >
+                            <p className="card-text fs-6"><i>UPC:</i> {this.props.UPC}</p>
+                        </div>
+                        <div className="row text-start" >
                             <p className="card-text fs-5"><b>OnHand:</b> {this.props.OnHand}</p>
                         </div>
                     </div>

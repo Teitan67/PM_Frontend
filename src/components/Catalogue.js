@@ -1,24 +1,69 @@
 import React, { Component } from 'react'
 import CartaProducto from './CartaProducto'
-import {getInformationNoData} from '../services/CABE.js'
+import { getInformationNoData } from '../services/CABE.js'
 
 
 export default class Catalogue extends Component {
 
-    state={
-        Catalogo:[],
-        ProdcutosMostrados:[]
+    constructor(props) {
+        super(props);
+        this.retornarProducto = React.createRef();
     }
 
-    async obtenerProductos(){
+    state = {
+        Catalogo: [],
+        ProductosMostrados: []
+    }
+
+    async obtenerProductos() {
+        const buscador = document.getElementById('catalogo_busqueda');
         const Enpoint = '/Items/get'
-        console.log( await getInformationNoData(Enpoint));
+        const respuesta = await getInformationNoData(Enpoint);
+        console.log(respuesta);
+        if (respuesta.status.code === 1) {
+            this.setState({ Catalogo: respuesta.data });
+            this.setState({ ProductosMostrados: respuesta.data });
+        }
+        buscador.value='';
+        setTimeout( ()=>{buscador.focus();}, 300);
+    }
+
+    buscarProductos = e => {
+  
+            let busqueda = e.target.value;
+            let Productos = this.state.Catalogo.filter((producto) => {
+                if (((
+                        this.contiene(producto.itemCode,busqueda)
+                    ||  this.contiene(producto.abbreviatedDesc,busqueda)
+                    ||  this.contiene(producto.upc,busqueda))
+                    )
+                ) {
+                    return producto
+                } else {
+                    return null
+                }
+            });
+            this.setState({ ProductosMostrados: Productos });
+    }
+
+    contiene(parametro,busqueda){
+        return parametro.toString().toLowerCase().includes(busqueda.toLocaleLowerCase())
+    }
+
+    getProducto(producto){
+        console.log(producto);
+        //Aqui asignamos el producto al estado del padre
+        const Padre = this.props.Padre
+        const Producto = Padre.state.producto;
+        Producto.ItemCode=producto.itemCode;
+        Padre.setState({producto:Producto});
+        
     }
 
     render() {
         return (
             <React.Fragment>
-                <button type="button" className="btn catalogueOpen btn-lg w-100" data-bs-toggle="modal" data-bs-target={"#Catalogo" + this.props.nombrePadre} onClick={()=>this.obtenerProductos()}>Open Catalogue </button>
+                <button type="button" className="btn catalogueOpen btn-lg w-100" data-bs-toggle="modal" data-bs-target={"#Catalogo" + this.props.nombrePadre} onClick={() => this.obtenerProductos()}>Open Catalogue </button>
                 <div className="modal fade" id={"Catalogo" + this.props.nombrePadre} tabIndex="-1" aria-labelledby="catalogoModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-fullscreen">
                         <div className="modal-content">
@@ -26,15 +71,18 @@ export default class Catalogue extends Component {
                                 <h5 className="modal-title" id="catalogoModalLabel">Catalogue</h5>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div className="modal-body container">
+                            <div className="modal-body ">
                                 <div className='row form-group pt-4'>
-                                    <input className='form-control' placeholder='Search by ItemCode,BIN,Description...'/>
+                                    <input className='form-control' placeholder='Search by ItemCode,BIN,Description...' id='catalogo_busqueda' onKeyUp={this.buscarProductos} />
                                 </div>
                                 <div className='row'>
-                                    <div className='col-6 ' data-bs-dismiss="modal">
-                                        <CartaProducto ItemCode={'FARMCA1006'} Description={'Descripcion de Farcma 1006 para ver cmo se ve 16x35 onz (libras)'} OnHand={'23'} />
-                                    </div>
-                                    
+                                    {
+                                        this.state.ProductosMostrados.map((producto, i) => (
+                                            <div key={i} className='col-6 ' data-bs-dismiss="modal" onClick={()=>this.getProducto(producto)}>
+                                                <CartaProducto ItemCode={producto.itemCode} Description={producto.abbreviatedDesc} OnHand={producto.OnHand} UPC={producto.upc} />
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                             </div>
                             <div className="modal-footer">

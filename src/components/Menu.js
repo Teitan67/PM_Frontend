@@ -71,7 +71,7 @@ export class Menu extends Component {
                                             Inventory management <AiOutlineReconciliation /> <AiFillCaretDown />
                                         </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
-                                            <li hidden onClick={()=>OpenInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Products Information <BiCartAlt/></a></li>
+                                            <li onClick={()=>OpenInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Products Information <BiCartAlt/></a></li>
                                             <li onClick={()=>OpenCycleInventory()}><a className="dropdown-item text-light" href="/#"  data-bs-dismiss="offcanvas">Cycle Inventory <AiOutlineClockCircle /></a></li>
                                         </ul>
                                     </li>

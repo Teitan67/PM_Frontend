@@ -1,8 +1,14 @@
 .imgC{
     text-align: center;
-    height: 200px;
+    height: 170px;
     max-width: 100%
 }
 .cartaHover:hover{
-    background-color:azure;
+    background-color:rgb(232, 232, 232);
+    transition: 0.2s;
+}
+
+.cartaHover{
+    
+    transition: 0.2s;
 }

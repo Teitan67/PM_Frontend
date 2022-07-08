@@ -6,9 +6,16 @@ import Catalogue from '../components/Catalogue.js'
 import { AiOutlineSearch, AiOutlineFileSearch, AiFillPrinter, AiFillBook, AiFillDollarCircle, AiFillCheckSquare, AiFillCreditCard, AiFillTag, AiOutlineBarcode } from "react-icons/ai"
 import LineAreaGraph from '../components/LineAreaGraph'
 export default class Inventory extends Component {
+
     constructor(props) {
         super(props)
         this.LineAreaGraph1 = React.createRef()
+    }
+
+    state={
+        producto:{
+            ItemCode:"ItemCode"
+        }
     }
 
     componentDidMount() {
@@ -38,7 +45,7 @@ export default class Inventory extends Component {
                     <div className='col-5'>
                         <p className='text-start pt-4 pb-2' >See all Catalogue:</p>
                         <div className='text-center'>
-                            <Catalogue nombrePadre={'InventoryBin'}/>
+                            <Catalogue nombrePadre={'InventoryBin'} Padre={this}/>
                         </div>
                     </div>
                     <div className='col-1'></div>
@@ -56,7 +63,7 @@ export default class Inventory extends Component {
                         <div className='row'>
                             <div className='col-1'></div>
                             <div className='col-5 ItemCodeNumber'>
-                                <p className='text-center display-3' >CM-2U-PL-COV</p>
+                                <p className='text-center display-3' >{this.state.producto.ItemCode}</p>
                             </div>
                             <div className='col-5 ItemCodeNumber text-center'>
                                 <img className='pb-5 pt-5' src='/assets/notavailable.png' alt='Company' />

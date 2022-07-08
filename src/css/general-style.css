@@ -71,3 +71,7 @@
 .detailIMG{
     width: 170px;
 }
+
+.justifyText{
+    text-align: justify;
+}

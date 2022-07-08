@@ -453,7 +453,7 @@ export default class CycleInvetory extends Component {
         var date1 = formatInputDate(document.getElementById('searchHistoryCycleInvDate1').value)
         var date2 = formatInputDate(document.getElementById('searchHistoryCycleInvDate2').value)
         const data = {
-            ItemCode: this.state.General.selectedItem,
+            ItemCode: this.state.General.selectedItem.ItemCode,
             Start: date1,
             End: date2
         }
@@ -610,7 +610,7 @@ export default class CycleInvetory extends Component {
         temporal.generalHistory = []
         temporal.generalHistoryFilter = []
         const data = {
-            ItemCode: itemCode,
+            ItemCode: itemCode.ItemCode,
             Date: FormatQueryReturnDate(this.state.cycleInventoryStorage.Header.startDate)
         }
 
@@ -659,30 +659,30 @@ export default class CycleInvetory extends Component {
     }
 
     generateInfo() {
-        let proccessInfo=JSON.parse(JSON.stringify(this.state.cycleInventoryStorage.Detail))
-        const headerKeys=['ItemCode', 'productLine', 'Description', 'realQuantity', 'BIN', 'systemQuantity', 'difference', 'countBy','date', 'status', 'comentary']
+        let proccessInfo = JSON.parse(JSON.stringify(this.state.cycleInventoryStorage.Detail))
+        const headerKeys = ['ItemCode', 'productLine', 'Description', 'realQuantity', 'BIN', 'systemQuantity', 'difference', 'countBy', 'date', 'status', 'comentary']
         for (const item of proccessInfo) {
             for (const head of headerKeys) {
-                if(head!=="status"){
-                    if(item[head]===null){
-                        item[head]=""
-                    }else if(head==="date"){
-                        item[head]=FormatQueryReturnDate(item[head])
+                if (head !== "status") {
+                    if (item[head] === null) {
+                        item[head] = ""
+                    } else if (head === "date") {
+                        item[head] = FormatQueryReturnDate(item[head])
                     }
-                }else{
-                    if(item[head]===0){
-                        item[head]="Not checked"
-                    }else{
-                        item[head]="Checked"
+                } else {
+                    if (item[head] === 0) {
+                        item[head] = "Not checked"
+                    } else {
+                        item[head] = "Checked"
                     }
                 }
-                    
+
             }
         }
 
         var info = getDataSet(proccessInfo,
-            ['Item Code', 'Product Line', 'Description', 'Quantity', 'BIN', 'System Quantity', 'Difference', 'Counted By','Date', 'Status', 'Comentary'],
-           headerKeys)
+            ['Item Code', 'Product Line', 'Description', 'Quantity', 'BIN', 'System Quantity', 'Difference', 'Counted By', 'Date', 'Status', 'Comentary'],
+            headerKeys)
         //this.setState({dataset:info})
         return info
     }
@@ -760,7 +760,7 @@ export default class CycleInvetory extends Component {
                         <div className='col-1'></div>
                         <div className='col-5 text-center'>
 
-                            <ExcelDocument data={this.generateInfo()} sheetname={"CycleInventoryDetail"} archname={"CYCLE INVENTORY NO "+this.state.cycleInventoryStorage.Header.id+" COMPANY " +getValueCookie('Company')+" DATE "+getDateFromReports()} ></ExcelDocument>
+                            <ExcelDocument data={this.generateInfo()} sheetname={"CycleInventoryDetail"} archname={"CYCLE INVENTORY NO " + this.state.cycleInventoryStorage.Header.id + " COMPANY " + getValueCookie('Company') + " DATE " + getDateFromReports()} ></ExcelDocument>
 
                         </div>
                         <div className='col-5 text-start'>
@@ -816,7 +816,7 @@ export default class CycleInvetory extends Component {
                                                 <button type="button" className="btn btn-success" disabled={this.state.General.secureTransaction} onClick={() => this.setCycleInventoryDetailInfo(item, "comentaryCycleInv_" + item.id, "realQuantityCycleInv_" + item.id,)} hidden={item.status === 1}>Check</button>
                                                 <button type="button" className="btn btn-danger" disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
                                             </td>
-                                            <td className='text-center'><button onClick={() => this.getGeneralHistory(item.ItemCode)} type="button" className="btn btn-info">Detail</button></td>
+                                            <td className='text-center'><button onClick={() => this.getGeneralHistory(item)} type="button" className="btn btn-info">Detail</button></td>
                                             <td className='text-center'><button disabled={this.state.General.secureTransaction} onClick={() => this.updateSystemQuantity(item)} type="button" className="btn btn-warning" hidden={item.status === 0}>Update Inventory</button></td>
                                         </tr>
                                     ))}
@@ -965,19 +965,35 @@ export default class CycleInvetory extends Component {
                     </div>
                     <div className='row text-center pt-3'>
                         <div className='col-1'></div>
-                        <div className='col-5 display-5 text-center'>
-                            <p>Item Code: {this.state.General.selectedItem}</p>
+                        <div className='col-5'>
+                            <div className='row fs-3'>
+                                <div className='col-12 text-start'>
+                                    <p>Item Code:</p>
+                                </div>
+                                <div className='col-12 text-start'>
+                                    <p className='fw-bold'>{this.state.General.selectedItem.ItemCode}</p>
+                                </div>
+                            </div>
+                            <div className='row fs-3'>
+                                <div className='col-12 text-start'>
+                                    <p>Description:</p>
+                                </div>
+                                <div className='col-12 justifyText'>
+                                    <p>{this.state.General.selectedItem.Description}</p>
+                                </div>
+                            </div>
                         </div>
                         <div className='col-5 text-center'>
-                        <img className='pb-5 pt-5 detailIMG' src='/assets/notavailable.png' alt='Company' />
+                            <img className=' pt-4 detailIMG' src='/assets/notavailable.png' alt='Company' />
                         </div>
                         <div className='col-1'></div>
                     </div>
 
-                    <div className='row text-start pt-3'>
-                        <p>Orders who maybe affect the current physical inventory</p>
-                    </div>
+
                     <div className='row text-start pt-2'>
+                        <div className='col-12 fs-5'>
+                            <p>Current Orders who maybe affect the current physical inventory</p>
+                        </div>
                         <div className='col-12 tableFixHead pt-5'>
                             <table className='table'>
                                 <thead>

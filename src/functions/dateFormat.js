@@ -48,5 +48,10 @@ export function FormatQueryReturnDate(date){
     }
 }
 
+export function getDateFromReports(){
+    const datenow=new Date()
+    return (datenow.getMonth()+1)+"-"+datenow.getDate()+"-"+datenow.getFullYear()
+}
+
 
 export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate}

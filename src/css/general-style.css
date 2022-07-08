@@ -67,3 +67,7 @@
 .textAreaGeneral textarea{
     resize: none;
 }
+
+.detailIMG{
+    width: 170px;
+}

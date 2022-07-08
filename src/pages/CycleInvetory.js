@@ -659,11 +659,30 @@ export default class CycleInvetory extends Component {
     }
 
     generateInfo() {
+        let proccessInfo=JSON.parse(JSON.stringify(this.state.cycleInventoryStorage.Detail))
+        const headerKeys=['ItemCode', 'productLine', 'Description', 'realQuantity', 'BIN', 'systemQuantity', 'difference', 'countBy','date', 'status', 'comentary']
+        for (const item of proccessInfo) {
+            for (const head of headerKeys) {
+                if(head!=="status"){
+                    if(item[head]===null){
+                        item[head]=""
+                    }else if(head==="date"){
+                        item[head]=FormatQueryReturnDate(item[head])
+                    }
+                }else{
+                    if(item[head]===0){
+                        item[head]="Not checked"
+                    }else{
+                        item[head]="Checked"
+                    }
+                }
+                    
+            }
+        }
 
-        var info = getDataSet(this.state.cycleInventoryStorage.Detail,
-            ['Item Code', 'Product Line', 'Description', 'Quantity', 'BIN', 'System Quantity', 'Difference', 'Counted By', 'Status', 'Comentary'],
-            ['ItemCode', 'productLine', 'Description', 'realQuantity', 'BIN', 'systemQuantity', 'difference', 'countBy', 'status', 'comentary'])
-
+        var info = getDataSet(proccessInfo,
+            ['Item Code', 'Product Line', 'Description', 'Quantity', 'BIN', 'System Quantity', 'Difference', 'Counted By','Date', 'Status', 'Comentary'],
+           headerKeys)
         //this.setState({dataset:info})
         return info
     }
@@ -672,7 +691,6 @@ export default class CycleInvetory extends Component {
     render() {
         return (
             <div className='inventoryCycle'>
-                <button onClick={() => this.generateInfo()}> test</button>
                 <button hidden id='actionatorCycleInventory' onClick={() => this.getLastCycleInventory()}></button>
                 <p className='text-center display-1 pb-2' >Cycle Inventory</p>
                 <div>
@@ -945,6 +963,17 @@ export default class CycleInvetory extends Component {
                         </div>
                         <div className='col-5'></div>
                     </div>
+                    <div className='row text-center pt-3'>
+                        <div className='col-1'></div>
+                        <div className='col-5 display-5 text-center'>
+                            <p>Item Code: {this.state.General.selectedItem}</p>
+                        </div>
+                        <div className='col-5 text-center'>
+                        <img className='pb-5 pt-5 detailIMG' src='/assets/notavailable.png' alt='Company' />
+                        </div>
+                        <div className='col-1'></div>
+                    </div>
+
                     <div className='row text-start pt-3'>
                         <p>Orders who maybe affect the current physical inventory</p>
                     </div>

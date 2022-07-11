@@ -105,9 +105,9 @@ export default class PurchaseOrder extends Component {
                                     <tr className='bg-secondary text-light'>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
                                         <td>TOTAL:</td>
+                                        <td></td>
+                                        <td></td>
                                         <td className='text-end'>$</td>
                                     </tr>
                                 </tfoot>

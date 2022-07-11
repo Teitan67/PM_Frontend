@@ -64,6 +64,12 @@ export function OpenPikingSystem(){
     openPage("GeneralPages");
     openPage("PikingSystem");
 }
+export function OpenPurchaseOrder(){
+    CloseAllPages()
+    openPage("App")
+    openPage("GeneralPages")
+    openPage("PurchaseOrder")
+}
 
 export function CloseCompanySession(){
     removeCookie('Company')

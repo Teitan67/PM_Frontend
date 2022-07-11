@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@faker-js/faker": "^7.3.0",
-    "@react-pdf/renderer": "^2.0.21",
+    "@react-pdf/renderer": "^2.3.0",
     "@sweetalert2/themes": "^5.0.10",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",

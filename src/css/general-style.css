@@ -80,3 +80,62 @@
 .justifyText{
     text-align: justify;
 }
+
+
+.greenButton{
+    background-color: rgb(1, 91, 22);
+    color: aliceblue;
+}
+
+.greenButton:hover{
+    background-color: rgb(0, 124, 29);
+    color: aliceblue;
+}
+
+.blueButton{
+    background-color: rgb(22, 9, 75);
+    color: aliceblue;
+}
+.iconColor{
+    color: aliceblue;
+    background-color: aliceblue;
+}
+
+.blueButton:hover{
+    background-color: rgb(37, 15, 129);
+    color: aliceblue;
+}
+
+.pText p{
+    font-size: 20px;
+}
+
+.brownButton{
+    background-color: rgb(101, 16, 16);
+    color: aliceblue;
+}
+
+.brownButton:hover{
+    background-color: rgb(131, 25, 25);
+    color: aliceblue;
+}
+
+.orangeButton{
+    background-color: rgb(164, 56, 5);
+    color: aliceblue;
+}
+
+.orangeButton:hover{
+    background-color: rgb(198, 67, 6);
+    color: aliceblue;
+}
+
+.yellowButton{
+    background-color: rgb(217, 175, 23);
+    color: rgb(0, 0, 0);
+}
+
+.yellowButton:hover{
+    background-color: rgb(255, 206, 28);
+    color: rgb(0, 0, 0);
+}

@@ -56,6 +56,12 @@ export  function OpenInventory(){
     openPage("GeneralPages")
     openPage("Inventory")//arreglar
 }
+export function OpenPurchaseOrder(){
+    CloseAllPages()
+    openPage("App")
+    openPage("GeneralPages")
+    openPage("PurchaseOrder")
+}
 
 export function CloseCompanySession(){
     removeCookie('Company')

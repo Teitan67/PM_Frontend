@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import "../css/menu-style.css"
 import "../css/general-style.css"
 import { AiOutlineSetting } from "react-icons/ai";
-import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle, AiOutlineAreaChart, AiTwotoneSnippets } from "react-icons/ai";
+import { AiFillCaretDown, AiOutlineReconciliation, AiOutlineClockCircle, AiOutlineHome, AiOutlineUser, AiOutlineLogout, AiFillCloseCircle, AiOutlineAreaChart, AiTwotoneSnippets,AiFillDropboxSquare } from "react-icons/ai";
 import { BiCartAlt } from "react-icons/bi";
 import { getValueCookie } from '../services/cookieService';
-import { CloseCompanySession, OpenCycleInventory, OpenCycleInventoryGraph, OpenInventory, OpenKPIGraph, OpenLobby } from '../functions/pagesFunction';
+import { CloseCompanySession, OpenCycleInventory, OpenCycleInventoryGraph, OpenInventory, OpenKPIGraph, OpenLobby, OpenPurchaseOrder } from '../functions/pagesFunction';
 import { closeSession } from '../functions/closeSession';
 import { BiExit } from "react-icons/bi";
+import {BsBoxSeam} from "react-icons/bs"
 import { getInformationWithData } from '../services/CABE';
 
 
@@ -141,6 +142,16 @@ export class Menu extends Component {
                                             <li hidden={this.state.Modules.CycleInventory} onClick={() => OpenCycleInventory()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Cyclical Inventory <AiOutlineClockCircle /></a></li>
                                         </ul>
                                     </li>
+
+                                    <li hidden={(this.state.Modules.ProductInfo&&this.state.Modules.CycleInventory)?true:false} className="nav-item dropdown">
+                                        <a className="nav-link " href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Purchase Order <AiFillDropboxSquare /> <AiFillCaretDown />
+                                        </a>
+                                        <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
+                                            <li hidden={this.state.Modules.ProductInfo} onClick={() => OpenPurchaseOrder()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Purchase Order <BsBoxSeam /></a></li>
+                                        </ul>
+                                    </li>
+
                                     <li hidden={(this.state.Modules.ReportGraphs&&this.state.Modules.KPI)?true:false} className="nav-item dropdown">
                                         <a className="nav-link " href="/#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Reports <AiOutlineAreaChart /> <AiFillCaretDown />

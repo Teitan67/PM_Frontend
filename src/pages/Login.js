@@ -93,7 +93,7 @@ export default class Login extends Component {
         <div id='login' className='page'>
           <div className='container-fluid pb-1'>
             <div className='container'>
-              <div className='row pt-4 pb-3 d-flex justify-content-center'>
+              <div className='row pt-5 pb-3 d-flex justify-content-center'>
                 <div className='col-9 contLogin'>
                   <div className="border border-5 border-primary"></div>
                   <div className='row d-flex justify-content-center pt-5   '>
@@ -118,7 +118,7 @@ export default class Login extends Component {
 
                     <div className='row d-flex justify-content-center pt-4 pb-3 text-center'>
                       <div className='col-7'>
-                        <button id='btn_signin' type="button" className="btn btn-primary btn-lg" onClick={() => this.Login()}>sign in<AiOutlineLogin /></button>
+                        <button id='btn_signin' type="button" className="btn btn-primary btn-lg" onClick={() => this.Login()}>Sign in <AiOutlineLogin /></button>
                       </div>
                     </div>
 
@@ -129,6 +129,7 @@ export default class Login extends Component {
           </div>
           <Footer />
         </div>
+        
         <div id='App' className='page'>
           <App />
         </div>

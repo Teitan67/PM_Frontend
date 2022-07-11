@@ -2,24 +2,44 @@ import React, { Component } from "react";
 import Footer from "../components/Footer";
 import { MenuCompany } from "../components/MenuCompanySelect";
 import "../css/companyDash-style.css"
+import { getInformationWithData } from "../services/CABE";
 //import { OpenLobby } from '../functions/pagesFunction';
-import { setNewCookie } from "../services/cookieService";
+import { getValueCookie, setNewCookie } from "../services/cookieService";
 export default class CompanyDashBoard extends Component {
-  
 
-    async SelectCompany(name){
-        if(name==="Hyperline"){
-            setNewCookie('Company','Hyperline',50)
-            window.location.reload()
-        }else{
-            setNewCookie('Company','Mayaland',50)
-            window.location.reload()
+    state = {
+        General: {
+            CompanysofUser: []
         }
     }
-        
+
+    async getCompanysAssigned() {
+        const data = {
+            userName: getValueCookie('userName')
+        }
+        const info = await getInformationWithData('/company/CatalogueofCompanies', data)
+        if (info.status.code === 1) {
+            const temporal = this.state.General
+            temporal.CompanysofUser = info.data
+            this.setState({ General: temporal })
+            console.log(info)
+        }
+
+    }
+
+
+    async SelectCompany(company) {
+            setNewCookie('Company', company.name , 50)
+            setNewCookie('CompanyId',company.idCompany,50)
+            setNewCookie('CompanyLogo',company.directoryLogo,50)
+            setNewCookie('TypeUser',company.idTypeofUser,50)
+            window.location.reload()  
+    }
+
     render() {
         return (
             <div id="companydash" >
+                <button hidden id="catalogueOfCompanyActioner" onClick={() => this.getCompanysAssigned()}></button>
                 <MenuCompany />
                 <div className="container-fluid generalContainer" id="actualPage">
                     <div className="title">
@@ -29,20 +49,18 @@ export default class CompanyDashBoard extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col">
-    
-                                <div  className="contCompany" onClick={()=>this.SelectCompany('Hyperline')}>
-                                    <div className="titecompany text-center">
-                                        <img src="/assets/logo_hyperline.png" alt="logo" />
-                                        <p>Hyperline Atlanta<br/> <br/><br/><br/></p>
-                                    </div>
-                                </div>
-                                <div hidden className="contCompany" onClick={()=>this.SelectCompany('Mayaland')}>
-                                    <div className="titecompany text-center">
-                                        <img src="/assets/logo_mayaland.png" alt="logo" />
-                                        <p>Mayaland Atlanta<br/> <br/><br/><br/></p>
-                                    </div>
-                                </div>
+                                {
+                                    this.state.General.CompanysofUser.map((company, i) => (
+                                        <div key={i} className="contCompany" onClick={() => this.SelectCompany(company)}>
+                                            <div className="titecompany text-center">
+                                                <img src={company.directoryLogo} alt="logo" />
+                                                <p>{company.name}<br /> <br /><br /><br /></p>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
                                 
+
                             </div>
                         </div>
                     </div>

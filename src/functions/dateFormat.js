@@ -48,5 +48,19 @@ export function FormatQueryReturnDate(date){
     }
 }
 
+export function getDateFromReports(){
+    const datenow=new Date()
+    return (datenow.getMonth()+1)+"-"+datenow.getDate()+"-"+datenow.getFullYear()
+}
 
-export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate}
+export function ActualDate(){
+    const datenow=new Date()
+    return (datenow.getMonth()+1)+"/"+datenow.getDate()+"/"+datenow.getFullYear()
+}
+export function getActualDateUTC(){
+    const datenow=new Date()
+    return datenow.toISOString()
+}
+
+
+export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate,ActualDate,getActualDateUTC}

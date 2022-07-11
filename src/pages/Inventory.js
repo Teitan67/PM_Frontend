@@ -3,7 +3,7 @@ import "../css/inventory-style.css"
 import "../css/general-style.css"
 import '../css/table-responsive.css'
 import Catalogue from '../components/Catalogue.js'
-import { AiOutlineSearch, AiOutlineFileSearch, AiFillPrinter, AiFillBook, AiFillDollarCircle, AiFillCheckSquare, AiFillCreditCard, AiFillTag, AiOutlineBarcode } from "react-icons/ai"
+import { AiOutlineSearch, AiFillPrinter, AiFillBook, AiFillDollarCircle, AiFillCheckSquare, AiFillCreditCard, AiFillTag, AiOutlineBarcode } from "react-icons/ai"
 import LineAreaGraph from '../components/LineAreaGraph'
 export default class Inventory extends Component {
 
@@ -14,7 +14,7 @@ export default class Inventory extends Component {
 
     state={
         producto:{
-            ItemCode:"ItemCode"
+            itemCode:"Item Code"
         }
     }
 
@@ -37,9 +37,14 @@ export default class Inventory extends Component {
                             <span className="input-group-text"><AiOutlineSearch /></span>
                             <input type="text" className="form-control" placeholder='Search by ItemCode' />
                         </div>
-                        <div className='text-center'>
+                        {
+                            /* 
+                            
+                            <div className='text-center'>
                             <button type="button" className="btn  btn-lg w-50 searchProd">Search <AiOutlineFileSearch /></button>
                         </div>
+                            */
+                        }
 
                     </div>
                     <div className='col-5'>
@@ -63,7 +68,7 @@ export default class Inventory extends Component {
                         <div className='row'>
                             <div className='col-1'></div>
                             <div className='col-5 ItemCodeNumber'>
-                                <p className='text-center display-3' >{this.state.producto.ItemCode}</p>
+                                <p className='text-center display-3' >{this.state.producto.itemCode}</p>
                             </div>
                             <div className='col-5 ItemCodeNumber text-center'>
                                 <img className='pb-5 pt-5' src='/assets/notavailable.png' alt='Company' />

@@ -67,3 +67,16 @@
 .textAreaGeneral textarea{
     resize: none;
 }
+
+.textAreaComment{
+    width: 100%;
+}
+
+
+.detailIMG{
+    width: 170px;
+}
+
+.justifyText{
+    text-align: justify;
+}

@@ -9,7 +9,7 @@ import CycleInvetoryGraph from "../pages/CycleInventoryGraph"
 import KPI from "../pages/KPI"
 import Inventory from "../pages/Inventory"
 import Lobby from "../pages/Lobby"
-
+import PikingSystem from "../pages/PikingSystem"
 
 export default class App extends Component {
  
@@ -41,6 +41,10 @@ export default class App extends Component {
 
                         <div id="Inventory" className='page'>
                             <Inventory/>
+                        </div>
+
+                        <div id="PikingSystem" className='page'>
+                            <PikingSystem/>
                         </div>
 
                     </div>

@@ -19,7 +19,7 @@ export default class Catalogue extends Component {
         const buscador = document.getElementById('catalogo_busqueda');
         const Enpoint = '/Items/get'
         const respuesta = await getInformationNoData(Enpoint);
-        console.log(respuesta);
+        
         if (respuesta.status.code === 1) {
             this.setState({ Catalogo: respuesta.data });
             this.setState({ ProductosMostrados: respuesta.data });
@@ -51,10 +51,12 @@ export default class Catalogue extends Component {
     }
 
     getProducto(producto){
-        console.log(producto);
         //Aqui asignamos el producto al estado del padre
         const Padre = this.props.Padre
         const Products = Padre.state.products;
+        producto.BIN="";
+        producto.quantity=0;
+        producto.totalCost=0;
         Products.push(producto);
         Padre.setState({products:Products});
         

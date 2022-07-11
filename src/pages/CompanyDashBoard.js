@@ -38,7 +38,7 @@ export default class CompanyDashBoard extends Component {
 
     render() {
         return (
-            <div id="companydash" >
+            <div id="companydash">
                 <button hidden id="catalogueOfCompanyActioner" onClick={() => this.getCompanysAssigned()}></button>
                 <MenuCompany />
                 <div className="container-fluid generalContainer" id="actualPage">

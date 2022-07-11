@@ -8,7 +8,7 @@ import { create_Delete_Update_Information, getInformationWithData } from '../ser
 import Swal from "sweetalert2";
 import { getValueCookie } from '../services/cookieService';
 import { automaticCloseAlert } from '../functions/alerts'
-import {formatInputDate, FormatQueryReturnDate, getActualDateUTC, getDateFromReports, OrderArrayByDate } from '../functions/dateFormat'
+import { formatInputDate, FormatQueryReturnDate, getActualDateUTC, getDateFromReports, OrderArrayByDate } from '../functions/dateFormat'
 import { getDataSet } from '../functions/generateDataSetExcel'
 import ExcelDocument from '../components/ExcelDocument'
 
@@ -62,6 +62,7 @@ export default class CycleInvetory extends Component {
             },
             Detail: [],
             DetailFilter: [],
+            CheckedItems: []
         }
 
     }
@@ -143,6 +144,7 @@ export default class CycleInvetory extends Component {
             })
 
             const temporal = this.state.cycleInventoryStorage
+
             temporal.DetailFilter = DetailFilter
             this.setState({ cycleInventoryStorage: temporal })
         } else {
@@ -185,7 +187,7 @@ export default class CycleInvetory extends Component {
 
     async getLastCycleInventory() {
         const data = {
-            company: getValueCookie('Company')
+            idcompany: getValueCookie('CompanyId')
         }
         const route = '/inventory/lastCycle/post';
         const datos = await getInformationWithData(route, data)
@@ -214,7 +216,7 @@ export default class CycleInvetory extends Component {
 
     async getOldCycleInventory() {
         const data = {
-            company: getValueCookie('Company')
+            idcompany: getValueCookie('CompanyId')
         }
         const route = '/invertory/oldCycleInventorys/post';
         const datos = await getInformationWithData(route, data)
@@ -232,28 +234,45 @@ export default class CycleInvetory extends Component {
         }
     }
 
+    mergeDataCheck(arrayChecked, allArray) {
+
+        for (let a = 0; a < arrayChecked.length; a++) {
+            for (let b = 0; b < allArray.length; b++) {
+                if (arrayChecked[a].ItemCode === allArray[b].ItemCode && arrayChecked[a].BIN === allArray[b].BIN && arrayChecked[a].status === 1) {
+                    allArray[b] = arrayChecked[a]
+                    break
+                }
+            }
+
+        }
+        return allArray
+    }
+
 
     async getDetailCycleInventory(id, type) {
         const data = {
-            id: id
+            id: id,
+            idcompany: getValueCookie('CompanyId'),
+            company: getValueCookie('Company')
         }
         const route = '/inventory/cycledetail/post';
         const datos = await getInformationWithData(route, data)
-        if (type === "actual") {
 
-            if (datos.status.code === 1) {
-                if (datos.data.length > 0) {
-                    const temporal = this.state.cycleInventoryStorage
-                    temporal.Detail = datos.data
-                    temporal.DetailFilter = datos.data
-                    await this.setState({ cycleInventoryStorage: temporal })
-                    await this.completePercentage()
-                    await this.getByStat('0')
-                } else {
-                    const temporal = this.state.cycleInventoryStorage
-                    temporal.Detail = []
-                    await this.setState({ cycleInventoryStorage: temporal })
-                }
+        if (type === "actual") {
+            const route2 = '/inventory/allProductsCycle/post';
+            const allinformation = await getInformationWithData(route2, data)
+
+            if (datos.status.code === 1 && allinformation.status.code === 1) {
+                const realData = this.mergeDataCheck(datos.data, allinformation.data)
+
+                const temporal = this.state.cycleInventoryStorage
+                temporal.Detail = realData
+                temporal.DetailFilter = realData
+                await this.setState({ cycleInventoryStorage: temporal })
+                const tempo = this.state.cycleInventoryStorage
+                tempo.CheckedItems = await this.getCheckedItems()
+                await this.setState({ cycleInventoryStorage: tempo })
+                await this.getByStat('0')
             }
         } else if (type === "old") {
             const temporal = this.state.General
@@ -288,7 +307,7 @@ export default class CycleInvetory extends Component {
         this.disableTransaction()
         const data = {
             days: 0,
-            company: getValueCookie('Company'),
+            idcompany: getValueCookie('CompanyId'),
             userName: getValueCookie('userName')
         }
         await Swal.fire({
@@ -355,19 +374,29 @@ export default class CycleInvetory extends Component {
 
     async setCycleInventoryDetailInfo(item, idQuant) {
         this.disableTransaction()
-        
+
         const quant = document.getElementById(idQuant).value
         const temporal = this.state.cycleInventoryStorage
         const index = temporal.Detail.indexOf(item)
+        var flag = true
         if (index !== -1) {
-          
+
+            if (temporal.Detail[index].idcycleInventoryHeader !== 0) {
+                flag = false
+            }
+
+            temporal.Detail[index].idcycleInventoryHeader = this.state.cycleInventoryStorage.Header.id
             temporal.Detail[index].realQuantity = Number(quant)
             temporal.Detail[index].countBy = getValueCookie('userName')
-            temporal.Detail[index].date=getActualDateUTC()
+            temporal.Detail[index].date = getActualDateUTC()
             temporal.Detail[index].difference = temporal.Detail[index].realQuantity - temporal.Detail[index].systemQuantity
             temporal.Detail[index].status = 1
-            console.log(temporal.Detail[index])
-            const response = await create_Delete_Update_Information('/invertory/updateDetailCycle/post', temporal.Detail[index])
+            var response
+            if (flag) {
+                response = await create_Delete_Update_Information('/invertory/insertDetailCycle/post', temporal.Detail[index])
+            } else {
+                response = await create_Delete_Update_Information('/invertory/updateDetailCycle/post', temporal.Detail[index])
+            }
             if (response.status.code === 1) {
 
                 automaticCloseAlert('correct', 'The item was check!')
@@ -377,6 +406,9 @@ export default class CycleInvetory extends Component {
                 automaticCloseAlert('incorrect', 'The item was not checked')
             }
         }
+        const tempo = this.state.cycleInventoryStorage
+        tempo.CheckedItems = await this.getCheckedItems()
+        await this.setState({ cycleInventoryStorage: tempo })
         await this.enableTransaction()
     }
 
@@ -659,13 +691,25 @@ export default class CycleInvetory extends Component {
         this.setState({ secureTransaction: false })
     }
 
+    async getCheckedItems() {
+        const data = {
+            id: this.state.cycleInventoryStorage.Header.id,
+            idcompany: getValueCookie('CompanyId'),
+            company: getValueCookie('Company')
+        }
+        const route = '/inventory/cycledetail/post';
+        const datos = await getInformationWithData(route, data)
+        return datos.data
+    }
+
     generateInfo() {
-        let proccessInfo = JSON.parse(JSON.stringify(this.state.cycleInventoryStorage.Detail))
+
+        let proccessInfo = JSON.parse(JSON.stringify(this.state.cycleInventoryStorage.CheckedItems))
         const headerKeys = ['ItemCode', 'productLine', 'Description', 'realQuantity', 'BIN', 'systemQuantity', 'difference', 'countBy', 'date', 'status', 'comentary']
         for (const item of proccessInfo) {
             for (const head of headerKeys) {
                 if (head !== "status") {
-                    if (item[head] === null||item[head] ==="null") {
+                    if (item[head] === null || item[head] === "null") {
                         item[head] = ""
                     } else if (head === "date") {
                         item[head] = FormatQueryReturnDate(item[head])
@@ -690,9 +734,9 @@ export default class CycleInvetory extends Component {
 
     async addComentary(item) {
         this.disableTransaction()
-        var comm=""
-        if(item.comentary){
-            comm=item.comentary
+        var comm = ""
+        if (item.comentary) {
+            comm = item.comentary
         }
 
 
@@ -702,7 +746,7 @@ export default class CycleInvetory extends Component {
                     <textarea id='comentOfCycleInventoryDifference' rows="10" cols="50">${comm}</textarea>
                    </div>
             `,
-            backdrop:true,
+            backdrop: true,
             showCancelButton: true,
             confirmButtonText: 'Save Commentary',
             showLoaderOnConfirm: true,
@@ -720,7 +764,7 @@ export default class CycleInvetory extends Component {
                         automaticCloseAlert('incorrect', 'The comment was not save')
                     }
                 }
-                
+
             },
             allowOutsideClick: () => !Swal.isLoading()
         })
@@ -851,9 +895,9 @@ export default class CycleInvetory extends Component {
                                             <td className='text-center'>{item.status === 0 ? "-" : item.difference}</td>
                                             <td className='text-center'>{item.countBy === null ? "-" : item.countBy}</td>
                                             <td className='text-center'>{this.textStatus(item.status)}</td>
-                                            <td><button type="button" className="btn btn-secondary btn-lg" onClick={() => this.addComentary(item)} disabled={this.state.General.secureTransaction||item.status===0}>Add Comments</button></td>
+                                            <td><button type="button" className="btn btn-secondary btn-lg" onClick={() => this.addComentary(item)} disabled={this.state.General.secureTransaction || item.status === 0}>Add Comments</button></td>
                                             <td className='text-center'>
-                                                <button type="button" className="btn btn-success btn-lg" disabled={this.state.General.secureTransaction} onClick={() => this.setCycleInventoryDetailInfo(item,"realQuantityCycleInv_" + item.id,)} hidden={item.status === 1}>Check</button>
+                                                <button type="button" className="btn btn-success btn-lg" disabled={this.state.General.secureTransaction} onClick={() => this.setCycleInventoryDetailInfo(item, "realQuantityCycleInv_" + item.id,)} hidden={item.status === 1}>Check</button>
                                                 <button type="button" className="btn btn-danger btn-lg" disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
                                             </td>
                                             <td className='text-center'><button onClick={() => this.getGeneralHistory(item)} type="button" className="btn btn-info btn-lg">Detail</button></td>

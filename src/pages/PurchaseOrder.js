@@ -7,11 +7,24 @@ import Catalogue from '../components/Catalogue';
 import { OrderPDF } from '../components/OrderPDF';
 import { getValueCookie } from '../services/cookieService';
 export default class PurchaseOrder extends Component {
-    state = {}
+    constructor(props){
+        super(props)
+    }
+    state = {
+
+
+        products:[],
+        producto:{}
+    }
+
+    print(){
+        console.log(this.state.products)
+    }
 
     render() {
         return (
             <div className='purchaseOrderContainer'>
+                <button onClick={()=>this.print()}>PRINT</button>
                 <p className='text-center display-1 pb-2' >Purchase Order</p>
 
                 <div>
@@ -65,7 +78,7 @@ export default class PurchaseOrder extends Component {
                                         <div className='col-12'><input className="form-control form-control-lg" type="date" /></div>
                                     </div>
                                     <div className='row pb-2'>
-                                        <div className='col-12'><Catalogue /></div>
+                                        <div className='col-12'><Catalogue nombrePadre={"PurchaseOrder"} Padre={this} /></div>
                                     </div>
 
                                 </div>
@@ -84,9 +97,9 @@ export default class PurchaseOrder extends Component {
                                 <div className='col-1'></div>
                             </div>
                         </div>
-                        <div className='col-12 tableFixHead tb-5'>
+                        <div className='col-12 tb-5'>
                             <table className='table'>
-                                <thead>
+                                <thead className='thead'>
                                     <tr className='text-light text-center'>
                                         <th className='bg-dark'>Item Code</th>
                                         <th className='bg-dark'>Description</th>
@@ -97,7 +110,7 @@ export default class PurchaseOrder extends Component {
 
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className='tbody'>
 
                                 </tbody>
                                 <tfoot className='tfoot'>

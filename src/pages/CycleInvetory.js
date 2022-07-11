@@ -819,9 +819,9 @@ export default class CycleInvetory extends Component {
                     </div>
                     <div className='row'>
 
-                        <div className='col-12 tableFixHead tb-5'>
+                        <div className='col-12 tb-5'>
                             <table className='table'>
-                                <thead>
+                                <thead className='thead'>
                                     <tr className='text-light text-center'>
                                         <th className='bg-dark'>Item Code</th>
                                         <th className='bg-dark'>Product Line</th>
@@ -838,33 +838,46 @@ export default class CycleInvetory extends Component {
                                         <th className='bg-dark'></th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className='tbody'>
                                     {this.state.cycleInventoryStorage.DetailFilter.map((item, i) => (
                                         <tr key={i}>
 
                                             <td>{item.ItemCode}</td>
                                             <td>{item.productLine}</td>
-                                            <td>{item.Description}</td>
+                                            <td>{item.Description===""?".":item.Description}</td>
                                             <td><input disabled={item.status === 1} type="number" key={item.realQuantity} defaultValue={item.realQuantity} id={"realQuantityCycleInv_" + item.id} className="form-control text-end" /></td>
                                             <td className='text-center'>{item.BIN}</td>
                                             <td className='text-center'>{item.status === 0 ? "-" : item.systemQuantity}</td>
                                             <td className='text-center'>{item.status === 0 ? "-" : item.difference}</td>
                                             <td className='text-center'>{item.countBy === null ? "-" : item.countBy}</td>
                                             <td className='text-center'>{this.textStatus(item.status)}</td>
-                                            <td><button type="button" className="btn btn-secondary btn-lg" onClick={() => this.addComentary(item)} disabled={this.state.General.secureTransaction||item.status===0}>Add Comments</button></td>
+                                            <td><button type="button" className="btn btn-secondary " onClick={() => this.addComentary(item)} disabled={this.state.General.secureTransaction||item.status===0}>Add Comments</button></td>
                                             <td className='text-center'>
-                                                <button type="button" className="btn btn-success btn-lg" disabled={this.state.General.secureTransaction} onClick={() => this.setCycleInventoryDetailInfo(item,"realQuantityCycleInv_" + item.id,)} hidden={item.status === 1}>Check</button>
-                                                <button type="button" className="btn btn-danger btn-lg" disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
+                                                <button type="button" className="btn btn-success " disabled={this.state.General.secureTransaction} onClick={() => this.setCycleInventoryDetailInfo(item,"realQuantityCycleInv_" + item.id,)} hidden={item.status === 1}>Check</button>
+                                                <button type="button" className="btn btn-danger " disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
                                             </td>
-                                            <td className='text-center'><button onClick={() => this.getGeneralHistory(item)} type="button" className="btn btn-info btn-lg">Detail</button></td>
-                                            <td className='text-center'><button disabled={this.state.General.secureTransaction} onClick={() => this.updateSystemQuantity(item)} type="button" className="btn btn-warning btn-lg" hidden={item.status === 0}>Update Inventory</button></td>
+                                            <td className='text-center'><button onClick={() => this.getGeneralHistory(item)} type="button" className="btn btn-info ">Detail</button></td>
+                                            <td className='text-center'><button disabled={this.state.General.secureTransaction} onClick={() => this.updateSystemQuantity(item)} type="button" className="btn btn-warning" hidden={item.status === 0}>Update Inventory</button></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot className='tfoot'>
 
                                     <tr className='bg-secondary text-light'>
-
+                                        <td></td>
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td>  
+                                        <td></td> 
+                                        <td></td>     
                                     </tr>
                                 </tfoot>
 
@@ -881,7 +894,7 @@ export default class CycleInvetory extends Component {
                         <div className='col-12 display-5 pb-3'>
                             <p >Select an old Cyclical Inventory to see they detail:</p>
                         </div>
-                        <div className='col-12 tableFixHead'>
+                        <div className='col-12'>
                             <table className='table'>
                                 <thead className='thead'>
                                     <tr className='bg-dark text-light'>
@@ -935,9 +948,9 @@ export default class CycleInvetory extends Component {
                             </div>
                         </div>
                         <div className='col-12'>{/*Here we need specific information*/}</div>
-                        <div className='col-12 tableFixHead tb-5'>
+                        <div className='col-12 tb-5'>
                             <table className='table'>
-                                <thead>
+                                <thead className='thead'>
                                     <tr className='bg-dark text-light text-center'>
                                         <th className='bg-dark'>Item Code</th>
                                         <th className='bg-dark'>Description</th>
@@ -951,7 +964,7 @@ export default class CycleInvetory extends Component {
 
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className='tbody'>
                                     {this.state.General.detailOldCycleSelectedFilter.map((item, i) => (
                                         <tr className={item.status === 0 ? 'notcounted' : item.difference < 0 ? 'negativeCount' : item.difference === 0 ? 'correctCount' : 'positiveCount'} key={i}>
 
@@ -1034,9 +1047,9 @@ export default class CycleInvetory extends Component {
                         <div className='col-12 fs-5'>
                             <p>Current Orders who maybe affect the current physical inventory</p>
                         </div>
-                        <div className='col-12 tableFixHead pt-5'>
+                        <div className='col-12 pt-5'>
                             <table className='table'>
-                                <thead>
+                                <thead className='thead'>
                                     <tr className='bg-dark text-light text-center'>
                                         <th className='bg-dark'>Type</th>
                                         <th className='bg-dark'>No Order</th>
@@ -1045,7 +1058,7 @@ export default class CycleInvetory extends Component {
                                         <th className='bg-dark'>Quantity Shipped</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className='tbody'>
                                     {this.state.General.outBounds.map((item, i) => (
                                         <tr className='text-center' key={i}>
                                             <td className='text-center'>{item.Type}</td>
@@ -1080,9 +1093,9 @@ export default class CycleInvetory extends Component {
                         </div>
                     </div>
                     <div className='row pt-3'>
-                        <div className='col-12 tableFixHead pt-5'>
+                        <div className='col-12 pt-5'>
                             <table className='table'>
-                                <thead>
+                                <thead className='thead'>
                                     <tr className='bg-dark text-light text-center'>
                                         <th className='bg-dark'>Type</th>
                                         <th className='bg-dark'>No Order</th>
@@ -1097,7 +1110,7 @@ export default class CycleInvetory extends Component {
 
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className='tbody'>
                                     {this.state.General.generalHistoryFilter.map((item, i) => (
                                         <tr className='text-center' key={i}>
                                             <td className='text-start'>{item.Type}</td>

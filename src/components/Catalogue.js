@@ -54,9 +54,9 @@ export default class Catalogue extends Component {
         console.log(producto);
         //Aqui asignamos el producto al estado del padre
         const Padre = this.props.Padre
-        const Producto = Padre.state.producto;
-        Producto.ItemCode=producto.itemCode;
-        Padre.setState({producto:Producto});
+        const Products = Padre.state.products;
+        Products.push(producto);
+        Padre.setState({products:Products});
         
     }
 

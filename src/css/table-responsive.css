@@ -1,4 +1,4 @@
-/*
+
 .my-custom-scrollbar {
   position: relative;
   height: 500px;
@@ -12,15 +12,15 @@
 .tableFixHead          { overflow: auto; min-height: 10vh; max-height: 70vh; margin-bottom: 5%; }
 .tableFixHead thead th { position: sticky; top: 0; z-index: 1; }
 
-/* Just common table stuff. Really. 
+
 table  { border-collapse: collapse; width: 100%; }
 th, td { padding: 8px 16px; }
 th     { background:#eee; }
 .fs-mini{
   font-size: 12px;
 }
-*/
 
+/*
 .tbody {
   display: block;
   height: 50vh;
@@ -29,8 +29,7 @@ th     { background:#eee; }
 
 
 .thead,
-.tfoot,
-.tbody tr {
+.tfoot {
   width: calc(100% - 1em);
   display: table;
 }
@@ -48,3 +47,4 @@ th     { background:#eee; }
   width:120px;
   background-color: black ;
 }
+*/

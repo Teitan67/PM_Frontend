@@ -9,12 +9,9 @@ import CycleInvetoryGraph from "../pages/CycleInventoryGraph"
 import KPI from "../pages/KPI"
 import Inventory from "../pages/Inventory"
 import Lobby from "../pages/Lobby"
-<<<<<<< HEAD
 import PikingSystem from "../pages/PikingSystem"
-=======
 import PurchaseOrder from "../pages/PurchaseOrder"
 
->>>>>>> add443f94e111c2af1adbdc4820858942ffd7110
 
 export default class App extends Component {
  

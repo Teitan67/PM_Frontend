@@ -374,7 +374,15 @@ export default class CycleInvetory extends Component {
 
     async setCycleInventoryDetailInfo(item, idQuant) {
         this.disableTransaction()
+        const data={
+            ItemCode:item.ItemCode,
+            BIN:item.BIN,
+            company:getValueCookie('Company')
+        }
 
+        const resultquant= await getInformationWithData('/invertory/getQuantity/post',data)
+        if(resultquant.status.code===1){
+            
         const quant = document.getElementById(idQuant).value
         const temporal = this.state.cycleInventoryStorage
         const index = temporal.Detail.indexOf(item)
@@ -389,7 +397,8 @@ export default class CycleInvetory extends Component {
             temporal.Detail[index].realQuantity = Number(quant)
             temporal.Detail[index].countBy = getValueCookie('userName')
             temporal.Detail[index].date = getActualDateUTC()
-            temporal.Detail[index].difference = temporal.Detail[index].realQuantity - temporal.Detail[index].systemQuantity
+            temporal.Detail[index].systemQuantity=resultquant.data[0].Quantity
+            temporal.Detail[index].difference = temporal.Detail[index].realQuantity - resultquant.data[0].Quantity
             temporal.Detail[index].status = 1
             var response
             if (flag) {
@@ -410,6 +419,8 @@ export default class CycleInvetory extends Component {
         tempo.CheckedItems = await this.getCheckedItems()
         await this.setState({ cycleInventoryStorage: tempo })
         await this.enableTransaction()
+        }
+
     }
 
     async updateCycleInventoryDetail(item) {

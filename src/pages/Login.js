@@ -8,7 +8,7 @@ import {automaticCloseAlert} from'../functions/alerts'
 import md5 from 'md5'
 import { closeSession } from "../functions/closeSession"
 import App from '../components/App';
-import { OpenCompanyDashBoard, /*OpenLobby,*/ OpenLogin, OpenPurchaseOrder } from '../functions/pagesFunction';
+import { OpenCompanyDashBoard, OpenLobby, OpenLogin } from '../functions/pagesFunction';
 
 
 
@@ -43,8 +43,8 @@ export default class Login extends Component {
   componentDidMount(){
     if(getValueCookie('userName')){
       if(getValueCookie('Company')){
-        //OpenLobby()
-        OpenPurchaseOrder()
+        OpenLobby()
+        //OpenPurchaseOrder()
       }else{
         OpenCompanyDashBoard()
       }

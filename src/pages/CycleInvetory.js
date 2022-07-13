@@ -383,8 +383,6 @@ export default class CycleInvetory extends Component {
 
         const resultquant= await getInformationWithData('/invertory/getQuantity/post',data)
         if(resultquant.status.code===1){
-            
-        const quant = document.getElementById(idQuant).value
         const temporal = this.state.cycleInventoryStorage
         const index = temporal.Detail.indexOf(item)
         var flag = true
@@ -395,7 +393,7 @@ export default class CycleInvetory extends Component {
             }
 
             temporal.Detail[index].idcycleInventoryHeader = this.state.cycleInventoryStorage.Header.id
-            temporal.Detail[index].realQuantity = Number(quant)
+            
             temporal.Detail[index].countBy = getValueCookie('userName')
             temporal.Detail[index].date = getActualDateUTC()
             temporal.Detail[index].systemQuantity=resultquant.data[0].Quantity
@@ -783,6 +781,14 @@ export default class CycleInvetory extends Component {
         await this.enableTransaction()
     }
 
+    onChangeQuantity=(item,e)=>{
+        const temp=this.state.cycleInventoryStorage
+        const index=temp.Detail.indexOf(item)
+        if(index!==-1){
+            temp.Detail[index].realQuantity = Number(e.target.value)
+        }
+    }
+
 
     render() {
         return (
@@ -901,7 +907,7 @@ export default class CycleInvetory extends Component {
                                             <td>{item.ItemCode}</td>
                                             <td>{item.productLine}</td>
                                             <td>{item.Description}</td>
-                                            <td><input disabled={item.status === 1} type="number" key={item.realQuantity} defaultValue={item.realQuantity} id={"realQuantityCycleInv_" + item.id} className="form-control text-end" /></td>
+                                            <td><input disabled={item.status === 1} type="number" key={item.realQuantity} defaultValue={item.realQuantity} id={"realQuantityCycleInv_" + item.id} className="form-control text-end" onChange={(e)=>this.onChangeQuantity(item,e)} /></td>
                                             <td className='text-center'>{item.BIN}</td>
                                             <td className='text-center'>{item.status === 0 ? "-" : item.systemQuantity}</td>
                                             <td className='text-center'>{item.status === 0 ? "-" : item.difference}</td>

@@ -19,7 +19,7 @@ export function OpenLobby() {
     openPage( "App")
     openPage( "GeneralPages")
     openPage( "Lobby")
-    OpenPikingSystem()
+    //OpenPikingSystem()
 }
 
 export async function OpenCycleInventory() {

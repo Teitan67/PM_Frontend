@@ -65,7 +65,7 @@ export default class Catalogue extends Component {
     render() {
         return (
             <React.Fragment>
-                <button type="button" className="btn catalogueOpen btn-lg w-100" data-bs-toggle="modal" data-bs-target={"#Catalogo" + this.props.nombrePadre} onClick={() => this.obtenerProductos()}>Open Catalogue </button>
+                <button type="button" disabled={this.props.disabled} className="btn catalogueOpen btn-lg w-100" data-bs-toggle="modal" data-bs-target={"#Catalogo" + this.props.nombrePadre} onClick={() => this.obtenerProductos()}>Open Catalogue </button>
                 <div className="modal fade" id={"Catalogo" + this.props.nombrePadre} tabIndex="-1" aria-labelledby="catalogoModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-fullscreen">
                         <div className="modal-content">

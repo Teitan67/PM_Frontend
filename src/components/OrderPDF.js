@@ -32,7 +32,7 @@ export class OrderPDF extends Component {
             <React.Fragment>
 
                 <div className="d-grid gap-2">
-                    <button type="button" onClick={() => this.handleModalOpen()} className={"btn " + this.props.colorButton + " btn-lg"}>Print Order <AiFillPrinter /></button>
+                    <button disabled={this.props.disabled} type="button" onClick={() => this.handleModalOpen()} className={"btn " + this.props.colorButton + " btn-lg"}>Print Order <AiFillPrinter /></button>
                 </div>
                 <ModalOrders title={this.props.title} show={this.state.showModal} close={() => this.handleModalClose()}>
                     <PDFViewer className="w-100" style={{ minHeight: "90vh" }}>

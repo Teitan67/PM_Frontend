@@ -346,6 +346,7 @@ export default class CycleInvetory extends Component {
         await Swal.fire({
             title: 'Do you want to end the actual Cyclical Inventory?',
             showDenyButton: true,
+            backdrop:true,
             confirmButtonText: 'Yes',
             denyButtonText: `No`,
             allowOutsideClick: () => !Swal.isLoading()

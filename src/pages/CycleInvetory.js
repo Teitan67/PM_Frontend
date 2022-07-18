@@ -8,7 +8,7 @@ import { create_Delete_Update_Information, getInformationWithData } from '../ser
 import Swal from "sweetalert2";
 import { getValueCookie } from '../services/cookieService';
 import { automaticCloseAlert } from '../functions/alerts'
-import { formatInputDate, FormatQueryReturnDate, getActualDateUTC, getDateFromReports, OrderArrayByDate } from '../functions/dateFormat'
+import { CompareDates, formatInputDate, formatInputDateQuery, FormatQueryReturnDate, FormatQueryReturnDateWithDash, getActualDateUTC, getDateFromReports, getDateYearMonthDayDash, OrderArrayByDate } from '../functions/dateFormat'
 import { getDataSet } from '../functions/generateDataSetExcel'
 import ExcelDocument from '../components/ExcelDocument'
 
@@ -198,6 +198,7 @@ export default class CycleInvetory extends Component {
                 temporal.Header = datos.data[0]
 
                 if (temporal.Header.status === 0) {
+                    
                     await this.getDetailCycleInventory(temporal.Header.id, "actual")
                 } else {
                     temporal.Detail = []
@@ -273,6 +274,7 @@ export default class CycleInvetory extends Component {
                 tempo.CheckedItems = await this.getCheckedItems()
                 await this.setState({ cycleInventoryStorage: tempo })
                 await this.getByStat('0')
+                await this.completePercentage()
             }
         } else if (type === "old") {
             const temporal = this.state.General
@@ -308,7 +310,8 @@ export default class CycleInvetory extends Component {
         const data = {
             days: 0,
             idcompany: getValueCookie('CompanyId'),
-            userName: getValueCookie('userName')
+            userName: getValueCookie('userName'),
+            realDays:0
         }
         await Swal.fire({
             title: 'Number of Days of Cyclical Inventory',
@@ -321,6 +324,17 @@ export default class CycleInvetory extends Component {
             showLoaderOnConfirm: true,
             preConfirm: async (days) => {
                 data.days = days
+                var actualDate = new Date();
+                var finishDate = new Date(actualDate.getTime() + Number(Number(days) * 86400000))
+                var habilDays=0
+                while (actualDate<=finishDate){
+                    if(actualDate.getDay()===0||actualDate.getDay()===6){
+                        habilDays++
+                    }
+                    actualDate=new Date(actualDate.getTime()+86400000)
+                }
+                
+                data.realDays=Number(data.days)+Number(habilDays)
                 return await create_Delete_Update_Information('/invertory/newCycle/post', data)
             },
             allowOutsideClick: () => !Swal.isLoading()
@@ -498,24 +512,79 @@ export default class CycleInvetory extends Component {
         const data = {
             ItemCode: this.state.General.selectedItem.ItemCode,
             Start: date1,
-            End: date2
+            End: date2,
+            company:getValueCookie('Company')
+        }
+        const data2={
+            ItemCode: this.state.General.selectedItem.ItemCode,
+            date:date1
+        }
+        const data3={
+            ItemCode: this.state.General.selectedItem.ItemCode,
+            date:date2
         }
 
         //AQUI COLOCAR LAS LLAMADAS A LOS DATOS
         //const route = '/invertory/getGeneralHistory/post';
         const generalHistoryData = await getInformationWithData('/invertory/getGeneralHistory/post', data)
         const pickList = await getInformationWithData('/pickList/history/getByItemCode', data)
+        
         const transfer = await getInformationWithData('/transfer/history/getByItemCode', data)
         const purchase = await getInformationWithData('/purchase/history/getByItemCode', data)
         const adjust = await getInformationWithData('/adjustment/history/getByItemCode', data)
-
-        if (generalHistoryData.status.code === 1 && pickList.status.code === 1 && transfer.status.code === 1 && purchase.status.code === 1 && adjust.status.code === 1) {
-
-            await this.consolidateTable(pickList.data, purchase.data, transfer.data, adjust.data, generalHistoryData.data)
+        const InventStart=await getInformationWithData('/Items/getQuantityHistory',data2)
+        const InventEnd=await getInformationWithData('/Items/getQuantityHistory',data3)
+        
+        if (InventStart.status.code===1&&InventEnd.status.code===1&&generalHistoryData.status.code === 1 && pickList.status.code === 1 && transfer.status.code === 1 && purchase.status.code === 1 && adjust.status.code === 1) {
+            const Inv2Start=await this.DeleteRepeatBins(data2,InventStart.data)
+            const Inv2End=await this.DeleteRepeatBins(data3,InventEnd.data)
+            const InvStart=this.getDataMayorInventory(Inv2Start,'Start')
+            const InvEnd=this.getDataMayorInventory(Inv2End,'End')
+            
+            await this.consolidateTable(pickList.data, purchase.data, transfer.data, adjust.data, generalHistoryData.data,InvStart,InvEnd)
         }
     }
 
-    async consolidateTable(outbounds, purchase, transfers, adjusts, generalHistory) {
+   async DeleteRepeatBins(data,information){
+    const result=await getInformationWithData('/inventory/getDeletedBins/post',data)
+    if(result.status.code===1){
+        
+        for(let it of result.data) {
+            for (let a = information.length-1; a >= 0; a--) {
+                if(information[a].BIN===it.BIN&&CompareDates(formatInputDateQuery(information[a].fech),formatInputDateQuery(it.date))){
+                    information.splice(a,1)
+                }
+            }
+        }
+        
+        return information
+    }else{
+        return []
+    }
+   }
+    getDataMayorInventory(data,type){
+       var information=[]
+       for (const it of data) {
+            const index=information.findIndex(element=>{
+                return String(element.BIN).toLowerCase()===it.BIN.toLowerCase()
+            })
+            if(index===-1){
+                if(type==='Start'){
+                it.Type='Inventory Start'
+                }else{
+                it.Type='Inventory End'
+                }
+                information.push(it)
+            }
+       } 
+
+
+       return information
+    }
+
+
+
+    async consolidateTable(outbounds, purchase, transfers, adjusts, generalHistory,InvStart,InvEnd) {
 
 
         var InfoArray = []
@@ -525,6 +594,7 @@ export default class CycleInvetory extends Component {
                 const structure = {
                     Type: '',
                     NoOrder: '',
+                    Description:'',
                     BIN: '',
                     BIN2: '',
                     QuantityOrder: '',
@@ -534,6 +604,7 @@ export default class CycleInvetory extends Component {
                 }
                 structure.Type = row.Categoria
                 structure.NoOrder = row.OrderNumber
+                structure.Description=row.description
                 structure.BIN = row.BIN
                 structure.BIN2 = row.BIN2
                 structure.QuantityOrder = row.OldQuantity
@@ -549,6 +620,7 @@ export default class CycleInvetory extends Component {
             const structure = {
                 Type: '',
                 NoOrder: '',
+                Description:'',
                 BIN: '',
                 BIN2: '',
                 QuantityOrder: '',
@@ -558,6 +630,7 @@ export default class CycleInvetory extends Component {
             }
             structure.Type = row.Type
             structure.NoOrder = row.OrdenNo
+            structure.Description=row.description
             structure.BIN = row.BIN
             structure.BIN2 = null
             structure.QuantityOrder = row.QuantityOrder
@@ -565,13 +638,14 @@ export default class CycleInvetory extends Component {
             structure.User = row.username
             structure.Date = FormatQueryReturnDate(row.Date)
             InfoArray.push(structure)
-
+            
         }
 
         for (const row of transfers) {
             const structure = {
                 Type: '',
                 NoOrder: '',
+                Description:'',
                 BIN: '',
                 BIN2: '',
                 QuantityOrder: '',
@@ -580,6 +654,7 @@ export default class CycleInvetory extends Component {
                 Date: ''
             }
             structure.Type = row.Type
+            structure.Description=row.description
             structure.NoOrder = null
             structure.BIN = row.BINSalida
             structure.BIN2 = row.BINEntrada
@@ -595,6 +670,7 @@ export default class CycleInvetory extends Component {
             const structure = {
                 Type: '',
                 NoOrder: '',
+                Description:'',
                 BIN: '',
                 BIN2: '',
                 QuantityOrder: '',
@@ -605,6 +681,7 @@ export default class CycleInvetory extends Component {
             structure.Type = row.Type
             structure.NoOrder = row.OrdenNo
             structure.BIN = row.BIN
+            structure.Description=row.description
             structure.BIN2 = null
             structure.QuantityOrder = row.Quantity
             structure.QuantityShipped = null
@@ -640,6 +717,13 @@ export default class CycleInvetory extends Component {
 
 
         var n = await OrderArrayByDate(InfoArray)
+        for (const item of InvStart) {
+            n.unshift(item)
+        }
+        for (const item of InvEnd) {
+            n.push(item)
+        }
+
         const temporal = this.state.General
         temporal.generalHistory = n
         temporal.generalHistoryFilter = n
@@ -654,20 +738,22 @@ export default class CycleInvetory extends Component {
         temporal.generalHistoryFilter = []
         const data = {
             ItemCode: itemCode.ItemCode,
+            company:getValueCookie('Company'),
             Date: FormatQueryReturnDate(this.state.cycleInventoryStorage.Header.startDate)
         }
 
         const val = await getInformationWithData('/pickList/history/getOutBound', data)
-        const val2 = await getInformationWithData('/purchase/history/getFutureByItemCode', data)
+        //const val2 = await getInformationWithData('/purchase/history/getFutureByItemCode', data)
         if (val.status.code === 1) {
             temporal.outBounds = val.data
 
         }
 
-        if (val2.status.code === 1) {
+       /* if (val2.status.code === 1) {
             temporal.purchaseOrders = val2.data
 
         }
+        */
 
         this.setState({ General: temporal })
         await this.handleModalOpen("showModal3")
@@ -789,6 +875,30 @@ export default class CycleInvetory extends Component {
         }
     }
 
+    addDifferenceSymbol(diff){
+        if(diff<0){
+            return ""
+        }else{
+            return "+"
+        }
+    }
+    RemainingDays(date){
+        var actual=getDateYearMonthDayDash()
+        var start=FormatQueryReturnDateWithDash(date)
+        var date3=new Date(start)
+        var date4=new Date(actual)
+        var difference= Math.abs(date4-date3);
+        var preliminarDays=difference/(1000 * 3600 * 24)
+        var inhDays=0
+        while(date4<=date3){
+            if(date4.getDay()===0||date4.getDay()===6){
+                inhDays++
+            }
+            date4=new Date(date4.getTime()+86400000)
+        }
+       
+        return preliminarDays-inhDays+1
+    }
 
     render() {
         return (
@@ -810,6 +920,24 @@ export default class CycleInvetory extends Component {
                                 <div className='col-1'></div>
                             </div>
                         </div>
+                    </div>
+                    <div hidden={this.state.cycleInventoryStorage.Header.status !== 0} className='row pb-2 pt-3'>
+                        <div className='col-12'>
+                            <div className='row'>
+                            <div className='col-1'></div>
+                            <div className='col-5'><p className='display-6'>Start Date: {formatInputDateQuery(this.state.cycleInventoryStorage.Header.startDate)}</p></div>
+                            <div className='col-5'><p className='display-6'>Proposed end date: {formatInputDateQuery(this.state.cycleInventoryStorage.Header.finishDate)}</p></div>
+                            <div className='col-1'></div>
+                            </div>
+                            <div className='row'>
+                            <div className='col-1'></div>
+                            <div className='col-5'><p className='display-6'>Estimated number of days: {this.state.cycleInventoryStorage.Header.days}</p></div>
+                            <div className='col-5'><p className='display-6'>Remaining days: {isNaN(this.RemainingDays(this.state.cycleInventoryStorage.Header.finishDate))?'-':this.RemainingDays(this.state.cycleInventoryStorage.Header.finishDate)}</p></div>
+                            
+                            <div className='col-1'></div>
+                            </div>
+                        </div>
+                        
                     </div>
                     <div className='row pb-5'>
                         <div className='col-1'></div>
@@ -1041,30 +1169,7 @@ export default class CycleInvetory extends Component {
                     </div>
                 </ModalOrders>
                 <ModalOrders title={'Detail of Product'} show={this.state.General.showModal3} close={(modal = "showModal3") => this.handleModalClose(modal)}>
-                    <div className='row'>
-                        <div className='col-1'></div>
-                        <div className='col-5'>
-                            <div className="input-group input-group-lg">
-                                <span className="input-group-text"><AiFillCalendar /></span>
-                                <input type="date" className="form-control" id='searchHistoryCycleInvDate1' />
-                            </div>
-
-                        </div>
-                        <div className='col-5'>
-                            <div className="input-group input-group-lg">
-                                <span className="input-group-text"><AiFillCalendar /></span>
-                                <input type="date" className="form-control" id='searchHistoryCycleInvDate2' />
-                            </div>
-                        </div>
-                        <div className='col-1'></div>
-                    </div>
-                    <div className='row text-center pt-3'>
-                        <div className='col-5'></div>
-                        <div className='col-2'>
-                            <button className='btn btn-danger btn-lg' onClick={() => this.getInfoProduct()}>Search</button>
-                        </div>
-                        <div className='col-5'></div>
-                    </div>
+                    
                     <div className='row text-center pt-3'>
                         <div className='col-1'></div>
                         <div className='col-5'>
@@ -1092,11 +1197,11 @@ export default class CycleInvetory extends Component {
                     </div>
 
 
-                    <div className='row text-start pt-2'>
+                    <div className='row text-start pt-5'>
                         <div className='col-12 fs-5'>
-                            <p>Current Orders who maybe affect the current physical inventory</p>
+                            <p className='text-danger fw-bold'>Current Orders who maybe affect the current physical inventory</p>
                         </div>
-                        <div className='col-12 tableFixHead pt-5'>
+                        <div className='col-12 tableFixHead'>
                             <table className='table'>
                                 <thead>
                                     <tr className='bg-dark text-light text-center'>
@@ -1119,7 +1224,7 @@ export default class CycleInvetory extends Component {
                                     ))
 
                                     }
-                                    {this.state.General.purchaseOrders.map((item, i) => (
+                                    {/*this.state.General.purchaseOrders.map((item, i) => (
                                         <tr className='text-center' key={i}>
                                             <td className='text-center'>{item.Type}</td>
                                             <td className='text-start'>{item.OrdenNo}</td>
@@ -1128,7 +1233,7 @@ export default class CycleInvetory extends Component {
                                             <td></td>
                                         </tr>
                                     ))
-
+                                        */
                                     }
 
                                 </tbody>
@@ -1141,8 +1246,38 @@ export default class CycleInvetory extends Component {
                             </table>
                         </div>
                     </div>
-                    <div className='row pt-3'>
-                        <div className='col-12 tableFixHead pt-5'>
+                    <div className='row'>
+                        <div className='col-1'></div>
+                        <div className='col-5'>
+                            <div className="input-group input-group-lg">
+                                <span className="input-group-text"><AiFillCalendar /></span>
+                                <input type="date" className="form-control" id='searchHistoryCycleInvDate1' />
+                            </div>
+
+                        </div>
+                        <div className='col-5'>
+                            <div className="input-group input-group-lg">
+                                <span className="input-group-text"><AiFillCalendar /></span>
+                                <input type="date" className="form-control" id='searchHistoryCycleInvDate2' />
+                            </div>
+                        </div>
+                        <div className='col-1'></div>
+                    </div>
+                    <div className='row text-center pt-3'>
+                        <div className='col-5'></div>
+                        <div className='col-2'>
+                            <button className='btn btn-danger btn-lg' onClick={() => this.getInfoProduct()}>Search</button>
+                        </div>
+                        <div className='col-5'></div>
+                    </div>
+                    <div className='row fs-3'>
+                                <div className='col-12 text-start'>
+                                    <p>Search Result:</p>
+                                </div>
+                                
+                            </div>
+                    <div className='row'>
+                        <div className='col-12 tableFixHead'>
                             <table className='table'>
                                 <thead>
                                     <tr className='bg-dark text-light text-center'>
@@ -1150,10 +1285,10 @@ export default class CycleInvetory extends Component {
                                         <th className='bg-dark'>No Order</th>
                                         <th className='bg-dark'>BIN</th>
                                         <th className='bg-dark'>New BIN</th>
-                                        <th className='bg-dark'>Quantity Order<br />Old Quantity<br /> New Quantity</th>
+                                        <th className='bg-dark'>Quantity Order/<br />Old Quantity/<br /> New Quantity</th>
                                         <th className='bg-dark'>Quantity Shipped</th>
-                                        <th className='bg-dark'>Start Total Quantity</th>
-                                        <th className='bg-dark'>End Total Quantity</th>
+                                        <th className='bg-dark'>Difference</th>
+                                        <th className='bg-dark'>Description</th>
                                         <th className='bg-dark'>Username</th>
                                         <th className='bg-dark'>Date</th>
 
@@ -1161,15 +1296,15 @@ export default class CycleInvetory extends Component {
                                 </thead>
                                 <tbody>
                                     {this.state.General.generalHistoryFilter.map((item, i) => (
-                                        <tr className='text-center' key={i}>
+                                        <tr className={'text-center '+((item.Type==='Inventory Start'||item.Type==='Inventory End')?(item.Type==='Inventory Start'?'correctCount':'positiveCount'):'')} key={i}>
                                             <td className='text-start'>{item.Type}</td>
                                             <td className='text-start'>{item.NoOrder}</td>
                                             <td>{item.BIN}</td>
                                             <td>{item.BIN2}</td>
                                             <td>{item.QuantityOrder}</td>
                                             <td>{item.QuantityShipped}</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td className='text-center'>{(item.Type==="Transferencia"||item.Type==="Ajuste")?this.addDifferenceSymbol(Number(item.QuantityShipped)-Number(item.QuantityOrder))+(Number(item.QuantityShipped)-Number(item.QuantityOrder)):((item.Type==='Outbound'||item.Type==='Purchase')?(item.Type==='Outbound'?"-"+item.QuantityShipped:"+"+item.QuantityOrder):'-')}</td>
+                                            <td className='text-start'>{item.Description}</td>
                                             <td>{item.User}</td>
                                             <td>{item.Date}</td>
                                         </tr>

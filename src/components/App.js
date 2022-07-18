@@ -11,7 +11,7 @@ import Inventory from "../pages/Inventory"
 import Lobby from "../pages/Lobby"
 import PikingSystem from "../pages/PikingSystem"
 import PurchaseOrder from "../pages/PurchaseOrder"
-
+import "../css/general-style.css"
 
 export default class App extends Component {
  
@@ -24,7 +24,7 @@ export default class App extends Component {
 
                 <div id="GeneralPages" className="page">
                     <Menu/>
-                    <div className="container-fluid generalContainer" id="actualPage">
+                    <div className="container-fluid generalContainer contPrincipal" id="actualPage">
 
                         <div id="Lobby" className="page">
                             <Lobby/>

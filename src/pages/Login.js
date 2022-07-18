@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import "../css/login-style.css"
+import "../css/general-style.css"
 import Footer from '../components/Footer'
 import { AiOutlineUser, AiOutlineKey, AiOutlineLogin } from 'react-icons/ai';
 import { selectWithDataService } from '../services/auth/authservices';
@@ -45,6 +46,7 @@ export default class Login extends Component {
       if(getValueCookie('Company')){
         OpenLobby()
         //OpenPurchaseOrder()
+        //OpenCycleInventory()
       }else{
         OpenCompanyDashBoard()
       }
@@ -93,7 +95,8 @@ export default class Login extends Component {
     return (
       <React.Fragment>
         <div id='login' className='page'>
-          <div className='container-fluid pb-1'>
+         
+          <div className='container-fluid pb-1 contPrincipal'>
             <div className='container'>
               <div className='row pt-5 pb-3 d-flex justify-content-center'>
                 <div className='col-9 contLogin'>

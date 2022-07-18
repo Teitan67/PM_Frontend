@@ -51,6 +51,25 @@ export function OrderArrayByDate(array){
     return array
 }
 
+
+export function CompareDates(datesta,dateend){
+    
+            const date1=datesta.split('/')
+            const date2=dateend.split('/')
+            if(date1.length===3&&date2.length===3){
+            const date3=new Date(date1[2]+"-"+date1[0]+"-"+date1[1])
+            const date4=new Date(date2[2]+"-"+date2[0]+"-"+date2[1])
+           
+            if(date3<=date4){
+                return true
+            }
+
+            return false
+        }
+  
+
+    }
+
 export function FormatQueryReturnDate(date){
     var div=String(date).split('T')
     if(div.length===2){
@@ -67,9 +86,23 @@ export function FormatQueryReturnDate(date){
     }
 }
 
+export function FormatQueryReturnDateWithDash(date){
+    var div=String(date).split('T')
+    if(div.length===2){
+        return div[0].split('-')
+    }else{
+        return ""
+    }
+}
+
 export function getDateFromReports(){
     const datenow=new Date()
     return (datenow.getMonth()+1)+"-"+datenow.getDate()+"-"+datenow.getFullYear()
+}
+
+export function getDateYearMonthDayDash(){
+    const datenow=new Date()
+    return datenow.getFullYear()+'-'+(datenow.getMonth()+1)+"-"+datenow.getDate()
 }
 
 export function ActualDate(){
@@ -82,4 +115,5 @@ export function getActualDateUTC(){
 }
 
 
-export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate,ActualDate,getActualDateUTC,formatInputDateQuery}
+export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate,ActualDate,getActualDateUTC,formatInputDateQuery,FormatQueryReturnDateWithDash,
+    getDateYearMonthDayDash,CompareDates}

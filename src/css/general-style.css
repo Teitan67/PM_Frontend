@@ -139,3 +139,7 @@
     background-color: rgb(255, 206, 28);
     color: rgb(0, 0, 0);
 }
+
+.contPrincipal{
+    min-height: 100vh;
+}

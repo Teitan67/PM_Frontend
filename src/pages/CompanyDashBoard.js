@@ -41,7 +41,7 @@ export default class CompanyDashBoard extends Component {
             <div id="companydash">
                 <button hidden id="catalogueOfCompanyActioner" onClick={() => this.getCompanysAssigned()}></button>
                 <MenuCompany />
-                <div className="container-fluid generalContainer" id="actualPage">
+                <div className="container-fluid generalContainer contPrincipal" id="actualPage">
                     <div className="title">
                         <p className="text-center display-3">Hello, please select a Company: </p>
                     </div>

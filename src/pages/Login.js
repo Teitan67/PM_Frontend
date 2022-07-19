@@ -46,7 +46,6 @@ export default class Login extends Component {
       if(getValueCookie('Company')){
         OpenLobby()
         //OpenPurchaseOrder()
-        //OpenCycleInventory()
       }else{
         OpenCompanyDashBoard()
       }

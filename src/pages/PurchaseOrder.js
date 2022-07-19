@@ -347,6 +347,10 @@ export default class PurchaseOrder extends Component {
                                         <div className='col-12 text-start pText'><p>Date:</p></div>
                                         <div className='col-12'><input className="form-control form-control-lg" id='purchaseDate' disabled={this.state.disableHeader||this.state.secureTransaction} onChange={this.onTargerHeader} type="date" /></div>
                                     </div>
+                                    <div className='row pb-4'>
+                                        <div className='col-12 text-start pText'><p>Estimated arrival date:</p></div>
+                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseEstimatedDate' disabled={this.state.disableHeader||this.state.secureTransaction} onChange={this.onTargerHeader} type="date" /></div>
+                                    </div>
                                     <div className='row pb-2'>
                                         <div className='col-12'><Catalogue disabled={this.state.disableHeader||this.state.secureTransaction} nombrePadre={"PurchaseOrder"} Padre={this} /></div>
                                     </div>

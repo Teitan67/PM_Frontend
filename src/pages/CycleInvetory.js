@@ -626,8 +626,13 @@ export default class CycleInvetory extends Component {
                 QuantityOrder: '',
                 QuantityShipped: '',
                 User: '',
-                Date: ''
+                Date: '',
+                CustomerName:'',
+                CustomerNo:''
             }
+            console.log(row)
+            structure.CustomerName=row.Cliente 
+            structure.CustomerNo=row.NoCliente
             structure.Type = row.Type
             structure.NoOrder = row.OrdenNo
             structure.Description=row.description
@@ -1283,10 +1288,12 @@ export default class CycleInvetory extends Component {
                                     <tr className='bg-dark text-light text-center'>
                                         <th className='bg-dark'>Type</th>
                                         <th className='bg-dark'>No Order</th>
+                                        <th hidden={getValueCookie('CompanyId')==='2'} className='bg-dark'>Customer No</th>
+                                        <th hidden={getValueCookie('CompanyId')==='2'}  className='bg-dark'>Customer Name</th>
                                         <th className='bg-dark'>BIN</th>
                                         <th className='bg-dark'>New BIN</th>
-                                        <th className='bg-dark'>Quantity Order/<br />Old Quantity/<br /> New Quantity</th>
-                                        <th className='bg-dark'>Quantity Shipped</th>
+                                        <th className='bg-dark'>Quantity Order/<br />Old Quantity</th>
+                                        <th className='bg-dark'>Quantity Shipped/<br/>New Quantity</th>
                                         <th className='bg-dark'>Difference</th>
                                         <th className='bg-dark'>Description</th>
                                         <th className='bg-dark'>Username</th>
@@ -1299,6 +1306,8 @@ export default class CycleInvetory extends Component {
                                         <tr className={'text-center '+((item.Type==='Inventory Start'||item.Type==='Inventory End')?(item.Type==='Inventory Start'?'correctCount':'positiveCount'):'')} key={i}>
                                             <td className='text-start'>{item.Type}</td>
                                             <td className='text-start'>{item.NoOrder}</td>
+                                            <td hidden={getValueCookie('CompanyId')==='2'} className='text-start'>{item.CustomerNo}</td>
+                                            <td hidden={getValueCookie('CompanyId')==='2'} className='text-start'>{item.CustomerName}</td>
                                             <td>{item.BIN}</td>
                                             <td>{item.BIN2}</td>
                                             <td>{item.QuantityOrder}</td>

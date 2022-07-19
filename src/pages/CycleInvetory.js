@@ -58,7 +58,9 @@ export default class CycleInvetory extends Component {
                 realFinishDate: '',
                 startDate: '',
                 status: 0,
-                updateBy: ''
+                updateBy: '',
+                QuantityItems:0,
+                FilterQuantity:0
             },
             Detail: [],
             DetailFilter: [],
@@ -93,10 +95,11 @@ export default class CycleInvetory extends Component {
                 return null
             }
         })
-
+        
         const temporal = this.state.General
         temporal.detailOldCycleSelectedFilter = DetailFilter
-        this.setState({ General: temporal })
+        
+        this.setState({ General: temporal})
     }
 
 
@@ -110,13 +113,14 @@ export default class CycleInvetory extends Component {
                     return null
                 }
             })
-
+            
             const temporal = this.state.cycleInventoryStorage
             temporal.DetailFilter = DetailFilter
+            temporal.Header.FilterQuantity=DetailFilter.length
             this.setState({ cycleInventoryStorage: temporal })
         } else if (search !== "") {
             var DetailFilter2 = this.state.cycleInventoryStorage.Detail.filter((item) => {
-                if ((item.ItemCode.toString().toLowerCase().includes(search.toLowerCase()) || item.BIN.toString().toLowerCase().includes(search.toLowerCase()) || item.Description.toString().toLowerCase().includes(search.toLowerCase()))) {
+                if ((item.ItemCode.toString().toLowerCase().includes(search.toLowerCase()) || item.BIN.toString().toLowerCase().includes(search.toLowerCase()) || item.productLine.toString().toLowerCase().includes(search.toLowerCase()) || item.Description.toString().toLowerCase().includes(search.toLowerCase()))) {
                     return item
                 } else {
                     return null
@@ -125,6 +129,7 @@ export default class CycleInvetory extends Component {
 
             const temporal = this.state.cycleInventoryStorage
             temporal.DetailFilter = DetailFilter2
+            temporal.Header.FilterQuantity=DetailFilter2.length
             this.setState({ cycleInventoryStorage: temporal })
 
         } else {
@@ -146,10 +151,12 @@ export default class CycleInvetory extends Component {
             const temporal = this.state.cycleInventoryStorage
 
             temporal.DetailFilter = DetailFilter
+            temporal.Header.FilterQuantity=DetailFilter.length
             this.setState({ cycleInventoryStorage: temporal })
         } else {
             const temporal = this.state.cycleInventoryStorage
             temporal.DetailFilter = temporal.Detail
+            temporal.Header.FilterQuantity=temporal.Detail.length
             this.setState({ cycleInventoryStorage: temporal })
         }
 
@@ -265,10 +272,12 @@ export default class CycleInvetory extends Component {
 
             if (datos.status.code === 1 && allinformation.status.code === 1) {
                 const realData = this.mergeDataCheck(datos.data, allinformation.data)
-
+                
                 const temporal = this.state.cycleInventoryStorage
                 temporal.Detail = realData
                 temporal.DetailFilter = realData
+                temporal.Header.QuantityItems=realData.length
+                temporal.Header.FilterQuantity=realData.length
                 await this.setState({ cycleInventoryStorage: temporal })
                 const tempo = this.state.cycleInventoryStorage
                 tempo.CheckedItems = await this.getCheckedItems()
@@ -1009,6 +1018,16 @@ export default class CycleInvetory extends Component {
                         <div className='col-1'></div>
                         <div className='col-10'>
                             <p className='display-5'>Items</p>
+                        </div>
+                        <div className='col-1'></div>
+                    </div>
+                    <div className='row pt-2 pb-2'>
+                        <div className='col-1'></div>
+                        <div className='col-10'>
+                            <div className='row'>
+                                <div className='col-6'><p className='display-5'>Grand total of items: {this.state.cycleInventoryStorage.Header.QuantityItems}</p></div>
+                                <div className='col-6'><p className='display-5'>Total Items per filter: {this.state.cycleInventoryStorage.Header.FilterQuantity}</p></div>
+                            </div>
                         </div>
                         <div className='col-1'></div>
                     </div>

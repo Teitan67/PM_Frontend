@@ -105,7 +105,9 @@ export default class CycleInvetory extends Component {
 
 
     getBySearchBar(search) {
+        console.log(search)
         if (search !== "" && this.state.General.chekvalue !== '-1') {
+            if (this.state.General.chekvalue==='0'||this.state.General.chekvalue==='1'){
             var DetailFilter = this.state.cycleInventoryStorage.Detail.filter((item) => {
                 if ((item.ItemCode.toString().toLowerCase().includes(search.toLowerCase()) || item.productLine.toString().toLowerCase().includes(search.toLowerCase()) || item.BIN.toString().toLowerCase().includes(search.toLowerCase()) || item.Description.toString().toLowerCase().includes(search.toLowerCase())) && item.status.toString().toLowerCase().includes(this.state.General.chekvalue)) {
                     return item
@@ -118,7 +120,22 @@ export default class CycleInvetory extends Component {
             temporal.DetailFilter = DetailFilter
             temporal.Header.FilterQuantity=DetailFilter.length
             this.setState({ cycleInventoryStorage: temporal })
+        }else if(this.state.General.chekvalue==='2'){
+            var DetailFilter4 = this.state.cycleInventoryStorage.Detail.filter((item) => {
+                if ((item.ItemCode.toString().toLowerCase().includes(search.toLowerCase()) || item.productLine.toString().toLowerCase().includes(search.toLowerCase()) || item.BIN.toString().toLowerCase().includes(search.toLowerCase()) || item.Description.toString().toLowerCase().includes(search.toLowerCase())) && item.status.toString().toLowerCase().includes("1")&&item.difference!==0) {
+                    return item
+                } else {
+                    return null
+                }
+            })
+            
+            const temporal = this.state.cycleInventoryStorage
+            temporal.DetailFilter = DetailFilter4
+            temporal.Header.FilterQuantity=DetailFilter4.length
+            this.setState({ cycleInventoryStorage: temporal }) 
+        }
         } else if (search !== "") {
+            
             var DetailFilter2 = this.state.cycleInventoryStorage.Detail.filter((item) => {
                 if ((item.ItemCode.toString().toLowerCase().includes(search.toLowerCase()) || item.BIN.toString().toLowerCase().includes(search.toLowerCase()) || item.productLine.toString().toLowerCase().includes(search.toLowerCase()) || item.Description.toString().toLowerCase().includes(search.toLowerCase()))) {
                     return item
@@ -154,7 +171,19 @@ export default class CycleInvetory extends Component {
             temporal.Header.FilterQuantity=DetailFilter.length
             this.setState({ cycleInventoryStorage: temporal })
         }else if (stat==="2"){
-            
+           
+            var DetailFilter3 = this.state.cycleInventoryStorage.Detail.filter((item) => {
+                if (item.difference!==0) {
+                    return item
+                } else {
+                    return null
+                }
+            })
+            const temporal = this.state.cycleInventoryStorage
+
+            temporal.DetailFilter = DetailFilter3
+            temporal.Header.FilterQuantity=DetailFilter3.length
+            this.setState({ cycleInventoryStorage: temporal }) 
         
         }
 
@@ -1005,7 +1034,7 @@ export default class CycleInvetory extends Component {
                                     <div className="form-check">
                                         <input className="form-check-input" value={"2"} onChange={this.valueRadioButton} checked={this.state.General.chekvalue === "2"} type="radio" name="flexRadioDefault" />
                                         <label className="form-check-label" htmlFor="flexRadioDefault1">
-                                            Filtro sin Nombre
+                                            Differences
                                         </label>
                                     </div>
                                 </div>

@@ -140,6 +140,7 @@ export default class CycleInvetory extends Component {
 
     getByStat(stat) {
         if (stat !== "-1") {
+            if(stat==="0"||stat==="1"){
             var DetailFilter = this.state.cycleInventoryStorage.Detail.filter((item) => {
                 if (item.status.toString().toLowerCase().includes(stat.toLowerCase())) {
                     return item
@@ -147,12 +148,17 @@ export default class CycleInvetory extends Component {
                     return null
                 }
             })
-
             const temporal = this.state.cycleInventoryStorage
 
             temporal.DetailFilter = DetailFilter
             temporal.Header.FilterQuantity=DetailFilter.length
             this.setState({ cycleInventoryStorage: temporal })
+        }else if (stat==="2"){
+            
+        
+        }
+
+            
         } else {
             const temporal = this.state.cycleInventoryStorage
             temporal.DetailFilter = temporal.Detail
@@ -522,7 +528,8 @@ export default class CycleInvetory extends Component {
             ItemCode: this.state.General.selectedItem.ItemCode,
             Start: date1,
             End: date2,
-            company:getValueCookie('Company')
+            company:getValueCookie('Company'),
+            idcompany:getValueCookie('CompanyId')
         }
         const data2={
             ItemCode: this.state.General.selectedItem.ItemCode,
@@ -690,9 +697,13 @@ export default class CycleInvetory extends Component {
                 QuantityOrder: '',
                 QuantityShipped: '',
                 User: '',
-                Date: ''
+                Date: '',
+                CustomerName:'',
+                CustomerNo:''
             }
             structure.Type = row.Type
+            structure.CustomerNo=row.VendorNo
+            structure.CustomerName=row.VendorName
             structure.NoOrder = row.OrdenNo
             structure.BIN = row.BIN
             structure.Description=row.description
@@ -991,6 +1002,12 @@ export default class CycleInvetory extends Component {
                                             Checked Items
                                         </label>
                                     </div>
+                                    <div className="form-check">
+                                        <input className="form-check-input" value={"2"} onChange={this.valueRadioButton} checked={this.state.General.chekvalue === "2"} type="radio" name="flexRadioDefault" />
+                                        <label className="form-check-label" htmlFor="flexRadioDefault1">
+                                            Filtro sin Nombre
+                                        </label>
+                                    </div>
                                 </div>
                                 <div className='col-4'></div>
                             </div>
@@ -1025,8 +1042,8 @@ export default class CycleInvetory extends Component {
                         <div className='col-1'></div>
                         <div className='col-10'>
                             <div className='row'>
-                                <div className='col-6'><p className='display-5'>Grand total of items: {this.state.cycleInventoryStorage.Header.QuantityItems}</p></div>
-                                <div className='col-6'><p className='display-5'>Total Items per filter: {this.state.cycleInventoryStorage.Header.FilterQuantity}</p></div>
+                                <div className='col-6'><p className='display-5'>Total items: {this.state.cycleInventoryStorage.Header.QuantityItems}</p></div>
+                                <div className='col-6'><p className='display-5'>Total search result: {this.state.cycleInventoryStorage.Header.FilterQuantity}</p></div>
                             </div>
                         </div>
                         <div className='col-1'></div>

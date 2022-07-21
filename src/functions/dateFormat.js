@@ -30,6 +30,25 @@ export function formatInputDateQuery(datevalue){
 return ""
 }
 
+export function formatInputDateQuerytoInput(datevalue){
+    if(datevalue!==null&&datevalue!==undefined&&datevalue!==""){
+    var arrayDate=datevalue.split('T')
+    if(arrayDate.length===2){
+    const date2=arrayDate[0].split('-')
+    if(date2.length===3){
+        return date2[0]+"-"+date2[1]+"-"+date2[2]
+    }else{
+        return ""
+    }
+
+    }else{
+        return ""
+    }
+}
+
+return ""
+}
+
 export function OrderArrayByDate(array){
     for(let a=0;a<array.length;a++){
         for(let b=0;b<(array.length-a-1);b++){
@@ -116,4 +135,4 @@ export function getActualDateUTC(){
 
 
 export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate,ActualDate,getActualDateUTC,formatInputDateQuery,FormatQueryReturnDateWithDash,
-    getDateYearMonthDayDash,CompareDates}
+    getDateYearMonthDayDash,CompareDates,formatInputDateQuerytoInput}

@@ -11,7 +11,8 @@ import { create_Delete_Update_Information, getInformationWithData } from '../ser
 import { getIndexElement } from '../functions/searchInObject';
 import { confirmCloseAlert } from '../functions/alerts';
 import ModalOrders from '../components/ModalComponent';
-import { formatInputDateQuery } from '../functions/dateFormat';
+import { formatInputDateQuery, formatInputDateQuerytoInput } from '../functions/dateFormat';
+import Select from 'react-select';
 export default class PurchaseOrder extends Component {
 
     state = {
@@ -289,6 +290,20 @@ export default class PurchaseOrder extends Component {
 
     }
 
+    async SelectOldPurchaseOrder(order){
+        this.handleModalClose() 
+        console.log(order)
+        const temporal=this.state.purchaseOrderHeader
+        temporal.Carrier=order.Carrier
+        temporal.NoOrder=order.OrderNo
+        temporal.dateOrder=formatInputDateQuerytoInput(order.CreationDate)
+        temporal.State=order.Status
+        
+        this.setState({purchaseOrderHeader:temporal,disableHeader:false})
+
+        
+    }
+
 
     render() {
         return (
@@ -341,14 +356,15 @@ export default class PurchaseOrder extends Component {
                                                 <option>Two</option>
                                                 <option>Three</option>
                                             </select>
+                                            <Select isDisabled={this.state.disableHeader} id='purchaseVendor' onChange={this.onTargerHeader}/>
                                         </div>
                                     </div>
                                     <div className='row pb-4'>
                                         <div className='col-12 text-start pText'><p>Date:</p></div>
-                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseDate' disabled={this.state.disableHeader||this.state.secureTransaction} onChange={this.onTargerHeader} type="date" /></div>
+                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseDate' disabled={this.state.disableHeader||this.state.secureTransaction} onChange={this.onTargerHeader} defaultValue={this.state.purchaseOrderHeader.dateOrder} type="date" /></div>
                                     </div>
                                     <div className='row pb-4'>
-                                        <div className='col-12 text-start pText'><p>Estimated arrival date:</p></div>
+                                        <div className='col-12 text-start pText'><p>Arrival date:</p></div>
                                         <div className='col-12'><input className="form-control form-control-lg" id='purchaseEstimatedDate' disabled={this.state.disableHeader||this.state.secureTransaction} onChange={this.onTargerHeader} type="date" /></div>
                                     </div>
                                     <div className='row pb-2'>
@@ -465,7 +481,7 @@ export default class PurchaseOrder extends Component {
                                 </thead>
                                 <tbody className='tbody'>
                                     {this.state.oldPurchaseOrderHeader.map((item,i)=>(
-                                        <tr className='text-center' key={i}>
+                                        <tr onClick={()=>this.SelectOldPurchaseOrder(item)} className='text-center' key={i}>
                                             <td>{item.OrderNo}</td>
                                             <td>{formatInputDateQuery(item.OrderDate)}</td>
                                             <td className='text-start'>{item.Comment}</td>

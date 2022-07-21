@@ -11,7 +11,8 @@ import { automaticCloseAlert } from '../functions/alerts'
 import { CompareDates, formatInputDate, formatInputDateQuery, FormatQueryReturnDate, FormatQueryReturnDateWithDash, getActualDateUTC, getDateFromReports, getDateYearMonthDayDash, OrderArrayByDate } from '../functions/dateFormat'
 import { getDataSet } from '../functions/generateDataSetExcel'
 import ExcelDocument from '../components/ExcelDocument'
-
+import Select from 'react-select';
+import { getIndexElement } from '../functions/searchInObject'
 
 
 export default class CycleInvetory extends Component {
@@ -44,7 +45,8 @@ export default class CycleInvetory extends Component {
             generalHistoryFilter: [],
             oldCycleInventory: [],
             detailOldCycleSelected: [],
-            detailOldCycleSelectedFilter: []
+            detailOldCycleSelectedFilter: [],
+            optionsSelect1:[{value:'All', label:'All'}]
         },
 
         cycleInventoryStorage: {
@@ -585,7 +587,9 @@ export default class CycleInvetory extends Component {
             const Inv2End=await this.DeleteRepeatBins(data3,InventEnd.data)
             const InvStart=this.getDataMayorInventory(Inv2Start,'Start')
             const InvEnd=this.getDataMayorInventory(Inv2End,'End')
-            
+            const categories=this.state.General
+            categories.optionsSelect1=[{ value: 'All', label: 'All'}]
+            this.setState({General:categories})
             await this.consolidateTable(pickList.data, purchase.data, transfer.data, adjust.data, generalHistoryData.data,InvStart,InvEnd)
         }
     }
@@ -630,7 +634,7 @@ export default class CycleInvetory extends Component {
 
 
     async consolidateTable(outbounds, purchase, transfers, adjusts, generalHistory,InvStart,InvEnd) {
-
+        
 
         var InfoArray = []
 
@@ -675,7 +679,7 @@ export default class CycleInvetory extends Component {
                 CustomerName:'',
                 CustomerNo:''
             }
-            console.log(row)
+            
             structure.CustomerName=row.Cliente 
             structure.CustomerNo=row.NoCliente
             structure.Type = row.Type
@@ -708,8 +712,8 @@ export default class CycleInvetory extends Component {
             structure.NoOrder = null
             structure.BIN = row.BINSalida
             structure.BIN2 = row.BINEntrada
-            structure.QuantityOrder = row.Quantity
-            structure.QuantityShipped = null
+            structure.QuantityOrder = 0
+            structure.QuantityShipped = row.Quantity
             structure.User = row.username
             structure.Date = FormatQueryReturnDate(row.Date)
             InfoArray.push(structure)
@@ -777,10 +781,23 @@ export default class CycleInvetory extends Component {
         for (const item of InvEnd) {
             n.push(item)
         }
+        var actualTypes=this.state.General.optionsSelect1
+        for (const row of n) {
+            const ind=getIndexElement(actualTypes,"value",row.Type)
+            if(ind===-1){
+                const element={
+                    value:row.Type,
+                    label:row.Type
+                }
+                actualTypes.push(element)
+            }
+        }
+
 
         const temporal = this.state.General
         temporal.generalHistory = n
         temporal.generalHistoryFilter = n
+        temporal.optionsSelect1=actualTypes
         this.setState({ General: temporal })
     }
 
@@ -952,6 +969,50 @@ export default class CycleInvetory extends Component {
         }
        
         return preliminarDays-inhDays+1
+    }
+
+    onChangeFilterHistory=(e)=>{
+        if(e.value!=='All'){
+        var DetailFilter = this.state.General.generalHistory.filter((item) => {
+            if (item.Type.toString().toLowerCase().includes(e.value.toLowerCase())) {
+                return item
+            } else {
+                return null
+            }
+        })
+        const temporal=this.state.General
+        temporal.generalHistoryFilter=DetailFilter
+        this.setState({General: temporal})
+    }else{
+        const temporal=this.state.General
+        temporal.generalHistoryFilter=temporal.generalHistory
+        this.setState({General: temporal})
+    }
+
+    }
+
+    generateExcelDataForHistory(){
+        const headers=["Type","No Order","Customer No","Customer Name","BIN","New BIN",	`Quantity Order/Old Quantity`,`Quantity Shipped/New Quantity`,"Difference","Description","Username","Date"]
+        const keys=["Type","NoOrder","CustomerNo","CustomerName","BIN","BIN2","QuantityOrder","QuantityShipped","difference","Description","User","Date"]
+        var copyOfHistory=this.state.General.generalHistoryFilter
+        for (const row of copyOfHistory) {
+            
+            if(row.Type==="Purchase"){
+                row.difference="+"+row.QuantityOrder
+            }else if(row.Type==="Ajuste"||row.Type==="Transferencia"){
+                row.difference=this.addDifferenceSymbol(Number(row.QuantityShipped)-Number(row.QuantityOrder))+(Number(row.QuantityShipped)-Number(row.QuantityOrder))
+            }
+
+            for (const key of keys) {
+                if(row[key]===null||row[key]===undefined){
+                    row[key]='-'
+                }
+            }
+            
+        }
+        
+        var info = getDataSet(copyOfHistory,headers,keys)
+        return info
     }
 
     render() {
@@ -1345,7 +1406,17 @@ export default class CycleInvetory extends Component {
                                     <p>Search Result:</p>
                                 </div>
                                 
-                            </div>
+                    </div>
+                    <div className='row fs-4 pb-3'>
+                                <div className='col-6 text-start'>
+                                    <Select defaultValue={this.state.General.optionsSelect1[0]} options={this.state.General.optionsSelect1} onChange={this.onChangeFilterHistory} />
+                                </div>
+                                <div className='col-6'>
+                                <ExcelDocument hidden={this.state.General.generalHistoryFilter.length===0} data={this.generateExcelDataForHistory()} sheetname={"History ITEM "+this.state.General.selectedItem.ItemCode} archname={"Hystory Product "+this.state.General.selectedItem.ItemCode+" COMPANY " + getValueCookie('Company') + " DATE " + getDateFromReports()} ></ExcelDocument>
+
+                                </div>
+                                
+                    </div>
                     <div className='row'>
                         <div className='col-12 tableFixHead'>
                             <table className='table'>

@@ -21,8 +21,13 @@ export default class PurchaseOrder extends Component {
             NoOrder:'',
             Vendor:{},
             Carrier:'',
-            dateOrder:'',
+            orderDate:'',
+            completionDate:'',
             creationDate:'',
+            vendorNo:0,
+            vendorName:'',
+            comment:'',
+            createBy:'',
             State:''
         },
         products: [],
@@ -87,7 +92,7 @@ export default class PurchaseOrder extends Component {
             temporal.Vendor=e.target.value
             this.setState({purchaseOrderHeader:temporal})
         }else if(varChange==="purchaseDate"){
-            temporal.dateOrder=e.target.value
+            temporal.orderDate=e.target.value
             this.setState({purchaseOrderHeader:temporal})
         }
 
@@ -136,8 +141,13 @@ export default class PurchaseOrder extends Component {
             NoOrder:'',
             Vendor:{},
             Carrier:'',
-            dateOrder:'',
+            orderDate:'',
+            completionDate:'',
             creationDate:'',
+            vendorNo:0,
+            vendorName:'',
+            comment:'',
+            createBy:'',
             State:''
         }
         var tot={
@@ -145,16 +155,7 @@ export default class PurchaseOrder extends Component {
             finalTotalCost:0
         }        
         this.setState({purchaseOrderHeader:header,products:[],totals:tot,disableHeader:true})
-
-
-                    document.getElementById('purchaseOrderNo').value=""
-                    document.getElementById('purchaseCarrier').value=""
-                    document.getElementById('purchaseVendor').value=""
-                    document.getElementById('purchaseDate').value=""
-
-
-                   
-                                 
+        this.defineHeader()                               
     }
 
     cancelPurchaseOrder(){
@@ -293,15 +294,40 @@ export default class PurchaseOrder extends Component {
     async SelectOldPurchaseOrder(order){
         this.handleModalClose() 
         console.log(order)
+        const data={
+            NoOrder:order.OrderNo,
+            idcompany:getValueCookie('CompanyId')
+        }
+
         const temporal=this.state.purchaseOrderHeader
         temporal.Carrier=order.Carrier
         temporal.NoOrder=order.OrderNo
-        temporal.dateOrder=formatInputDateQuerytoInput(order.CreationDate)
+        temporal.completionDate=formatInputDateQuerytoInput(order.completionDate)
+        temporal.orderDate=formatInputDateQuerytoInput(order.OrderDate)
+        temporal.creationDate=formatInputDateQuerytoInput(order.CreationDate)
+        temporal.comment=order.Comment
         temporal.State=order.Status
-        
-        this.setState({purchaseOrderHeader:temporal,disableHeader:false})
+        temporal.createBy=order.createBy
+        temporal.vendorNo=order.vendorNo
+        temporal.vendorName=order.vendorName
+        this.defineHeader()
+        const detailData= await getInformationWithData('/purchase/get/purchaseOrderDetail',data)
+        if(detailData.status.code===1){
+            this.setState({purchaseOrderHeader:temporal,disableHeader:false})
+            console.log(detailData.data)
+        }
+       
 
         
+    }
+    defineHeader(){
+        const temporal=this.state.purchaseOrderHeader
+        document.getElementById('purchaseOrderNo').value=temporal.NoOrder
+        document.getElementById('purchaseCarrier').value=temporal.Carrier
+        document.getElementById('purchaseVendor').value=temporal.vendorNo+"|"+temporal.vendorName
+        document.getElementById('purchaseOrderDate').value=temporal.orderDate
+        document.getElementById('purchaseCompletionDate').value=temporal.completionDate
+        document.getElementById('purchaseComment').value=temporal.comment
     }
 
 
@@ -335,40 +361,40 @@ export default class PurchaseOrder extends Component {
                                 <div className='col-6'>
                                     <div className='row pb-4'>
                                         <div className='col-12 text-start pText'><p>Order No:</p></div>
-                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseOrderNo' defaultValue={this.state.purchaseOrderHeader.NoOrder} disabled={this.state.disableHeader||this.state.secureTransaction} type="text" onChange={this.onTargerHeader}/></div>
+                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseOrderNo' type="text" onChange={this.onTargerHeader}/></div>
                                     </div>
                                     <div className='row pb-4'>
                                         <div className='col-12 text-start pText'><p>Carrier:</p></div>
-                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseCarrier' defaultValue={this.state.purchaseOrderHeader.Carrier} disabled={this.state.disableHeader||this.state.secureTransaction} type="text" onChange={this.onTargerHeader} /></div>
+                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseCarrier' type="text" onChange={this.onTargerHeader} /></div>
+                                    </div>
+                                    <div className='row pb-3'>
+                                        <div className='col-12 text-start pText'><p>Comment:</p></div>
+                                        <div className='col-12 textAreaGeneral'>
+                                            <textarea className="form-control" id='purchaseComment' rows="4"></textarea>
+                                        </div>
                                     </div>
                                     <div className='row pb-2'>
                                         <div className='col-4 text-start pText'><p>Order State:</p></div>
-                                        <div className='col-8 text-start pText'><p className={'fw-bold '+this.colorStateText(this.state.purchaseOrderHeader.State)} hidden={this.state.disableHeader}>{this.stateInWords(this.state.purchaseOrderHeader.State)}</p></div>
+                                        <div className='col-8 text-start pText'><p className={'fw-bold '+this.colorStateText(this.state.purchaseOrderHeader.State)}>{this.stateInWords(this.state.purchaseOrderHeader.State)}</p></div>
                                     </div>
                                 </div>
                                 <div className='col-6'>
                                     <div className='row pb-2'>
                                         <div className='col-12 text-start pText'><p>Vendor:</p></div>
                                         <div className='col-12'>
-                                            <select disabled={this.state.disableHeader} id='purchaseVendor' className="form-select form-select-lg mb-3" onChange={this.onTargerHeader}>
-                                                <option>Open this select menu</option>
-                                                <option>One</option>
-                                                <option>Two</option>
-                                                <option>Three</option>
-                                            </select>
-                                            <Select isDisabled={this.state.disableHeader} id='purchaseVendor' onChange={this.onTargerHeader}/>
+                                            <Select className='fs-4 text-start' id='purchaseVendor' onChange={this.onTargerHeader} placeholder="Select Vendor"/>
                                         </div>
                                     </div>
                                     <div className='row pb-4'>
                                         <div className='col-12 text-start pText'><p>Date:</p></div>
-                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseDate' disabled={this.state.disableHeader||this.state.secureTransaction} onChange={this.onTargerHeader} defaultValue={this.state.purchaseOrderHeader.dateOrder} type="date" /></div>
+                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseOrderDate' onChange={this.onTargerHeader} type="date" /></div>
                                     </div>
                                     <div className='row pb-4'>
-                                        <div className='col-12 text-start pText'><p>Arrival date:</p></div>
-                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseEstimatedDate' disabled={this.state.disableHeader||this.state.secureTransaction} onChange={this.onTargerHeader} type="date" /></div>
+                                        <div className='col-12 text-start pText'><p>Completion date:</p></div>
+                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseCompletionDate' onChange={this.onTargerHeader} type="date" /></div>
                                     </div>
                                     <div className='row pb-2'>
-                                        <div className='col-12'><Catalogue disabled={this.state.disableHeader||this.state.secureTransaction} nombrePadre={"PurchaseOrder"} Padre={this} /></div>
+                                        <div className='col-12'><Catalogue disabled={false} nombrePadre={"PurchaseOrder"} Padre={this} /></div>
                                     </div>
 
                                 </div>
@@ -394,8 +420,10 @@ export default class PurchaseOrder extends Component {
                                         <th className='bg-dark'>Item Code</th>
                                         <th className='bg-dark'>Description</th>
                                         <th className='bg-dark'>BIN</th>
-                                        <th className='bg-dark'>Quantity</th>
+                                        <th className='bg-dark'>{(this.state.purchaseOrderHeader.State==="2"||this.state.purchaseOrderHeader.State==="3")?"Quantity Ordered":"Quantity"}</th>
+                                        <th className='bg-dark' hidden={!(this.state.purchaseOrderHeader.State==="2"||this.state.purchaseOrderHeader.State==="3")}>Quantity Received</th>
                                         <th className='bg-dark'>Standar Cost</th>
+                                        <th className='bg-dark'>Real Standar Cost</th>
                                         <th className='bg-dark'>Total Cost</th>
                                         <th className='bg-dark'></th>
 
@@ -416,6 +444,12 @@ export default class PurchaseOrder extends Component {
                                                     <input type="number" id={'quantityPurchase_'+i} min={0} defaultValue={product.quantity} onChange={(e)=>this.onTarget(e,product)} className="form-control text-end"/>
                                                 </div>
                                             </td>
+                                            <td hidden={!(this.state.purchaseOrderHeader.State==="2"||this.state.purchaseOrderHeader.State==="3")}>
+                                            <div className="input-group input-group-lg">                              
+                                                    <input type="number" id={'quantityPurchase_'+i} min={0} defaultValue={product.quantity} onChange={(e)=>this.onTarget(e,product)} className="form-control text-end"/>
+                                                </div>
+                                            </td>
+                                            <td className='text-end'>$ {product.unitPrice}</td>
                                             <td className='text-end'>$ {product.unitPrice}</td>
                                             <td className='text-end'>$ {product.totalCost}</td>
                                             <td><button onClick={()=>this.removeProduct(product)} className='btn btn-danger'><AiOutlineCloseCircle/></button></td>
@@ -430,6 +464,8 @@ export default class PurchaseOrder extends Component {
                                         <td></td>
                                         <td>TOTAL:</td>
                                         <td className='text-end'>{this.state.totals.finalquantityTotal}</td>
+                                        <td  hidden={!(this.state.purchaseOrderHeader.State==="2"||this.state.purchaseOrderHeader.State==="3")} className='text-end'>{/*Pending QuantityReceived*/0}</td>
+                                        <td></td>
                                         <td></td>
                                         <td className='text-end'>$ {this.state.totals.finalTotalCost}</td>
                                         <td></td>

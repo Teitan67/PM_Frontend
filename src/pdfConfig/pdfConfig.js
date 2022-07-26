@@ -34,19 +34,20 @@ const pdfConfig=StyleSheet.create({
 
     },
     OrderTitleStyle:{
-        color:"rgb(255, 255, 255)",
+        color:"rgb(0, 0, 0)",
         textAlign:"center",
         fontSize:"20px",
         marginTop:"4px"
     },
     OrderInformation:{
         width:"100%",
-        backgroundColor:"rgb(69, 71, 74)",
+        backgroundColor:"rgb(255, 255, 255)",
     },
     TitleStyle:{
         textAlign:"left",
         fontSize:"14px",
         width:"50%",
+        color:"rgb(0, 0, 0)",
     },
 
     TextSeparator:{
@@ -73,7 +74,7 @@ const pdfConfig=StyleSheet.create({
         color:"#F0FFFF",
         textAlign:"center",
         padding:"8px",
-        fontSize:"14px",
+        
         display: "flex",
         flexDirection: "row",
     },
@@ -81,13 +82,13 @@ const pdfConfig=StyleSheet.create({
     ColumnaNormal:{
         width:"15%",
         textAlign:"center",
-        fontSize:"14px",
+        fontSize:"8px",
     },
 
     ColumnaGrande:{
         width:"54%",
         textAlign:"center",
-        fontSize:"14px",
+        fontSize:"8px",
     },
     CuerpoTabla:{
         width:"100%",

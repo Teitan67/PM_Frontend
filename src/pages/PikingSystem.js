@@ -5,7 +5,7 @@ export default class PikingSystem extends Component {
     render() {
         return (
             <div>
-                <p className='fs-1'>Piking System</p>
+                <p className='fs-1'>Picking System</p>
                 <div className='form-group '>
                     <input className='form-control w-75 d-inline fs-3' disabled />
                     <button className='btn btn-success d-inline fs-3 w-25'>Sales order mode</button>
@@ -22,7 +22,7 @@ export default class PikingSystem extends Component {
 
                 </div>
                 <div>
-                    <p className='bg-primary text-white p-2 fs-3 text-center'>Piking list</p>
+                    <p className='bg-primary text-white p-2 fs-3 text-center'>Picking list</p>
                     <div className='pb-5 bg-light'>
                         <label className='w-100 '>
                             Search by UPC:

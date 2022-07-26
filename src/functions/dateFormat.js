@@ -89,6 +89,15 @@ export function CompareDates(datesta,dateend){
 
     }
 
+export function DateFormatMAS90(date){
+    var arr=date.split('-')
+    if(arr.length===3){
+        return arr[1]+"/"+arr[2]+"/"+arr[0]
+    }else{
+        return ""
+    }
+}
+
 export function FormatQueryReturnDate(date){
     var div=String(date).split('T')
     if(div.length===2){
@@ -135,4 +144,4 @@ export function getActualDateUTC(){
 
 
 export default {formatInputDate,OrderArrayByDate,FormatQueryReturnDate,ActualDate,getActualDateUTC,formatInputDateQuery,FormatQueryReturnDateWithDash,
-    getDateYearMonthDayDash,CompareDates,formatInputDateQuerytoInput}
+    getDateYearMonthDayDash,CompareDates,formatInputDateQuerytoInput,DateFormatMAS90}

@@ -33,6 +33,17 @@ export default class CompanyDashBoard extends Component {
             setNewCookie('CompanyId',company.idCompany,50)
             setNewCookie('CompanyLogo',company.directoryLogo,50)
             setNewCookie('TypeUser',company.idTypeofUser,50)
+            const data={
+                companyid:company.idCompany
+            }
+            const information= await getInformationWithData('/company/information',data)
+    
+            if(information.status.code===1){
+                setNewCookie('fullName',information.data[0].fullname,50)
+                setNewCookie('address',information.data[0].address,50)
+                setNewCookie('warehouse',information.data[0].city+" Warehouse",50)
+                setNewCookie('website',information.data[0].webSite,50)
+            }
             window.location.reload()  
     }
 

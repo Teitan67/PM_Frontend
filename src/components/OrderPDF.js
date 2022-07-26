@@ -70,6 +70,46 @@ export class OrderPDF extends Component {
 
                                     </View>
                                 </View>
+                                
+                                <View style={pdfConfig.Table}>
+                                                <View fixed style={pdfConfig.CabeceraTabla}>
+                                                    {['ItemCode', 'Description', 'BIN', 'Quantity Ordered','Quantity Received','Standar Cost','Total Cost'].map((tit, e) => (
+                                                        e !== 1 ? <Text style={pdfConfig.ColumnaNormal} key={e}>{tit}</Text> : <Text style={pdfConfig.ColumnaGrande} key={e}>{tit}</Text>
+                                                    ))}
+                                                </View>
+
+                                                {/*
+                                                    this.state.Impresion.Productos.map((elemento, e) => (
+                                                        e % 7 === 0 && e !== 0 ?
+                                                            <View break key={e} style={PurchaseOrderPrint.CuerpoTabla}>
+                                                                <View key={e} style={PurchaseOrderPrint.Fila}>{
+                                                                    this.EncabezadoInfo(['item', 'description', 'BIN', 'Quantity'], elemento).map((fila, e2) => (
+                                                                        e2 !== 1 ? <View style={PurchaseOrderPrint.ColumnaNormalCuerpo} key={e2}><Text  key={e2}>8{fila}</Text></View> : <View style={PurchaseOrderPrint.ColumnaGrandeCuerpo} key={e2}><Text key={e2}>{fila}</Text></View>
+                                                                    ))
+                                                                }</View>
+                                                            </View>
+                                                            :
+                                                            <View key={e} style={PurchaseOrderPrint.CuerpoTabla}>
+                                                                <View key={e} style={PurchaseOrderPrint.Fila}>{
+                                                                    this.EncabezadoInfo(['item', 'description', 'BIN', 'Quantity'], elemento).map((fila, e2) => (
+                                                                        e2 !== 1 ? <View style={PurchaseOrderPrint.ColumnaNormalCuerpo} key={e2}><Text  key={e2}>{fila}</Text></View> : <View style={PurchaseOrderPrint.ColumnaGrandeCuerpo} key={e2}><Text key={e2}>{fila}</Text></View>
+                                                                    ))
+                                                                }</View>
+                                                            </View>
+                                                    ))
+                                                */
+                                                }
+                                                
+                                                <View style={pdfConfig.CabeceraTabla}>
+                                                    
+                                                    {
+                                                    /*
+                                                    ['', 'Total', '', this.state.Impresion.Totales].map((tit, e) => (
+                                                        e !== 1 ? <Text style={pdfConfig.ColumnaNormal} key={e}>{tit}</Text> : <Text style={pdfConfig.ColumnaGrande} key={e}>{tit}</Text>
+                                                    ))
+                                                    */}
+                                                </View>
+                                            </View>
 
 
                             </Page>

@@ -150,7 +150,7 @@ export class Menu extends Component {
                                             Warehouse management <TbBuildingWarehouse /> <AiFillCaretDown />
                                         </a>
                                         <ul className="dropdown-menu dropDownMenu" aria-labelledby="offcanvasNavbarDropdown">
-                                            <li  onClick={() => OpenPikingSystem()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Piking System<FaClipboardList /></a></li>
+                                            <li  onClick={() => OpenPikingSystem()}><a className="dropdown-item text-light" href="/#" data-bs-dismiss="offcanvas">Picking System<FaClipboardList /></a></li>
                                         </ul>
                                     </li>
                                     <li hidden={(this.state.Modules.ProductInfo&&this.state.Modules.CycleInventory)?true:false} className="nav-item dropdown">

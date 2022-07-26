@@ -8,7 +8,7 @@ import { create_Delete_Update_Information, getInformationWithData } from '../ser
 import Swal from "sweetalert2";
 import { getValueCookie } from '../services/cookieService';
 import { automaticCloseAlert } from '../functions/alerts'
-import { CompareDates, formatInputDate, formatInputDateQuery, FormatQueryReturnDate, FormatQueryReturnDateWithDash, getActualDateUTC, getDateFromReports, getDateYearMonthDayDash, OrderArrayByDate } from '../functions/dateFormat'
+import { CompareDates, DateFormatMAS90, formatInputDate, formatInputDateQuery, FormatQueryReturnDate, FormatQueryReturnDateWithDash, getActualDateUTC, getDateFromReports, getDateYearMonthDayDash, OrderArrayByDate } from '../functions/dateFormat'
 import { getDataSet } from '../functions/generateDataSetExcel'
 import ExcelDocument from '../components/ExcelDocument'
 import Select from 'react-select';
@@ -563,10 +563,14 @@ export default class CycleInvetory extends Component {
             idcompany:getValueCookie('CompanyId')
         }
         const data2={
+            company:getValueCookie('Company'),
+            idcompany:getValueCookie('CompanyId'),
             ItemCode: this.state.General.selectedItem.ItemCode,
             date:date1
         }
         const data3={
+            company:getValueCookie('Company'),
+            idcompany:getValueCookie('CompanyId'),
             ItemCode: this.state.General.selectedItem.ItemCode,
             date:date2
         }
@@ -575,7 +579,7 @@ export default class CycleInvetory extends Component {
         //const route = '/invertory/getGeneralHistory/post';
         const generalHistoryData = await getInformationWithData('/invertory/getGeneralHistory/post', data)
         const pickList = await getInformationWithData('/pickList/history/getByItemCode', data)
-        
+        console.log(pickList)
         const transfer = await getInformationWithData('/transfer/history/getByItemCode', data)
         const purchase = await getInformationWithData('/purchase/history/getByItemCode', data)
         const adjust = await getInformationWithData('/adjustment/history/getByItemCode', data)
@@ -690,7 +694,14 @@ export default class CycleInvetory extends Component {
             structure.QuantityOrder = row.QuantityOrder
             structure.QuantityShipped = row.QuantityShipped
             structure.User = row.username
-            structure.Date = FormatQueryReturnDate(row.Date)
+            
+            if(FormatQueryReturnDate(row.Date).split("/").length===3){
+                structure.Date = FormatQueryReturnDate(row.Date)
+            }else{
+                structure.Date = DateFormatMAS90(row.Date)
+            }
+
+            
             InfoArray.push(structure)
             
         }
@@ -744,7 +755,12 @@ export default class CycleInvetory extends Component {
             structure.QuantityOrder = row.Quantity
             structure.QuantityShipped = null
             structure.User = row.username
-            structure.Date = FormatQueryReturnDate(row.Date)
+
+            if(FormatQueryReturnDate(row.Date).split("/").length===3){
+                structure.Date = FormatQueryReturnDate(row.Date)
+            }else{
+                structure.Date = DateFormatMAS90(row.Date)
+            }
             InfoArray.push(structure)
 
         }
@@ -1015,6 +1031,26 @@ export default class CycleInvetory extends Component {
         return info
     }
 
+    getKPI(){
+        var DetailFilter1 = this.state.cycleInventoryStorage.Detail.filter((item) => {
+            if (item.status===1) {
+                return item
+            } else {
+                return null
+            }
+        })
+
+        var DetailFilter3 = this.state.cycleInventoryStorage.Detail.filter((item) => {
+            if (item.difference!==0) {
+                return item
+            } else {
+                return null
+            }
+        })
+        var total=100-(DetailFilter3.length/DetailFilter1.length)
+        return total.toFixed(2)
+    }
+
     render() {
         return (
             <div className='inventoryCycle'>
@@ -1134,6 +1170,11 @@ export default class CycleInvetory extends Component {
                             <div className='row'>
                                 <div className='col-6'><p className='display-5'>Total items: {this.state.cycleInventoryStorage.Header.QuantityItems}</p></div>
                                 <div className='col-6'><p className='display-5'>Total search result: {this.state.cycleInventoryStorage.Header.FilterQuantity}</p></div>
+                            </div>
+                            <div className='row'>
+                                <div className='col-6'>
+                                <p className='display-5'>KPI: {isNaN(this.getKPI())?"0%":this.getKPI()+"%"}</p>
+                                </div>
                             </div>
                         </div>
                         <div className='col-1'></div>

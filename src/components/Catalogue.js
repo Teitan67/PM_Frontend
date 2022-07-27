@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import CartaProducto from './CartaProducto'
-import { getInformationNoData } from '../services/CABE.js'
+import { getInformationNoData, getInformationWithData } from '../services/CABE.js'
 
 
 export default class Catalogue extends Component {
@@ -16,9 +16,13 @@ export default class Catalogue extends Component {
     }
 
     async obtenerProductos() {
+        const data={
+            company:getValueCookie('Company'),
+            idcompany: getValueCookie('CompanyId')
+        }
+
         const buscador = document.getElementById('catalogo_busqueda');
-        const Enpoint = '/Items/get'
-        const respuesta = await getInformationNoData(Enpoint);
+        const respuesta = await getInformationWithData('/Items/get',data);
         
         if (respuesta.status.code === 1) {
             this.setState({ Catalogo: respuesta.data });

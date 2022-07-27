@@ -822,6 +822,9 @@ export default class CycleInvetory extends Component {
 
 
     async getGeneralHistory(itemCode) {
+        const tempo=this.state.General
+        tempo.outBounds=[]
+        this.setState({General:tempo})
         this.handleModalOpen("showModal3")
         this.displaySnipper('snipperDetail','')
         //this.setState({secureTransaction1:true})

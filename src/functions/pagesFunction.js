@@ -66,8 +66,8 @@ export function OpenPikingSystem(){
 }
 export async function OpenPurchaseOrder(){
     CloseAllPages()
-    //var button=document.getElementById('vendorsFromPurchaseOrder')
-    //await button.click()
+    var button=document.getElementById('vendorsFromPurchaseOrder')
+    await button.click()
     openPage("App")
     openPage("GeneralPages")
     openPage("PurchaseOrder")

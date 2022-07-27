@@ -823,6 +823,7 @@ export default class CycleInvetory extends Component {
 
     async getGeneralHistory(itemCode) {
         this.handleModalOpen("showModal3")
+        this.displaySnipper('snipperDetail','')
         //this.setState({secureTransaction1:true})
         const temporal = this.state.General
         temporal.selectedItem = itemCode
@@ -835,10 +836,38 @@ export default class CycleInvetory extends Component {
         }
 
         const val = await getInformationWithData('/pickList/history/getOutBound', data)
+        const val2= await getInformationWithData('/invoice/history/getCurrentInvoice',data)
         //const val2 = await getInformationWithData('/purchase/history/getFutureByItemCode', data)
-        if (val.status.code === 1) {
-            temporal.outBounds = val.data
+        if (val.status.code === 1 && val2.status.code===1) {
+            var arr=[]
+            for (const row of val.data) {
+                const element={
+                    Type:row.Type,
+                    Number:row.Num,
+                    BIN:row.BIN,
+                    QuantityOrdered:row.QuantityOrdered,
+                    QuantityShipped:row.QuantityShipped,
+                    username:row.username,
+                    date:row.CreationDate
+                }
+                arr.push(element)
+            }
 
+            for(const row of val2.data){
+                const element={
+                    Type:row.Type,
+                    Number:row.InvoiceNo,
+                    BIN:row.BIN,
+                    QuantityOrdered:row.QuantityOrdered,
+                    QuantityShipped:row.QuantityShipped,
+                    username:row.SalespersonNo,
+                    date:row.InvoiceDate
+                }
+                arr.push(element)
+            }
+
+            temporal.outBounds = arr
+            this.displaySnipper('snipperDetail','none')
         }
 
        /* if (val2.status.code === 1) {
@@ -1065,6 +1094,16 @@ export default class CycleInvetory extends Component {
         })
         var total=100-(DetailFilter3.length/DetailFilter1.length)
         return total.toFixed(2)
+    }
+
+    displaySnipper(id,state){
+        let snipper=document.getElementById(id)
+        if(snipper){
+            snipper.style.display=state
+        }else{
+            console.log("SNIPPER")
+        }
+        
     }
 
     render() {
@@ -1386,28 +1425,41 @@ export default class CycleInvetory extends Component {
 
 
                     <div className='row text-start pt-5'>
-                        <div className='col-12 fs-5'>
-                            <p className='text-danger fw-bold'>Current Orders who maybe affect the current physical inventory</p>
+                        <div className='row'>
+                            <div className='col-12 fs-5 d-inline'>
+                               <div className='row'>
+                               <div className='col-6'>
+                                <p className='text-danger fw-bold'>Current Orders who maybe affect the current physical inventory</p>
+                                </div>
+                                <div className='col-6'>
+                                <div className="spinner-border text-danger" id='snipperDetail' role="status"></div>
+                                </div>
+                               </div>
+                            </div>
                         </div>
                         <div className='col-12 tableFixHead'>
                             <table className='table'>
                                 <thead>
                                     <tr className='bg-dark text-light text-center'>
                                         <th className='bg-dark'>Type</th>
-                                        <th className='bg-dark'>No Order</th>
+                                        <th className='bg-dark'>Number</th>
                                         <th className='bg-dark'>BIN</th>
                                         <th className='bg-dark'>Quantity Order</th>
                                         <th className='bg-dark'>Quantity Shipped</th>
+                                        <th className='bg-dark'>Username <br/> Sales Person</th>
+                                        <th className='bg-dark'>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {this.state.General.outBounds.map((item, i) => (
                                         <tr className='text-center' key={i}>
                                             <td className='text-center'>{item.Type}</td>
-                                            <td className='text-start'>{item.OrderNo}</td>
+                                            <td className='text-start'>{item.Number}</td>
                                             <td>{item.BIN}</td>
                                             <td>{item.QuantityOrdered}</td>
                                             <td>{item.QuantityShipped}</td>
+                                            <td>{item.username}</td>
+                                            <td>{item.date}</td>
                                         </tr>
                                     ))
 

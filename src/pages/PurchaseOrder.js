@@ -71,7 +71,7 @@ export default class PurchaseOrder extends Component {
                 this.setState({ products: temporal })
             } else if (ident[0] === "quantityPurchase") {
                 temporal[index].quantity = Number(e.target.value)
-                temporal[index].totalCost = Number(e.target.value) * temporal[index].unitPrice
+                temporal[index].totalCost = Number(e.target.value) * temporal[index].unitCost
                 this.setState({ products: temporal })
                 this.calculateTotals()
             }
@@ -104,6 +104,8 @@ export default class PurchaseOrder extends Component {
         }else if( varChange==="purchaseComment"){
             temporal.comment=e.target.value
             this.setState({ purchaseOrderHeader: temporal })
+        }else if( varChange==="purchaseCompletionDate"){
+            temporal.completionDate=e.target.value
         }
 
 

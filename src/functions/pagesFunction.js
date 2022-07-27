@@ -64,8 +64,10 @@ export function OpenPikingSystem(){
     openPage("GeneralPages");
     openPage("PikingSystem");
 }
-export function OpenPurchaseOrder(){
+export async function OpenPurchaseOrder(){
     CloseAllPages()
+    //var button=document.getElementById('vendorsFromPurchaseOrder')
+    //await button.click()
     openPage("App")
     openPage("GeneralPages")
     openPage("PurchaseOrder")

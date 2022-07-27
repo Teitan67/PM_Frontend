@@ -55,6 +55,8 @@ export default class Catalogue extends Component {
         const Padre = this.props.Padre
         const Products = Padre.state.products;
         producto.BIN="";
+        producto.unitCost=0;
+        producto.originalUnitCost=0;
         producto.quantityOrdered=0;
         producto.quantityReceived=0;
         producto.totalCost=0;

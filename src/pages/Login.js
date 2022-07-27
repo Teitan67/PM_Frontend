@@ -9,7 +9,7 @@ import {automaticCloseAlert} from'../functions/alerts'
 import md5 from 'md5'
 import { closeSession } from "../functions/closeSession"
 import App from '../components/App';
-import { OpenCompanyDashBoard, OpenLogin, OpenLobby } from '../functions/pagesFunction';
+import { OpenCompanyDashBoard, OpenLobby, OpenLogin } from '../functions/pagesFunction';
 
 
 

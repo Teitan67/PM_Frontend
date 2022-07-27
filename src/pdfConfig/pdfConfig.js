@@ -72,9 +72,7 @@ const pdfConfig=StyleSheet.create({
         width:"100%",
         backgroundColor:"#000000",
         color:"#F0FFFF",
-        textAlign:"center",
-        padding:"8px",
-        
+        textAlign:"center",        
         display: "flex",
         flexDirection: "row",
     },
@@ -82,19 +80,19 @@ const pdfConfig=StyleSheet.create({
     ColumnaNormal:{
         width:"15%",
         textAlign:"center",
-        fontSize:"8px",
+        fontSize:"10px",
     },
 
     ColumnaGrande:{
         width:"54%",
         textAlign:"center",
-        fontSize:"8px",
+        fontSize:"10px",
     },
     CuerpoTabla:{
         width:"100%",
         textAlign:"center",
         padding:"8px",
-        fontSize:"11px",
+        fontSize:"9px",
         
         
     },
@@ -107,6 +105,20 @@ const pdfConfig=StyleSheet.create({
     ColumnaNormalCuerpo:{
         width:"15%",
         textAlign:"center",
+        display:"block",
+        marginTop:"1.2%"
+    },
+
+    ColumnaNormalCuerpo2:{
+        width:"15%",
+        textAlign:"right",
+        display:"block",
+        marginTop:"1.2%"
+    },
+
+    ColumnaNormalCuerpo3:{
+        width:"15%",
+        textAlign:"left",
         display:"block",
         marginTop:"1.2%"
     },

@@ -46,7 +46,8 @@ export default class CycleInvetory extends Component {
             oldCycleInventory: [],
             detailOldCycleSelected: [],
             detailOldCycleSelectedFilter: [],
-            optionsSelect1:[{value:'All', label:'All'}]
+            optionsSelect1:[{value:'All', label:'All'}],
+            
         },
 
         cycleInventoryStorage: {
@@ -67,7 +68,8 @@ export default class CycleInvetory extends Component {
             Detail: [],
             DetailFilter: [],
             CheckedItems: []
-        }
+        },
+        secureTransaction1:false
 
     }
     valueSearchBar = async e => {
@@ -107,7 +109,7 @@ export default class CycleInvetory extends Component {
 
 
     getBySearchBar(search) {
-        console.log(search)
+        
         if (search !== "" && this.state.General.chekvalue !== '-1') {
             if (this.state.General.chekvalue==='0'||this.state.General.chekvalue==='1'){
             var DetailFilter = this.state.cycleInventoryStorage.Detail.filter((item) => {
@@ -553,6 +555,7 @@ export default class CycleInvetory extends Component {
     }
 
     async getInfoProduct() {
+        this.setState({secureTransaction1:true})
         var date1 = formatInputDate(document.getElementById('searchHistoryCycleInvDate1').value)
         var date2 = formatInputDate(document.getElementById('searchHistoryCycleInvDate2').value)
         const data = {
@@ -579,7 +582,6 @@ export default class CycleInvetory extends Component {
         //const route = '/invertory/getGeneralHistory/post';
         const generalHistoryData = await getInformationWithData('/invertory/getGeneralHistory/post', data)
         const pickList = await getInformationWithData('/pickList/history/getByItemCode', data)
-        console.log(pickList)
         const transfer = await getInformationWithData('/transfer/history/getByItemCode', data)
         const purchase = await getInformationWithData('/purchase/history/getByItemCode', data)
         const adjust = await getInformationWithData('/adjustment/history/getByItemCode', data)
@@ -596,6 +598,7 @@ export default class CycleInvetory extends Component {
             this.setState({General:categories})
             await this.consolidateTable(pickList.data, purchase.data, transfer.data, adjust.data, generalHistoryData.data,InvStart,InvEnd)
         }
+        this.setState({secureTransaction1:false})
     }
 
    async DeleteRepeatBins(data,information){
@@ -819,6 +822,8 @@ export default class CycleInvetory extends Component {
 
 
     async getGeneralHistory(itemCode) {
+        this.handleModalOpen("showModal3")
+        //this.setState({secureTransaction1:true})
         const temporal = this.state.General
         temporal.selectedItem = itemCode
         temporal.generalHistory = []
@@ -843,7 +848,8 @@ export default class CycleInvetory extends Component {
         */
 
         this.setState({ General: temporal })
-        await this.handleModalOpen("showModal3")
+        //this.setState({secureTransaction1:false})
+        
     }
 
     async updateSystemQuantity(item) {
@@ -974,7 +980,10 @@ export default class CycleInvetory extends Component {
         var start=FormatQueryReturnDateWithDash(date)
         var date3=new Date(start)
         var date4=new Date(actual)
+        var date5=new Date(start)
+        var date6=new Date(actual)
         var difference= Math.abs(date4-date3);
+        
         var preliminarDays=difference/(1000 * 3600 * 24)
         var inhDays=0
         while(date4<=date3){
@@ -984,7 +993,14 @@ export default class CycleInvetory extends Component {
             date4=new Date(date4.getTime()+86400000)
         }
        
-        return preliminarDays-inhDays+1
+        if(date6>date5){
+            return (preliminarDays-inhDays)*-1
+        }else{
+           
+            return preliminarDays-inhDays
+        }
+        
+        
     }
 
     onChangeFilterHistory=(e)=>{
@@ -1218,7 +1234,7 @@ export default class CycleInvetory extends Component {
                                                 <button type="button" className="btn btn-success btn-lg" disabled={this.state.General.secureTransaction} onClick={() => this.setCycleInventoryDetailInfo(item, "realQuantityCycleInv_" + item.id,)} hidden={item.status === 1}>Check</button>
                                                 <button type="button" className="btn btn-danger btn-lg" disabled={this.state.General.secureTransaction} onClick={() => this.updateCycleInventoryDetail(item)} hidden={item.status === 0}>Change</button>
                                             </td>
-                                            <td className='text-center'><button onClick={() => this.getGeneralHistory(item)} type="button" className="btn btn-info btn-lg">Detail</button></td>
+                                            <td className='text-center'><button disabled={this.state.secureTransaction1} onClick={() => this.getGeneralHistory(item)} type="button" className="btn btn-info btn-lg">Detail</button></td>
                                             <td className='text-center'><button disabled={this.state.General.secureTransaction} onClick={() => this.updateSystemQuantity(item)} type="button" className="btn btn-warning btn-lg" hidden={item.status === 0}>Update Inventory</button></td>
                                         </tr>
                                     ))}
@@ -1438,7 +1454,7 @@ export default class CycleInvetory extends Component {
                     <div className='row text-center pt-3'>
                         <div className='col-5'></div>
                         <div className='col-2'>
-                            <button className='btn btn-danger btn-lg' onClick={() => this.getInfoProduct()}>Search</button>
+                            <button disabled={this.state.secureTransaction1} className='btn btn-danger btn-lg' onClick={() => this.getInfoProduct()}>Search</button>
                         </div>
                         <div className='col-5'></div>
                     </div>

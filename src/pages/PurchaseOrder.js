@@ -19,7 +19,6 @@ export default class PurchaseOrder extends Component {
 
         purchaseOrderHeader: {
             NoOrder: '',
-            Vendor: {},
             Carrier: '',
             orderDate: '',
             completionDate: '',
@@ -69,9 +68,33 @@ export default class PurchaseOrder extends Component {
             if (ident[0] === "BINPurchase") {
                 temporal[index].BIN = e.target.value
                 this.setState({ products: temporal })
-            } else if (ident[0] === "quantityPurchase") {
-                temporal[index].quantity = Number(e.target.value)
-                temporal[index].totalCost = Number(e.target.value) * temporal[index].unitCost
+            } else if (ident[0] === "quantityOrderPurchase") {
+                temporal[index].quantityOrdered = Number(e.target.value)
+                if(this.state.purchaseOrderHeader.State==="1"||this.state.purchaseOrderHeader.State===''){
+                    temporal[index].totalCost = (Number(e.target.value) * temporal[index].unitCost).toFixed(2)
+                    
+                }
+                
+                this.setState({ products: temporal })
+                this.calculateTotals()
+            }else if (ident[0] === "quantityReceivedPurchase") {
+                temporal[index].quantityReceived = Number(e.target.value)
+                if(this.state.purchaseOrderHeader.State!=="1"){
+                    temporal[index].totalCost = (Number(e.target.value) * temporal[index].unitCost).toFixed(2)
+                }
+                
+                this.setState({ products: temporal })
+                this.calculateTotals()
+            }else if (ident[0] === "standarCostPurchase") {
+                temporal[index].unitCost = Number(e.target.value)
+               
+                if(this.state.purchaseOrderHeader.State!=="1"&&this.state.purchaseOrderHeader.State!==''){
+                    temporal[index].totalCost = (Number(e.target.value) * temporal[index].quantityReceived).toFixed(2)
+                }else{
+                    
+                    temporal[index].totalCost = (Number(e.target.value) * temporal[index].quantityOrdered).toFixed(2)
+                }
+                
                 this.setState({ products: temporal })
                 this.calculateTotals()
             }
@@ -95,10 +118,7 @@ export default class PurchaseOrder extends Component {
         } else if (varChange === "purchaseCarrier") {
             temporal.Carrier = e.target.value
             this.setState({ purchaseOrderHeader: temporal })
-        } else if (varChange === "purchaseVendor") {
-            temporal.Vendor = e.target.value
-            this.setState({ purchaseOrderHeader: temporal })
-        } else if (varChange === "purchaseDate") {
+        } else if (varChange === "purchaseOrderDate") {
             temporal.orderDate = e.target.value
             this.setState({ purchaseOrderHeader: temporal })
         }else if( varChange==="purchaseComment"){
@@ -106,6 +126,7 @@ export default class PurchaseOrder extends Component {
             this.setState({ purchaseOrderHeader: temporal })
         }else if( varChange==="purchaseCompletionDate"){
             temporal.completionDate=e.target.value
+            this.setState({purchaseOrderHeader:temporal})
         }
 
 
@@ -129,6 +150,7 @@ export default class PurchaseOrder extends Component {
 
             const temporal = this.state.purchaseOrderHeader
             temporal.NoOrder = orderNumber
+            temporal.createBy=getValueCookie('userName')
             this.setState({ purchaseOrderHeader: temporal, disableHeader: false })
             document.getElementById('purchaseOrderNo').value = this.state.purchaseOrderHeader.NoOrder
         }
@@ -151,7 +173,7 @@ export default class PurchaseOrder extends Component {
 
         var header = {
             NoOrder: '',
-            Vendor: {},
+          
             Carrier: '',
             orderDate: '',
             completionDate: '',
@@ -231,12 +253,26 @@ export default class PurchaseOrder extends Component {
             idcompany: getValueCookie('CompanyId'),
             username: getValueCookie('userName'),
             cost: this.state.totals.finalTotalCost,
-            totalquant: this.state.totals.finalquantityOrderedReceived,
-            coment: ''
+            totalquant: this.state.totals.finalquantityOrderedTotal,
         }
+        /*
+        NoOrder: '',
+            Carrier: '',
+            orderDate: '',
+            completionDate: '',
+            creationDate: '',
+            vendorNo: '',
+            vendorName: '',
+            comment: '',
+            createBy: '',
+            State: ''
+        
+        */
+
+
         const result = await create_Delete_Update_Information('/purchase/create/purchaseOrder', data)
         if (result.status.code === 1) {
-            Swal.fire({
+             Swal.fire({
                 title: 'Do you want to print the actual Purchase Order?',
                 backdrop: true,
                 showDenyButton: true,
@@ -246,13 +282,62 @@ export default class PurchaseOrder extends Component {
             }).then(async (result) => {
                 if (result !== null && result !== undefined) {
                     if (result.isConfirmed) {
-
+                        let button=document.getElementById('IDPRUEBA')
+                        if(button!==undefined&&button!==null){
+                             button.click()
+                        }
                     } else {
                         this.clearDashBoardPurchaseOrder()
                     }
                 }
 
             })
+            
+        }
+
+        this.enableTransactions()
+    }
+
+    async updatePurchaseOrder(){
+        this.disableTransactions()
+        const temporal = this.state.purchaseOrderHeader
+        if(temporal.State==="2"){
+            temporal.State = "3"
+        }
+        
+        this.setState({ purchaseOrderHeader: temporal })
+        const data = {
+            header: this.state.purchaseOrderHeader,
+            products: this.state.products,
+            idcompany: getValueCookie('CompanyId'),
+            username: getValueCookie('userName'),
+            cost: this.state.totals.finalTotalCost,
+            totalquant: this.state.totals.finalquantityOrderedTotal,
+        }
+
+        const result = await create_Delete_Update_Information('/purchase/update/purchaseOrder', data)
+        if (result.status.code === 1) {
+             Swal.fire({
+                title: 'Do you want to print the actual Purchase Order?',
+                backdrop: true,
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then(async (result) => {
+                if (result !== null && result !== undefined) {
+                    if (result.isConfirmed) {
+                        let button=document.getElementById('IDPRUEBA')
+                        if(button!==undefined&&button!==null){
+                             button.click()
+                        }
+                    } else {
+                        this.clearDashBoardPurchaseOrder()
+                    }
+                }
+
+            })
+            
         }
 
         this.enableTransactions()
@@ -294,12 +379,20 @@ export default class PurchaseOrder extends Component {
 
         if (index !== -1) {
             temporal.splice(index, 1)
-            console.log(temporal)
+            
             for (let a = 0; a < temporal.length; a++) {
                 document.getElementById("BINPurchase_" + a).value = temporal[a].BIN
-                document.getElementById("quantityPurchase_" + a).value = temporal[a].quantity
+                document.getElementById("quantityOrderPurchase_" + a).value = temporal[a].quantityOrdered
+                if(this.state.purchaseOrderHeader.State!==''&&this.state.purchaseOrderHeader.State!=='1'){
+                    document.getElementById("quantityReceivedPurchase_" + a).value = temporal[a].quantityReceived
+                }
+                document.getElementById("standarCostPurchase_" + a).value = temporal[a].unitCost
             }
-
+            /*
+            quantityOrdered: item.QuantityOrdered,
+                    quantityReceived: item.QuantityReceived,
+                    totalCost: (item.QuantityReceived * item.UnitCost).toFixed(2),
+            */
 
             this.setState({ products: temporal })
             this.calculateTotals()
@@ -309,7 +402,7 @@ export default class PurchaseOrder extends Component {
 
     async SelectOldPurchaseOrder(order) {
         this.handleModalClose()
-        console.log(order)
+        
         const data = {
             NoOrder: order.OrderNo,
             idcompany: getValueCookie('CompanyId')
@@ -333,7 +426,7 @@ export default class PurchaseOrder extends Component {
         }
         temporal.vendorNo += order.VendorNo
         temporal.vendorName = order.VendorName
-        console.log(temporal)
+        
         this.defineHeader()
         const detailData = await getInformationWithData('/purchase/get/purchaseOrderDetail', data)
         if (detailData.status.code === 1) {
@@ -342,8 +435,8 @@ export default class PurchaseOrder extends Component {
             for (const item of detailData.data) {
                 const prod = {
                     BIN: null,
-                    abbreviatedDesc: "",
-                    completeDesc: item.completeDesc,
+                    abbreviatedDesc: item.abbreviatedDesc,
+                    completeDesc: item.abbreviatedDesc,
                     createBy: "",
                     creationDate: "",
                     height: "0",
@@ -362,6 +455,11 @@ export default class PurchaseOrder extends Component {
                     updateBy: "",
                     width: "",
                 }
+                if(this.state.purchaseOrderHeader.State==="1"){
+                    prod.totalCost=(prod.quantityOrdered * prod.unitCost).toFixed(2)
+                }
+
+
                 temporalproducts.push(prod)
 
             }
@@ -451,7 +549,7 @@ export default class PurchaseOrder extends Component {
                                 <div className='col-6'>
                                     <div className='row pb-4'>
                                         <div className='col-12 text-start pText'><p>Order No:</p></div>
-                                        <div className='col-12'><input className="form-control form-control-lg" id='purchaseOrderNo' type="text" onChange={this.onTargerHeader} /></div>
+                                        <div className='col-12'><input className="form-control form-control-lg" disabled={this.state.purchaseOrderHeader.State!==''} id='purchaseOrderNo' type="text" onChange={this.onTargerHeader} /></div>
                                     </div>
                                     <div className='row pb-4'>
                                         <div className='col-12 text-start pText'><p>Carrier:</p></div>
@@ -512,8 +610,8 @@ export default class PurchaseOrder extends Component {
                                         <th className='bg-dark'>BIN</th>
                                         <th className='bg-dark'>{(this.state.purchaseOrderHeader.State === "2" || this.state.purchaseOrderHeader.State === "3") ? "Quantity Ordered" : "Quantity"}</th>
                                         <th className='bg-dark' hidden={!(this.state.purchaseOrderHeader.State === "2" || this.state.purchaseOrderHeader.State === "3")}>Quantity Received</th>
+                                        <th className='bg-dark'>Real Cost</th>
                                         <th className='bg-dark'>Standar Cost</th>
-                                        <th className='bg-dark'>Real Standar Cost</th>
                                         <th className='bg-dark'>Total Cost</th>
                                         <th className='bg-dark'></th>
 
@@ -541,7 +639,7 @@ export default class PurchaseOrder extends Component {
                                             </td>
                                             <td className='text-end'>
                                                 <div className="input-group input-group-lg">
-                                                    <span class="input-group-text">$</span>
+                                                    <span className="input-group-text">$</span>
                                                     <input type="number" id={'standarCostPurchase_' + i} min={0} defaultValue={product.unitCost} onChange={(e) => this.onTarget(e, product)} className="form-control text-end" />
                                                 </div>
                                             </td>
@@ -562,7 +660,7 @@ export default class PurchaseOrder extends Component {
                                         <td hidden={!(this.state.purchaseOrderHeader.State === "2" || this.state.purchaseOrderHeader.State === "3")} className='text-end'>{this.state.totals.finalquantityOrderedReceived}</td>
                                         <td></td>
                                         <td></td>
-                                        <td className='text-end'>{"$ "+this.state.totals.finalTotalCost}</td>
+                                        <td className='text-end'>{"$"+this.state.totals.finalTotalCost}</td>
                                         <td></td>
                                     </tr>
                                 </tfoot>
@@ -577,31 +675,35 @@ export default class PurchaseOrder extends Component {
                     <div className='col-1'></div>
                     <div className='col-5'>
                         <div className="d-grid gap-2">
-                            <button type="button" disabled={this.state.disableHeader || this.state.secureTransaction} className="btn yellowButton btn-lg" onClick={() => this.createPurchaseOrder()}>Save Order <AiTwotoneSave /></button>
+                            <button type="button" hidden={this.state.purchaseOrderHeader.State!==''} disabled={this.state.disableHeader || this.state.secureTransaction} className="btn yellowButton btn-lg" onClick={() => this.createPurchaseOrder()}>Save Order <AiTwotoneSave /></button>
+                            <button type="button" hidden={this.state.purchaseOrderHeader.State===''} disabled={this.state.disableHeader || this.state.secureTransaction||this.state.purchaseOrderHeader.State==='3'} className="btn yellowButton btn-lg" onClick={() => this.updatePurchaseOrder()}>{this.state.purchaseOrderHeader.State==='1'?"Update Order":"Confirm Order"} <AiTwotoneSave /></button>
                         </div>
                     </div>
                     <div className='col-5'>
                         {this.state.purchaseOrderHeader.State === "2" || this.state.purchaseOrderHeader.State === "3" ?
-                            <OrderPDF disabled={this.state.disableHeader || this.state.secureTransaction} colorButton="orangeButton" title="Purchase Order Print"
+                            <OrderPDF id={"IDPRUEBA"} disabled={this.state.disableHeader || this.state.secureTransaction} colorButton="orangeButton" title="Purchase Order Print"
                                 companyLogo={getValueCookie('CompanyLogo')}
                                 OrderTitle="Purchase Order"
                                 contactInfo={this.state.companyPrintHeader}
                                 OrderInfo1={["Order No: " + this.state.purchaseOrderHeader.NoOrder, "No Vendor: " + this.state.purchaseOrderHeader.vendorNo, "Vendor: " + this.state.purchaseOrderHeader.vendorName, "Carrier: " + this.state.purchaseOrderHeader.Carrier, "Date: " + formatInputDate(this.state.purchaseOrderHeader.orderDate)]}
-                                OrderInfo2={["Order State: " + this.stateInWords(this.state.purchaseOrderHeader.State), "Comment: " + this.state.purchaseOrderHeader.comment, "Order by: " + this.state.purchaseOrderHeader.createBy, "Printed by: " + getValueCookie('userName')]}
-                                headerTable={["\n Item Code", "\n Description", "\n BIN", "\n Quantity \n Ordered", "\n Quantity \n Received", "\n Standar Cost", "Real \n Standar \n Cost\n", "\n Total \n Cost\n"]}
+                                OrderInfo2={["Order State: " + this.stateInWords(this.state.purchaseOrderHeader.State), "Order by: " + this.state.purchaseOrderHeader.createBy, "Printed by: " + getValueCookie('userName')]}
+                                headerTable={["\n Item Code", "\n Description", "\n BIN", "\n Quantity \n Ordered", "\n Quantity \n Received", "\n Real\nCost", "\nStandar \n Cost\n", "\n Total \n Cost\n"]}
                                 bodyTable={this.state.products}
-                                headerBodyTable={["itemCode", "abbreviateDesc", "BIN", "quantityOrdered", "quantityReceived", "unitCost", "originalUnitCost", "totalCost"]}
+                                headerBodyTable={["itemCode", "abbreviatedDesc", "BIN", "quantityOrdered", "quantityReceived", "unitCost", "originalUnitCost", "totalCost"]}
+                                bottomInfo={["","\nTOTALS","","\n"+this.state.totals.finalquantityOrderedTotal,"\n"+this.state.totals.finalquantityOrderedReceived,"","","\n$"+this.state.totals.finalTotalCost]}
                             />
                             :
-                            <OrderPDF disabled={this.state.disableHeader || this.state.secureTransaction} colorButton="orangeButton" title="Purchase Order Print"
+                            <OrderPDF id={"IDPRUEBA"} disabled={this.state.disableHeader || this.state.secureTransaction} colorButton="orangeButton" title="Purchase Order Print"
                                 companyLogo={getValueCookie('CompanyLogo')}
                                 OrderTitle="Purchase Order"
                                 contactInfo={this.state.companyPrintHeader}
                                 OrderInfo1={["Order No: " + this.state.purchaseOrderHeader.NoOrder, "No Vendor: " + this.state.purchaseOrderHeader.vendorNo, "Vendor: " + this.state.purchaseOrderHeader.vendorName, "Carrier: " + this.state.purchaseOrderHeader.Carrier, "Date: " + formatInputDate(this.state.purchaseOrderHeader.orderDate)]}
-                                OrderInfo2={["Order State: " + this.stateInWords(this.state.purchaseOrderHeader.State), "Comment: " + this.state.purchaseOrderHeader.comment, "Order by: " + this.state.purchaseOrderHeader.createBy, "Printed by: " + getValueCookie('userName')]}
-                                headerTable={["\n Item Code", "\n Description", "\n BIN", "\n Quantity", "\n Standar Cost", "Real \n Standar \n Cost\n", "\n Total \n Cost\n"]}
+                                OrderInfo2={["Order State: " + this.stateInWords(this.state.purchaseOrderHeader.State), "Order by: " + this.state.purchaseOrderHeader.createBy, "Printed by: " + getValueCookie('userName')]}
+                                headerTable={["\n Item Code", "\n Description", "\n BIN", "\n Quantity\n Ordered", "\n Real\nCost", "Standar \n Cost\n", "\n Total \n Cost\n"]}
                                 bodyTable={this.state.products}
-                                headerBodyTable={["itemCode", "abbreviateDesc", "BIN", "quantityOrdered", "unitCost", "originalUnitCost", "totalCost"]}
+                                headerBodyTable={["itemCode", "abbreviatedDesc", "BIN", "quantityOrdered", "unitCost", "originalUnitCost", "totalCost"]}
+                                bottomInfo={["","\nTOTALS","","\n"+this.state.totals.finalquantityOrderedTotal,"","","\n$"+this.state.totals.finalTotalCost]}
+                                extraAnotation={"Comment: "+this.state.purchaseOrderHeader.comment}
                             />
                         }
 

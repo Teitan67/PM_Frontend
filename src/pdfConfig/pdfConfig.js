@@ -45,7 +45,7 @@ const pdfConfig=StyleSheet.create({
     },
     TitleStyle:{
         textAlign:"left",
-        fontSize:"14px",
+        fontSize:"10px",
         width:"50%",
         color:"rgb(0, 0, 0)",
     },
@@ -84,7 +84,7 @@ const pdfConfig=StyleSheet.create({
     },
 
     ColumnaGrande:{
-        width:"54%",
+        width:"50%",
         textAlign:"center",
         fontSize:"10px",
     },
@@ -93,11 +93,13 @@ const pdfConfig=StyleSheet.create({
         textAlign:"center",
         padding:"8px",
         fontSize:"9px",
-        
+        borderBottom: '1px',
+        borderColor: 'black',
+        borderStyle: 'dotted',
         
     },
     ColumnaGrandeCuerpo:{
-        width:"54%",
+        width:"50%",
         fontSize:"9px",
         textAlign:"justify",
         padding:"8px",
@@ -117,7 +119,7 @@ const pdfConfig=StyleSheet.create({
     },
 
     ColumnaNormalCuerpo3:{
-        width:"15%",
+        width:"18%",
         textAlign:"left",
         display:"block",
         marginTop:"1.2%"
@@ -129,6 +131,12 @@ const pdfConfig=StyleSheet.create({
         width:"100%",
         display: "flex",
         flexDirection: "row",
+    },
+    
+    ColumnaPie:{
+        width:"15%",
+        textAlign:"right",
+        fontSize:"10px",
     }
 
     

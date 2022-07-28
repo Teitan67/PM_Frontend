@@ -41,7 +41,7 @@ export class OrderPDF extends Component {
             <React.Fragment>
 
                 <div className="d-grid gap-2">
-                    <button disabled={this.props.disabled} type="button" onClick={() => this.handleModalOpen()} className={"btn " + this.props.colorButton + " btn-lg"}>Print Order <AiFillPrinter /></button>
+                    <button id={this.props.id} disabled={this.props.disabled} type="button" onClick={() => this.handleModalOpen()} className={"btn " + this.props.colorButton + " btn-lg"}>Print Order <AiFillPrinter /></button>
                 </div>
                 <ModalOrders title={this.props.title} show={this.state.showModal} close={() => this.handleModalClose()}>
                     <PDFViewer className="w-100" style={{ minHeight: "90vh" }}>
@@ -89,7 +89,7 @@ export class OrderPDF extends Component {
 
                                                 {
                                                     this.props.bodyTable.map((elemento, e) => (
-                                                        e % 7 === 0 && e !== 0 ?
+                                                        e % 9 === 0 && e !== 0 ?
                                                             <View break key={e} style={pdfConfig.CuerpoTabla}>
                                                                 <View key={e} style={pdfConfig.Fila}>{
                                                                     this.EncabezadoInfo(this.props.headerBodyTable, elemento).map((fila, e2) => (
@@ -112,11 +112,11 @@ export class OrderPDF extends Component {
                                                 <View style={pdfConfig.CabeceraTabla}>
                                                     
                                                     {
-                                                    /*
-                                                    ['', 'Total', '', this.state.Impresion.Totales].map((tit, e) => (
-                                                        e !== 1 ? <Text style={pdfConfig.ColumnaNormal} key={e}>{tit}</Text> : <Text style={pdfConfig.ColumnaGrande} key={e}>{tit}</Text>
+                                                    
+                                                    this.props.bottomInfo.map((tit, e) => (
+                                                        e !== 1 ? <Text style={pdfConfig.ColumnaPie} key={e}>{tit}</Text> : <Text style={pdfConfig.ColumnaGrande} key={e}>{tit}</Text>
                                                     ))
-                                                    */}
+                                                    }
                                                 </View>
                                             </View>
 

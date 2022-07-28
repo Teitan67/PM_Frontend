@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import CartaProducto from './CartaProducto'
-import { getInformationNoData, getInformationWithData } from '../services/CABE.js'
+import { getInformationWithData } from '../services/CABE.js'
+import { getValueCookie } from '../services/cookieService';
 
 
 export default class Catalogue extends Component {
@@ -25,6 +26,7 @@ export default class Catalogue extends Component {
         const respuesta = await getInformationWithData('/Items/get',data);
         
         if (respuesta.status.code === 1) {
+           
             this.setState({ Catalogo: respuesta.data });
             this.setState({ ProductosMostrados: respuesta.data });
         }
@@ -88,7 +90,7 @@ export default class Catalogue extends Component {
                                     {
                                         this.state.ProductosMostrados.map((producto, i) => (
                                             <div key={i} className='col-6 ' data-bs-dismiss="modal" onClick={()=>this.getProducto(producto)}>
-                                                <CartaProducto ItemCode={producto.itemCode} Description={producto.abbreviatedDesc} OnHand={producto.OnHand} UPC={producto.upc} />
+                                                <CartaProducto ItemCode={producto.itemCode} Description={producto.abbreviatedDesc} OnHand={producto.quantity} UPC={producto.upc} />
                                             </div>
                                         ))
                                     }

@@ -522,7 +522,7 @@ export default class PurchaseOrder extends Component {
         return (
             <div className='purchaseOrderContainer'>
                 <button hidden id='vendorsFromPurchaseOrder' onClick={() => this.getVendors()}></button>
-                <button onClick={() => this.print()}>PRINT</button>
+                <button hidden onClick={() => this.print()}>PRINT</button>
                 <p className='text-center display-1 pb-2' >Purchase Order</p>
 
                 <div>
